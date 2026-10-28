@@ -16,7 +16,7 @@
 | **M3** | Core Vertical Slice (Learner, Course, Completion, Issuance, Verification) | Pending | Day 2 (Hour 30) | Concurrency & integrity constraints |
 | **M4** | Revocation, Audit Logging & Tampering Detection | Pending | Day 2 (Hour 42) | Cryptographic signature vs hash distinctions |
 | **M5** | Synthetic Data Generator (20k/1k/10k/5k) & 4 Anomaly Fixtures | Pending | Day 2 (Hour 56) | Memory/performance on 20k rows |
-| **M6** | React Frontend Workflow Demonstration | Pending | Day 3 (Hour 64) | API integration latency |
+| **M6** | Jinja2 + HTMX Frontend (Google Stitch reference) Workflow Demo | Pending | Day 3 (Hour 64) | Template / endpoint integration |
 | **M7** | End-to-End Validation, Export Generation (CSV/JSON/SQL), Final Audit | Pending | Day 3 (Hour 70) | Submission packaging & video/walkthrough |
 
 ## 3. High-Value Next Actions

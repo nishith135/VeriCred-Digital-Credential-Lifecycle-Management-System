@@ -957,9 +957,42 @@ first commit the necessary files according to the requirement , i have created t
 - **Review / Validation Performed:** Checked `git status`, diff review, commit log, and remote push status.
 - **Test Commands & Results:**
   - `git status`: Verified clean working tree.
-- **Known Issues / Follow-up Actions:** Proceed to feature specification (`/speckit-specify`).
+- **Known Issues / Follow-up Actions:** Ready for feature specification (`/speckit-specify`).
 
 ---
+
+### Entry 006: Frontend Architecture Revision — Jinja2 + HTMX & Google Stitch Integration
+- **Entry ID:** `PROMPT-006`
+- **Date & Time:** 2026-10-28T10:08:04+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Formally approve architectural change for the frontend: adopt server-rendered Jinja2 templates, HTML/CSS, and HTMX served directly by FastAPI (disallowing React/Node.js); establish Google Stitch for visual prototyping/design reference; define design integration sequencing.
+- **Exact Prompt:**
+```text
+we are going to Use Google Stitch for frontend UI design butu have to tell me when i can bring in the design, i usually first build the backend and then at the end ill ask for the design from google stitch,that is a decision we have to make . and visual prototyping. The production frontend must use Jinja2 templates, HTML/CSS, and HTMX with FastAPI; do not introduce React or a separate Node.js frontend build unless explicitly approved.
+
+Treat Stitch output as a design reference and starting point, not as production-ready application code. Preserve the visual design while adapting it into reusable Jinja2 templates and HTMX interactions. Connect all functional UI elements to validated backend endpoints. Keep business rules in backend services, not templates or client-side code.
+
+Inspect the exported files and design assets before integrating them. Document any design adaptations and verify the resulting screens in the running application.
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `docs/DECISIONS.md` (recorded ADR-005)
+  - `.specify/memory/constitution.md` (amended Constitution to v1.1.0)
+  - `AGENTS.md` (updated Section 4 technology stack)
+  - `docs/STATUS.md` (updated Milestone M6 frontend description)
+  - `docs/AI_PROMPT_LOG.md` (recorded Entry 006)
+- **Summary of AI Output:**
+  - Documented ADR-005 in `docs/DECISIONS.md`.
+  - Amended `.specify/memory/constitution.md` to v1.1.0 reflecting Jinja2 + HTMX served by FastAPI, prohibiting React/Node.js unless approved, and setting Stitch as visual prototype reference.
+  - Advised on the exact integration timeline: Backend-First sequencing where Google Stitch visual designs are brought in once core models and API endpoints are validated (end of M3 / start of M6).
+  - Defined the Stitch adaptation process (HTML/CSS slicing into Jinja2 templates, wiring `hx-post`/`hx-get` triggers, keeping business logic in backend Python services).
+- **Output Status:** Completed, presented to user.
+- **Review / Validation Performed:** Validated ADR-005, Constitution v1.1.0, and updated tracking artifacts.
+- **Test Commands & Results:**
+  - Local validation: verified file consistency.
+- **Known Issues / Follow-up Actions:** Proceed to `/speckit-specify` aligned with Jinja2/HTMX.
+
+---
+
 
 
 

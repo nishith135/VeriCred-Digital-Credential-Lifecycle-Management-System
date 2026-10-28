@@ -58,8 +58,8 @@ Use the agreed stack unless an approved technical decision changes it:
 - Python and FastAPI for the backend.
 - PostgreSQL for persistent storage.
 - SQLAlchemy and Alembic for database models and migrations.
-- React for the frontend.
-- Pytest for backend testing and appropriate frontend tests.
+- Jinja2 templates, HTML/CSS, and HTMX served by FastAPI for the production frontend (Google Stitch used for visual prototyping/design reference; no React or separate Node.js build).
+- Pytest for backend testing and integration tests.
 - Git and a dedicated public GitHub repository.
 
 Prefer free or locally runnable dependencies and services. Avoid unnecessary infrastructure, complex deployment dependencies, and excessive abstraction.

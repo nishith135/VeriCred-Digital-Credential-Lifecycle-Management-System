@@ -1,11 +1,10 @@
 <!--
 Sync Impact Report:
-- Version change: Initial Template -> v1.0.0
-- Ratification Date: 2026-10-27
-- Modified principles: Replaced template placeholders with 6 core engineering invariants from MASTER_SPEC.md and AGENTS.md.
-- Added sections: Core Principles (I-VI), Architectural & Technology Constraints, Security & Verification Standards, Governance.
-- Removed sections: Template generic examples.
-- Deferred items: None. All placeholders resolved.
+- Version change: v1.0.0 -> v1.1.0
+- Ratification Date: 2026-10-27 | Amended: 2026-10-28
+- Modified principles: Preserved all 6 Core Principles.
+- Amended Section: Architectural & Technology Constraints updated per ADR-005: replaced React SPA with server-rendered Jinja2 templates, HTML/CSS, and HTMX served by FastAPI, utilizing Google Stitch as visual design reference.
+- Deferred items: None.
 -->
 
 # Digital Credential Lifecycle Management System Constitution
@@ -35,7 +34,7 @@ Every lifecycle transition, eligibility boundary, and anomaly scenario MUST be v
 The system MUST adhere to the ratified core stack unless explicitly amended:
 - **Backend Service:** Python 3.11+ with FastAPI for high-throughput, schema-validated REST APIs.
 - **Persistence & Migrations:** PostgreSQL 15+ managed via SQLAlchemy ORM and Alembic schema migrations.
-- **Frontend Application:** React single-page application demonstrating the complete credential lifecycle workflow.
+- **Frontend Architecture:** Server-rendered Jinja2 templates, modern CSS, and HTMX interactions served directly by FastAPI. Visual design reference prototyped via Google Stitch. React and separate Node.js build pipelines are prohibited unless explicitly approved.
 - **Testing Engine:** Pytest for backend unit, integration, and anomaly test suites.
 - **Data Export Formats:** Export pipelines MUST produce valid CSV, JSON, and SQL datasets with checksum verification.
 
@@ -54,4 +53,4 @@ This Constitution represents the supreme technical governance for the Digital Cr
 - **Compliance Enforcement:** Every Spec Kit artifact (`spec.md`, `plan.md`, `tasks.md`), pull request, and code implementation MUST be audited against these principles before merging.
 - **Runtime Guidance:** Coding agents MUST consult `AGENTS.md` and `MASTER_SPEC.md` alongside this Constitution for operational instructions.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-10-27
+**Version**: 1.1.0 | **Ratified**: 2026-10-27 | **Last Amended**: 2026-10-28

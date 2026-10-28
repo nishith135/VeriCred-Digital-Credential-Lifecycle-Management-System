@@ -76,3 +76,23 @@ This document records the foundational technical and organizational decisions ma
   - *Trade-off:* All tasks must strictly adhere to these 6 principles.
   - *Mitigation:* Clear principles avoid costly architectural refactoring later in the 72-hour window.
 
+---
+
+## ADR-005: Frontend Architecture Revision — Jinja2 + HTMX & Google Stitch Design Reference
+- **Date:** 2026-10-28
+- **Status:** Approved
+- **Context:**
+  The original proposal suggested a separate React frontend. In a 70-hour solo hackathon, maintaining a dual-language runtime (Node.js/npm alongside Python/FastAPI), complex client-side state management, and CORS adds disproportionate overhead without improving core evaluation criteria.
+- **Decision:**
+  1. **Production Frontend Stack:** Adopt server-rendered Jinja2 templates styled with HTML/CSS and enhanced with HTMX, served directly by FastAPI. No separate React or Node.js build pipeline unless explicitly approved.
+  2. **Visual Prototyping Tool:** Use **Google Stitch** for visual UI prototyping and aesthetic design reference.
+  3. **Stitch Integration Policy:** Treat Stitch exports strictly as design references, not production application code. The design will be sliced into reusable Jinja2 templates with HTMX attributes. All business logic remains strictly in backend Python services.
+  4. **Timing of Design Integration:** Backend-first approach. Stitch designs are brought in once core domain models and FastAPI endpoints are validated (at the transition between Milestone M3 and Milestone M6).
+- **Alternatives Considered:**
+  1. *React SPA with Vite:* Rejected due to build configuration, API serialization friction, and redundant client-side routing.
+  2. *Directly using Stitch code as production frontend:* Rejected because Stitch generates prototype markup that lacks validation hooks, server-side security, and clean template composition.
+- **Trade-offs & Mitigations:**
+  - *Trade-off:* UI elements must be translated from Stitch prototypes into Jinja2 components.
+  - *Mitigation:* Clean, single-port Python application where FastAPI endpoints serve both JSON and HTMX HTML fragments with zero build latency.
+
+
