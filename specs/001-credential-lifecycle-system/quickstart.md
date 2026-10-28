@@ -1,5 +1,6 @@
 # Developer Quickstart & Verification Guide
 
+**Project**: VeriCred — Digital Credential Lifecycle Management System  
 **Feature**: `specs/001-credential-lifecycle-system`  
 **Stack**: Python 3.11+, FastAPI, PostgreSQL 15+, SQLAlchemy, Alembic, Pytest, Jinja2, HTMX  
 
@@ -7,8 +8,8 @@
 
 ## 1. Prerequisites
 
-- **Python**: Version 3.11 or higher
-- **PostgreSQL**: Version 15 or higher running locally (or via Docker)
+- **Python**: Version 3.11, 3.12, or 3.13
+- **PostgreSQL**: Version 15+ running locally (or via Docker)
 - **Git**: Installed and configured
 
 ---
@@ -28,12 +29,13 @@ pip install -r requirements.txt
 ```
 
 ### 2.2 Environment Configuration
-Create a `.env` file in the workspace root (ignored by Git):
+Create a `.env` file in the workspace root (or copy `.env.example`):
 ```ini
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/credential_system
-SYNC_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/credential_system
+DATABASE_URL=postgresql+asyncpg://postgres:banana%40123@localhost:5432/credential_db
+SYNC_DATABASE_URL=postgresql://postgres:banana%40123@localhost:5432/credential_db
 APP_ENV=development
 SECRET_KEY=dev_secret_key_for_local_testing_only
+DEBUG=True
 ```
 
 ---
@@ -41,29 +43,32 @@ SECRET_KEY=dev_secret_key_for_local_testing_only
 ## 3. Database Initialization & Migrations
 
 ```powershell
-# Run database migrations to latest schema
+# Run database migrations to establish the latest schema
 alembic upgrade head
 ```
 
 ---
 
-## 4. Synthetic Data Generation
+## 4. Synthetic Data Generation & Benchmark
 
-Generate the baseline dataset (20k learners, 1k courses, 10k credentials, 5k verifications) with the reproducible seed `42`:
+Generate the baseline dataset (20,000 learners, 1,000 courses, 10,000 credentials, 5,000 verifications) and 4 controlled anomaly fixtures using the canonical seed `20261022`:
+
 ```powershell
-# Run generator and export CSV / JSON / SQL
-python -m src.generator.cli --seed 42 --output-dir ./exports
+# Run generator and export CSV / JSON / SQL with SHA-256 manifest
+python -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports --load-db
 
-# Verify dataset integrity and checksum repeatability
-python -m src.generator.validator --export-dir ./exports
+# Validate dataset referential integrity and date ordering
+python -m backend.generator.validator --export-dir ./exports
 ```
 
 ---
 
 ## 5. Running Automated Tests
 
+Run the complete 36-test suite covering unit models, cryptographic consensus, API routes, web templates, and anomaly evaluation:
+
 ```powershell
-# Run full Pytest suite (unit, integration, anomaly fixtures)
+# Run full Pytest suite
 pytest -v
 
 # Run verification & anomaly scenario tests specifically
@@ -72,13 +77,18 @@ pytest tests/test_verification.py tests/test_anomalies.py -v
 
 ---
 
-## 6. Running the Web Application
+## 6. Running the Unified Web Application & API Server
+
+VeriCred uses a clean, single-port unified architecture where FastAPI directly serves both REST API endpoints and Jinja2 + HTMX server-rendered pages:
 
 ```powershell
-# Start FastAPI application with live reload
-uvicorn src.main:app --reload --port 8000
+# Start unified server with live reload
+uvicorn backend.main:app --reload --port 8000
 ```
+
 Open your browser to:
-- **Public Verification Interface:** `http://localhost:8000/verify`
-- **Administrative Dashboard:** `http://localhost:8000/credentials`
-- **Interactive OpenAPI Docs:** `http://localhost:8000/docs`
+- **Public Verification Portal:** [http://localhost:8000/verify](http://localhost:8000/verify)
+- **Credential Registry & Pre-Issuance:** [http://localhost:8000/registry](http://localhost:8000/registry)
+- **Immutable Audit Ledger:** [http://localhost:8000/audit](http://localhost:8000/audit)
+- **Anomaly Stress-Test Lab:** [http://localhost:8000/anomalies](http://localhost:8000/anomalies)
+- **Interactive OpenAPI Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)

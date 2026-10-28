@@ -165,11 +165,11 @@
 
 **Purpose**: Verification evidence, documentation updates, export manifests, and submission packaging.
 
-- [ ] T055 [P] Run full test suite and update verification evidence in `docs/TEST_EVIDENCE.md`
-- [ ] T056 [P] Update `docs/STATUS.md` and `docs/DECISIONS.md` reflecting completed milestones
-- [ ] T057 Verify end-to-end execution of `quickstart.md` commands from a clean environment
-- [ ] T058 Update `README.md` with final walkthrough instructions, demo script, and evaluation evidence
-- [ ] T059 Perform final audit against `MASTER_SPEC.md` and Constitution v1.1.0 before submission
+- [X] T055 [P] Run full test suite and update verification evidence in `docs/TEST_EVIDENCE.md`
+- [X] T056 [P] Update `docs/STATUS.md` and `docs/DECISIONS.md` reflecting completed milestones
+- [X] T057 Verify end-to-end execution of `quickstart.md` commands from a clean environment
+- [X] T058 Update `README.md` with final walkthrough instructions, demo script, and evaluation evidence
+- [X] T059 Perform final audit against `MASTER_SPEC.md` and Constitution v1.1.0 before submission
 
 ---
 
