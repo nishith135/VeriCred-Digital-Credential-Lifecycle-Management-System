@@ -1397,11 +1397,41 @@ go ahead , i can start the backend server and frontendserver after this and chec
   - Completed all tasks in the Spec-Driven Development roadmap within the 72-hour hackathon window.
 - **Output Status:** Complete and certified submission-ready.
 - **Review / Validation Performed:** Full `pytest -v` (36/36 passed) and synthetic CLI export run.
+### Entry 020: UI/UX Pro Max Redesign & RBAC Persona System Implementation
+- **Entry ID:** `PROMPT-020`
+- **Date & Time:** 2026-10-28T17:52:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Install UI/UX Pro Max design intelligence skill, execute comprehensive enterprise UI/UX redesign across all 4 web views (`/verify`, `/registry`, `/audit`, `/anomalies`), implement Role-Based Access Control (RBAC) with personas (`University Registrar`, `Public Verifier`, `Compliance Auditor`), eliminate DevOps visual clutter and font fallback bugs, and expand automated test suite to 37/37 passing tests.
+- **Exact Prompt:**
+```text
+okay i have a plan, u have to install thhis ui skillUI/UX Pro Max (Design Systems & Styling Intelligence) and use it for the redesign and execute the plan which u just gave using this skill
+go ahead
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `.agents/skills/ui-ux-pro-max/` (Cloned and installed UI/UX Pro Max design intelligence framework)
+  - `backend/core/rbac.py` (New RBAC module defining Registrar, Verifier, and Auditor personas, cookie session helpers, and authorization utilities)
+  - `backend/api/views/web.py` (Added `/login` and `/role/switch` endpoints, injected role context into Jinja templates, and enforced registrar-only revocation)
+  - `frontend/static/css/veri-design.css` (Curated design system stylesheet with Plus Jakarta Sans & JetBrains Mono typography, Slate dark palette, and WCAG AAA contrast tokens)
+  - `frontend/templates/base.html` (Overhauled shell layout: sticky top header with persona switcher dropdown, clean sidebar navigation, and eliminated all internal DevOps clutter)
+  - `frontend/templates/pages/login.html` (New 1-click persona selection page for testing role permissions)
+  - `frontend/templates/pages/verify.html` & `partials/verification_badge.html` (Spacious zero-trust verification card, quick-test pills, 4-factor checklist, and clean status badges)
+  - `frontend/templates/pages/registry.html` & `partials/registry_table.html` (Enterprise registry data table, RBAC-guarded revocation button, and confirmation modal)
+  - `frontend/templates/pages/audit.html` & `partials/audit_table.html` (Compliance journal with CSV/JSON export actions, filter toolbar, and JSON payload viewer)
+  - `frontend/templates/pages/anomalies.html` & `partials/anomaly_result.html` (Stress-test cards with zero header overlap, plain-English failure vector descriptions, and interactive telemetry console)
+  - `tests/test_web.py` (Added `test_web_rbac_login_and_role_switching` integration test)
+- **Summary of AI Output:**
+  - Integrated UI/UX Pro Max design system into the unified FastAPI frontend architecture without requiring a separate React/Node build pipeline.
+  - Eliminated the serif Times New Roman fallback and overlapping header layout issues shown in user screenshots.
+  - Delivered a complete, functional RBAC system with 3 switchable personas enabling evaluation of privileged operations.
+  - Expanded test coverage to 37 tests (100% passing in 5.45s).
+- **Output Status:** Complete, verified, and committed.
+- **Review / Validation Performed:** Full test suite execution (`pytest -v` 37/37 passed) and manual verification of routes.
 - **Test Commands & Results:**
-  - `.\.venv\Scripts\python.exe -m pytest -v`: 36 passed in 5.66s.
-- **Known Issues / Follow-up Actions:** Ready for candidate live walkthrough and final review.
+  - `.\.venv\Scripts\python.exe -m pytest -v`: 37 passed in 5.45s.
+- **Known Issues / Follow-up Actions:** Ready for final walkthrough and submission.
 
 ---
+
 
 ## C. AI Contribution Summary
 

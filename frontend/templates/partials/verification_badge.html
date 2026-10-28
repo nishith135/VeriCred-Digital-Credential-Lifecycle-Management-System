@@ -1,174 +1,170 @@
 {% if result %}
-<div class="rounded-lg p-space-lg shadow-lg border border-outline-variant transition-all animate-fade-in
-  {% if result.outcome == 'VALID' %}bg-surface-container-low border-primary/40
-  {% elif result.outcome == 'REVOKED' %}bg-surface-container-low border-error/40
-  {% elif result.outcome == 'TAMPERED' %}bg-surface-container-low border-tertiary/40
-  {% else %}bg-surface-container-low border-outline-variant{% endif %}">
+<div class="veri-card p-6 md:p-8 transition-all
+  {% if result.outcome == 'VALID' %}border-emerald-500/40 bg-card
+  {% elif result.outcome == 'REVOKED' %}border-rose-500/40 bg-card
+  {% elif result.outcome == 'TAMPERED' %}border-amber-500/40 bg-card
+  {% else %}border-border bg-card{% endif %}">
 
-  <!-- Status Headline Banner -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md pb-space-md border-b border-outline-variant mb-space-lg">
-    <div class="flex items-center gap-space-md">
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-md
-        {% if result.outcome == 'VALID' %}bg-primary/20 text-primary
-        {% elif result.outcome == 'REVOKED' %}bg-error/20 text-error
-        {% elif result.outcome == 'TAMPERED' %}bg-tertiary/20 text-tertiary
-        {% else %}bg-surface-container-high text-outline{% endif %}">
-        <span class="material-symbols-outlined text-[28px]">
+  <!-- Status Banner Top Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border mb-6">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg
+        {% if result.outcome == 'VALID' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/30
+        {% elif result.outcome == 'REVOKED' %}bg-rose-500/10 text-rose-400 border border-rose-500/30
+        {% elif result.outcome == 'TAMPERED' %}bg-amber-500/10 text-amber-400 border border-amber-500/30
+        {% else %}bg-elevated text-text-muted border border-border{% endif %}">
+        <span class="material-symbols-outlined text-[32px]">
           {% if result.outcome == 'VALID' %}verified
-          {% elif result.outcome == 'REVOKED' %}cancel
-          {% elif result.outcome == 'TAMPERED' %}gpp_maybe
+          {% elif result.outcome == 'REVOKED' %}gavel
+          {% elif result.outcome == 'TAMPERED' %}security_update_warning
           {% else %}help_outline{% endif %}
         </span>
       </div>
       <div>
-        <div class="flex items-center gap-space-sm">
-          <span class="font-code-dense text-code-dense uppercase tracking-wider
-            {% if result.outcome == 'VALID' %}text-primary
-            {% elif result.outcome == 'REVOKED' %}text-error
-            {% elif result.outcome == 'TAMPERED' %}text-tertiary
-            {% else %}text-outline{% endif %} font-bold">
-            Audit ID: {{ result.verification_id }}
-          </span>
-          <span class="px-2 py-0.5 rounded text-[11px] font-code-dense uppercase tracking-wider
-            {% if result.outcome == 'VALID' %}bg-primary/20 text-primary border border-primary/40
-            {% elif result.outcome == 'REVOKED' %}bg-error/20 text-error border border-error/40
-            {% elif result.outcome == 'TAMPERED' %}bg-tertiary/20 text-tertiary border border-tertiary/40
-            {% else %}bg-surface-container-high text-outline border border-outline-variant{% endif %}">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider
+            {% if result.outcome == 'VALID' %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40
+            {% elif result.outcome == 'REVOKED' %}bg-rose-500/20 text-rose-300 border border-rose-500/40
+            {% elif result.outcome == 'TAMPERED' %}bg-amber-500/20 text-amber-300 border border-amber-500/40
+            {% else %}bg-elevated text-text-muted border border-border{% endif %}">
             {{ result.outcome }}
           </span>
+          <span class="text-xs font-mono text-text-subtle">Audit ID: {{ result.verification_id }}</span>
         </div>
-        <h2 class="font-headline-lg text-headline-lg font-bold text-on-surface mt-0.5 tracking-tight">
-          {% if result.outcome == 'VALID' %}Authentic Active Credential
-          {% elif result.outcome == 'REVOKED' %}Revoked Credential (Tombstoned)
-          {% elif result.outcome == 'TAMPERED' %}Cryptographic Tampering Detected!
-          {% else %}Credential Not Found{% endif %}
+        <h2 class="text-xl font-extrabold text-white tracking-tight">
+          {% if result.outcome == 'VALID' %}Authentic Credential Verified
+          {% elif result.outcome == 'REVOKED' %}Revoked Credential (Tombstone Active)
+          {% elif result.outcome == 'TAMPERED' %}Cryptographic Digest Mismatch (Tampered)
+          {% else %}Credential Not Located in Registry{% endif %}
         </h2>
-        <p class="font-body-sm text-body-sm text-on-surface-variant">{{ result.message }}</p>
+        <p class="text-xs text-text-muted mt-0.5">{{ result.message }}</p>
       </div>
     </div>
 
-    <div class="flex flex-col sm:text-right font-code-dense text-code-dense text-outline">
-      <span>Query Latency: <strong class="text-primary">{{ latency_ms or "1.4" }}ms</strong></span>
-      <span>Timestamp: {{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC') if result.timestamp else '' }}</span>
+    <div class="flex flex-col sm:text-right font-mono text-xs text-text-subtle">
+      <span>Query Latency: <strong class="text-white">{{ latency_ms or "1.2" }} ms</strong></span>
+      <span>Verified At: <span class="text-text-muted">{{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC') if result.timestamp else '' }}</span></span>
     </div>
   </div>
 
-  <!-- 4-Factor Security Checklist -->
-  <div class="mb-space-lg">
-    <div class="flex items-center justify-between mb-space-sm">
-      <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Security Consensus Checklist (4 Factors Evaluated)</span>
-      <span class="font-code-dense text-code-dense text-primary">All Invariants Checked</span>
+  <!-- 4-Factor Security Invariant Checklist -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-semibold uppercase tracking-wider text-text-muted font-mono">
+        Security Consensus Checklist (4 Factors Evaluated)
+      </span>
+      <span class="text-xs font-mono text-text-subtle">Consensus: {{ result.outcome }}</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-sm">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
       <!-- Factor 1: Existence -->
-      <div class="p-space-md rounded bg-surface-container border border-outline-variant flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-code-dense text-[10px] text-outline uppercase tracking-wider">Factor 01 / Existence</span>
-          <span class="material-symbols-outlined text-[16px] {% if result.factors.record_found %}text-primary{% else %}text-error{% endif %}">
+      <div class="p-4 rounded-xl bg-surface border border-border flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono text-[10px] text-text-subtle uppercase">Factor 1: Existence</span>
+          <span class="material-symbols-outlined text-[18px] {% if result.factors.record_found %}text-emerald-400{% else %}text-rose-400{% endif %}">
             {% if result.factors.record_found %}check_circle{% else %}cancel{% endif %}
           </span>
         </div>
-        <div class="font-label-md text-label-md font-semibold {% if result.factors.record_found %}text-primary{% else %}text-error{% endif %}">
-          {% if result.factors.record_found %}Record Located{% else %}Missing in Registry{% endif %}
+        <div class="text-xs font-bold {% if result.factors.record_found %}text-white{% else %}text-rose-400{% endif %}">
+          {% if result.factors.record_found %}Record Located{% else %}Missing Record{% endif %}
         </div>
-        <span class="font-code-dense text-[11px] text-on-surface-variant mt-1">PostgreSQL 17 Primary Index</span>
+        <span class="font-mono text-[10px] text-text-subtle mt-1">Registry Index Lookup</span>
       </div>
 
       <!-- Factor 2: Payload Integrity -->
-      <div class="p-space-md rounded bg-surface-container border border-outline-variant flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-code-dense text-[10px] text-outline uppercase tracking-wider">Factor 02 / Integrity</span>
-          <span class="material-symbols-outlined text-[16px] {% if result.factors.payload_integrity_valid %}text-primary{% else %}text-error{% endif %}">
+      <div class="p-4 rounded-xl bg-surface border border-border flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono text-[10px] text-text-subtle uppercase">Factor 2: Integrity</span>
+          <span class="material-symbols-outlined text-[18px] {% if result.factors.payload_integrity_valid %}text-emerald-400{% else %}text-amber-400{% endif %}">
             {% if result.factors.payload_integrity_valid %}fingerprint{% else %}warning{% endif %}
           </span>
         </div>
-        <div class="font-label-md text-label-md font-semibold {% if result.factors.payload_integrity_valid %}text-primary{% else %}text-error{% endif %}">
+        <div class="text-xs font-bold {% if result.factors.payload_integrity_valid %}text-white{% else %}text-amber-400{% endif %}">
           {% if result.factors.payload_integrity_valid %}SHA-256 Digest Match{% else %}Digest Mismatch (Tampered){% endif %}
         </div>
-        <span class="font-code-dense text-[11px] text-on-surface-variant mt-1">Canonical RFC 8785 JSON</span>
+        <span class="font-mono text-[10px] text-text-subtle mt-1">RFC 8785 Canonical JSON</span>
       </div>
 
       <!-- Factor 3: Authenticity -->
-      <div class="p-space-md rounded bg-surface-container border border-outline-variant flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-code-dense text-[10px] text-outline uppercase tracking-wider">Factor 03 / Authenticity</span>
-          <span class="material-symbols-outlined text-[16px] {% if result.factors.issuer_authenticated %}text-primary{% else %}text-error{% endif %}">
+      <div class="p-4 rounded-xl bg-surface border border-border flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono text-[10px] text-text-subtle uppercase">Factor 3: Authenticity</span>
+          <span class="material-symbols-outlined text-[18px] {% if result.factors.issuer_authenticated %}text-emerald-400{% else %}text-rose-400{% endif %}">
             {% if result.factors.issuer_authenticated %}verified_user{% else %}cancel{% endif %}
           </span>
         </div>
-        <div class="font-label-md text-label-md font-semibold {% if result.factors.issuer_authenticated %}text-primary{% else %}text-error{% endif %}">
+        <div class="text-xs font-bold {% if result.factors.issuer_authenticated %}text-white{% else %}text-rose-400{% endif %}">
           {% if result.factors.issuer_authenticated %}Ed25519 Signature Valid{% else %}Unverified Signature{% endif %}
         </div>
-        <span class="font-code-dense text-[11px] text-on-surface-variant mt-1">Asymmetric Public Key</span>
+        <span class="font-mono text-[10px] text-text-subtle mt-1">Public Key Cryptography</span>
       </div>
 
       <!-- Factor 4: Revocation Status -->
-      <div class="p-space-md rounded bg-surface-container border border-outline-variant flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-1">
-          <span class="font-code-dense text-[10px] text-outline uppercase tracking-wider">Factor 04 / Lifecycle</span>
-          <span class="material-symbols-outlined text-[16px] {% if not result.factors.is_revoked %}text-primary{% else %}text-error{% endif %}">
-            {% if not result.factors.is_revoked %}check_circle{% else %}gavel{% endif %}
+      <div class="p-4 rounded-xl bg-surface border border-border flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono text-[10px] text-text-subtle uppercase">Factor 4: Lifecycle</span>
+          <span class="material-symbols-outlined text-[18px] {% if not result.factors.is_revoked %}text-emerald-400{% else %}text-rose-400{% endif %}">
+            {% if not result.factors.is_revoked %}verified{% else %}gavel{% endif %}
           </span>
         </div>
-        <div class="font-label-md text-label-md font-semibold {% if not result.factors.is_revoked %}text-primary{% else %}text-error{% endif %}">
-          {% if not result.factors.is_revoked %}Active (Not Revoked){% else %}Tombstoned (Revoked){% endif %}
+        <div class="text-xs font-bold {% if not result.factors.is_revoked %}text-white{% else %}text-rose-400{% endif %}">
+          {% if not result.factors.is_revoked %}Active &amp; Valid{% else %}Tombstoned (Revoked){% endif %}
         </div>
-        <span class="font-code-dense text-[11px] text-on-surface-variant mt-1">Append-Only Register</span>
+        <span class="font-mono text-[10px] text-text-subtle mt-1">Append-Only Register</span>
       </div>
     </div>
   </div>
 
+  <!-- Credential Details Grid -->
   {% if result.credential_details %}
-  <!-- Learner & Course Metadata -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md p-space-md rounded bg-surface-container mb-space-md">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-xl bg-surface border border-border mb-4">
     <div>
-      <span class="font-code-dense text-code-dense text-outline uppercase block">Learner</span>
-      <div class="font-headline-sm text-headline-sm font-semibold text-on-surface">
+      <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Credential Holder</span>
+      <div class="text-sm font-bold text-white">
         {{ result.credential_details.learner.name if result.credential_details.learner else 'N/A' }}
       </div>
-      <div class="font-code-dense text-code-dense text-secondary">
+      <div class="text-xs font-mono text-brand">
         {{ result.credential_details.learner.id if result.credential_details.learner else '' }}
       </div>
     </div>
 
     <div>
-      <span class="font-code-dense text-code-dense text-outline uppercase block">Curriculum / Program</span>
-      <div class="font-headline-sm text-headline-sm font-semibold text-on-surface truncate">
+      <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Accredited Program</span>
+      <div class="text-sm font-bold text-white truncate">
         {{ result.credential_details.course.title if result.credential_details.course else 'N/A' }}
       </div>
-      <div class="font-code-dense text-code-dense text-outline">
-        {{ result.credential_details.course.code if result.credential_details.course else '' }}
+      <div class="text-xs font-mono text-text-muted">
+        Code: {{ result.credential_details.course.code if result.credential_details.course else '' }}
       </div>
     </div>
 
     <div>
-      <span class="font-code-dense text-code-dense text-outline uppercase block">Assessment Score</span>
-      <div class="font-display-lg text-headline-lg font-bold text-primary">
+      <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Assessment Performance</span>
+      <div class="text-sm font-extrabold text-emerald-400">
         {{ result.credential_details.assessment.score if result.credential_details.assessment else 'N/A' }}%
       </div>
-      <div class="font-code-dense text-code-dense text-primary-container">
-        Status: {{ result.credential_details.assessment.status if result.credential_details.assessment else 'COMPLETED' }}
+      <div class="text-xs text-text-muted">
+        Eligibility Status: Passing (&gt;= 80.0%)
       </div>
     </div>
   </div>
   {% endif %}
 
+  <!-- Revocation Callout Card if Revoked -->
   {% if result.revocation_details %}
-  <!-- Revocation Details Banner -->
-  <div class="p-space-md rounded bg-error/10 border border-error/30 text-error mb-space-md">
-    <div class="flex items-center gap-2 font-headline-sm text-headline-sm font-bold">
-      <span class="material-symbols-outlined text-[20px]">gavel</span>
-      <span>Official Revocation Details</span>
+  <div class="p-5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300">
+    <div class="flex items-center gap-2 text-sm font-bold text-rose-400 mb-2">
+      <span class="material-symbols-outlined text-[18px]">gavel</span>
+      <span>Official Revocation Record (Tombstoned)</span>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm mt-space-sm font-code-dense text-code-dense">
-      <div><strong>Reason Code:</strong> {{ result.revocation_details.reason_code }}</div>
-      <div><strong>Revoked By:</strong> {{ result.revocation_details.revoked_by }}</div>
-      <div><strong>Revoked At:</strong> {{ result.revocation_details.revocation_timestamp }}</div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+      <div><span class="text-text-subtle">Reason Code:</span> <strong class="text-white">{{ result.revocation_details.reason_code }}</strong></div>
+      <div><span class="text-text-subtle">Authorized By:</span> <strong class="text-white">{{ result.revocation_details.revoked_by }}</strong></div>
+      <div><span class="text-text-subtle">Timestamp:</span> <span class="text-white">{{ result.revocation_details.revocation_timestamp }}</span></div>
     </div>
     {% if result.revocation_details.notes %}
-    <p class="font-body-sm text-body-sm text-on-surface mt-2 border-t border-error/20 pt-2">
-      <strong>Notes:</strong> {{ result.revocation_details.notes }}
+    <p class="text-xs text-rose-200 mt-3 pt-3 border-t border-rose-500/20 font-sans">
+      <strong class="font-mono text-rose-400">Official Notes:</strong> {{ result.revocation_details.notes }}
     </p>
     {% endif %}
   </div>

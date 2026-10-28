@@ -1,76 +1,85 @@
 {% for res in results %}
-<div class="rounded bg-surface-container-lowest flex flex-col justify-between shadow-sm border border-outline-variant/30" id="card-{{ res.case_id }}">
-  <div class="p-space-lg flex flex-col gap-space-md">
-    <!-- Scenario Card Top -->
-    <div class="flex items-start justify-between gap-space-sm pb-space-sm bg-surface-container-low p-space-sm rounded">
-      <div class="flex items-center gap-space-sm">
-        <span class="w-2 h-2 rounded-full {% if res.passed %}bg-primary{% else %}bg-error{% endif %}"></span>
-        <div class="flex flex-col">
-          <span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">{{ res.title }}</span>
-          <span class="font-code-dense text-code-dense text-outline">{{ res.subhead }}</span>
+<div class="veri-card flex flex-col justify-between shadow-md" id="card-{{ res.case_id }}">
+  <div class="p-6 flex flex-col gap-4">
+    <!-- Card Top Header -->
+    <div class="flex items-start justify-between gap-3 pb-3 border-b border-border">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full {% if res.passed %}bg-emerald-400 veri-pulse{% else %}bg-rose-400{% endif %}"></span>
+        <div>
+          <h3 class="text-base font-bold text-white tracking-tight">{{ res.title }}</h3>
+          <span class="text-xs text-text-subtle font-mono">{{ res.subhead }}</span>
         </div>
       </div>
-      <span class="font-code-dense text-code-dense px-2 py-0.5 rounded bg-surface-container-high text-secondary">ID: {{ res.case_id }}</span>
+      <span class="px-2.5 py-0.5 rounded-full bg-elevated text-brand font-mono text-[11px] font-bold border border-border">
+        {{ res.case_id }}
+      </span>
     </div>
 
-    <p class="font-body-md text-body-md text-on-surface-variant">
+    <!-- Description -->
+    <p class="text-xs text-text-muted leading-relaxed">
       {{ res.description }}
     </p>
 
-    <!-- Test Vector Parameters -->
-    <div class="p-space-sm rounded bg-surface-container flex flex-col gap-1.5 font-code-dense text-code-dense">
-      <div class="flex items-center justify-between text-outline pb-1 border-b border-surface-container-highest/40">
+    <!-- Test Vector Parameters Grid -->
+    <div class="p-3.5 rounded-xl bg-surface border border-border font-mono text-xs">
+      <div class="flex items-center justify-between text-text-subtle pb-2 mb-2 border-b border-border text-[11px]">
         <span class="uppercase tracking-wider font-semibold">Test Vector Parameters</span>
-        <span class="text-secondary">{{ res.spec_rule }}</span>
+        <span class="text-brand">{{ res.spec_rule }}</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-on-surface">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
         {% for k, v in res.parameters.items() %}
-          <div><span class="text-outline">{{ k }}:</span> <span class="text-secondary font-mono">{{ v }}</span></div>
+          <div class="text-[11px] truncate">
+            <span class="text-text-subtle">{{ k }}:</span> 
+            <span class="text-white font-medium">{{ v }}</span>
+          </div>
         {% endfor %}
       </div>
     </div>
 
-    <!-- Verification Delta -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm font-code-dense text-code-dense">
-      <div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-0.5 border border-outline-variant/20">
-        <span class="text-outline uppercase text-[10px] tracking-wider">Expected Decision</span>
-        <span class="text-secondary font-medium font-mono text-[13px]">{{ res.expected_outcome }}</span>
-        <span class="text-on-surface-variant text-[11px]">({{ res.expected_note }})</span>
+    <!-- Verification Delta (Expected vs Actual) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+      <div class="p-3 rounded-xl bg-surface border border-border flex flex-col gap-1">
+        <span class="text-[10px] text-text-subtle uppercase tracking-wider">Expected Evaluation</span>
+        <span class="text-sm font-bold text-indigo-300">{{ res.expected_outcome }}</span>
+        <span class="text-[11px] text-text-muted">Rationale: {{ res.expected_note }}</span>
       </div>
-      <div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-0.5 border border-outline-variant/20">
-        <span class="text-outline uppercase text-[10px] tracking-wider">Actual Execution</span>
-        <span class="{% if res.passed %}text-primary{% else %}text-error{% endif %} font-medium font-mono text-[13px]">{{ res.actual_outcome }}</span>
-        <span class="text-on-surface-variant text-[11px]">({{ res.actual_note }} in {{ res.duration_ms }}ms)</span>
+      <div class="p-3 rounded-xl bg-surface border border-border flex flex-col gap-1">
+        <span class="text-[10px] text-text-subtle uppercase tracking-wider">Actual Engine Execution</span>
+        <span class="text-sm font-bold {% if res.passed %}text-emerald-400{% else %}text-rose-400{% endif %}">
+          {{ res.actual_outcome }}
+        </span>
+        <span class="text-[11px] text-text-muted">Result: {{ res.actual_note }} ({{ res.duration_ms }} ms)</span>
       </div>
     </div>
   </div>
 
-  <!-- Action & Pass Status Bottom Strip -->
-  <div class="px-space-lg py-space-sm bg-surface-container-low flex items-center justify-between gap-space-md border-t border-outline-variant/30">
-    <div class="inline-flex items-center gap-1.5 px-space-sm py-1 rounded {% if res.passed %}bg-primary/10 text-primary{% else %}bg-error/10 text-error{% endif %}">
+  <!-- Action & Status Bottom Strip -->
+  <div class="px-6 py-3 bg-surface flex items-center justify-between gap-4 border-t border-border">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full {% if res.passed %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/30{% else %}bg-rose-500/10 text-rose-400 border border-rose-500/30{% endif %}">
       <span class="material-symbols-outlined text-[16px]">{% if res.passed %}check_circle{% else %}cancel{% endif %}</span>
-      <span class="font-code-dense text-code-dense font-semibold uppercase tracking-wider">
-        {% if res.passed %}TEST PASSED (Expected == Actual){% else %}TEST FAILED{% endif %}
+      <span class="font-mono text-[11px] font-bold uppercase tracking-wider">
+        {% if res.passed %}TEST PASSED{% else %}TEST FAILED{% endif %}
       </span>
     </div>
-    <div class="flex items-center gap-space-xs">
+
+    <div class="flex items-center gap-2">
       <button 
         type="button"
         data-case="{{ res.case_id }}"
         data-title="{{ res.title }}"
-        data-ms="{{ res.duration_ms }}ms"
+        data-ms="{{ res.duration_ms }} ms"
         data-trace="{{ res.engine_trace }}"
         onclick="appendConsoleLog(this.dataset.case, this.dataset.title, this.dataset.ms, this.dataset.trace);"
-        class="px-space-sm py-1 rounded bg-surface-container-high hover:bg-surface-container text-on-surface font-code-dense text-code-dense transition-colors">
-        View Engine Trace
+        class="px-3 py-1 rounded-lg bg-elevated hover:bg-elevated/80 text-text-muted hover:text-white font-mono text-xs transition-colors cursor-pointer border border-border">
+        View Trace
       </button>
       <button 
         hx-post="/web/anomalies/run/{{ res.case_id }}" 
         hx-target="#card-{{ res.case_id }}" 
         hx-swap="outerHTML"
-        class="p-1 rounded bg-surface-container hover:bg-surface-container-high text-secondary transition-colors" 
-        title="Rerun {{ res.case_id }}">
-        <span class="material-symbols-outlined text-[16px]">refresh</span>
+        class="h-7 w-7 rounded-lg bg-elevated hover:bg-elevated/80 text-brand flex items-center justify-center border border-border transition-colors cursor-pointer" 
+        title="Rerun Scenario {{ res.case_id }}">
+        <span class="material-symbols-outlined text-[16px]">sync</span>
       </button>
     </div>
   </div>

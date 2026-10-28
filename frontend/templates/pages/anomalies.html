@@ -3,130 +3,116 @@
 {% block title %}Anomaly Stress-Test Lab // VeriCred{% endblock %}
 
 {% block content %}
-<div class="flex flex-col w-full pb-space-2xl space-y-space-lg">
-  <!-- Top Hero Header Bar -->
-  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pt-space-xs">
-    <div class="flex flex-col min-w-0">
-      <div class="flex items-center gap-space-sm mb-1">
-        <span class="font-code-dense text-code-dense uppercase tracking-widest text-primary font-semibold">Verification Module // Suite IV</span>
-        <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
-        <span class="font-code-dense text-code-dense uppercase text-outline">PostgreSQL 17 Native • Sandboxed</span>
+<div class="space-y-8">
+  <!-- Page Header -->
+  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-2 border-b border-border">
+    <div>
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+        <span class="material-symbols-outlined text-[14px]">biotech</span>
+        <span>Adversarial Cryptographic Stress Tests</span>
       </div>
-      <h1 class="font-display-lg text-display-lg text-on-surface tracking-tight font-semibold">Anomaly Stress-Test Lab</h1>
-      <p class="font-body-md text-body-md text-on-surface-variant mt-0.5">Validate credential integrity and lifecycle enforcement against known cryptographic and policy failure scenarios.</p>
+      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Anomaly Stress-Test Lab</h1>
+      <p class="text-text-muted text-sm mt-1 max-w-2xl">
+        Verify system resilience against edge cases: revoked credentials, SHA-256 payload tampering, unauthorized key spoofing, and duplicate issuance collisions.
+      </p>
     </div>
-    <div class="flex flex-wrap items-center gap-space-md self-start lg:self-center">
-      <div class="inline-flex items-center gap-2 px-space-md py-1.5 rounded bg-surface-container-high text-secondary border border-outline-variant/30">
-        <span class="material-symbols-outlined text-[16px] text-secondary">memory</span>
-        <span class="font-code-dense text-code-dense uppercase tracking-wider text-on-surface">Non-Mutating Isolated Test Fixtures</span>
-        <span class="w-2 h-2 rounded-full bg-primary animate-pulse ml-1"></span>
-      </div>
+
+    <!-- Run All Button -->
+    <div class="flex items-center gap-3">
       <button 
         hx-post="/web/anomalies/run-all" 
         hx-target="#anomaly-cards-grid" 
         hx-indicator="#run-all-spinner"
-        class="inline-flex items-center gap-2 px-space-lg py-2 rounded bg-secondary-container hover:bg-secondary-container/90 text-on-secondary-container transition-all active:scale-95 shadow-md font-semibold">
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer">
         <span class="material-symbols-outlined text-[18px]" id="run-all-icon">play_arrow</span>
         <span id="run-all-spinner" class="htmx-indicator animate-spin material-symbols-outlined text-[18px]">progress_activity</span>
-        <span class="font-code-dense text-code-dense uppercase font-semibold tracking-wider">Run All Scenarios</span>
+        <span>Run All Scenarios</span>
       </button>
     </div>
   </div>
 
   <!-- Key Test Summary Metrics Bar -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
-    <div class="p-space-md rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
-      <div class="flex items-center justify-between text-outline">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider">Total Scenarios</span>
-        <span class="material-symbols-outlined text-[16px]">folder_special</span>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="veri-card p-5 bg-card flex flex-col justify-between">
+      <div class="flex items-center justify-between text-text-subtle mb-2">
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Test Scenarios</span>
+        <span class="material-symbols-outlined text-brand text-[20px]">science</span>
       </div>
-      <div class="mt-2 flex items-baseline gap-2">
-        <span class="font-headline-lg text-headline-lg font-semibold text-on-surface">4</span>
-        <span class="font-code-dense text-code-dense text-outline">Active</span>
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="text-2xl font-extrabold text-white">4</span>
+        <span class="text-[11px] font-mono text-text-muted uppercase">Vectors</span>
       </div>
-      <div class="w-full bg-surface-container-high h-1 rounded-full mt-2 overflow-hidden">
-        <div class="bg-secondary h-full w-full"></div>
-      </div>
+      <span class="text-[11px] text-text-subtle">Tamper, Poison, Revocation, Collision</span>
     </div>
 
-    <div class="p-space-md rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
-      <div class="flex items-center justify-between text-outline">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider">Pass Rate</span>
-        <span class="material-symbols-outlined text-primary text-[16px]">check_circle</span>
+    <div class="veri-card p-5 bg-card flex flex-col justify-between">
+      <div class="flex items-center justify-between text-text-subtle mb-2">
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Consensus Pass Rate</span>
+        <span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
       </div>
-      <div class="mt-2 flex items-baseline gap-2">
-        <span class="font-headline-lg text-headline-lg font-semibold text-primary">100%</span>
-        <span class="font-code-dense text-code-dense text-outline">4 / 4 Passing</span>
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="text-2xl font-extrabold text-emerald-400">100%</span>
+        <span class="text-[11px] font-mono text-emerald-400 uppercase">4 / 4 Passing</span>
       </div>
-      <div class="w-full bg-surface-container-high h-1 rounded-full mt-2 overflow-hidden">
-        <div class="bg-primary h-full w-full"></div>
-      </div>
+      <span class="text-[11px] text-text-subtle">Expected matches actual outcome</span>
     </div>
 
-    <div class="p-space-md rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
-      <div class="flex items-center justify-between text-outline">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider">Execution Latency</span>
-        <span class="material-symbols-outlined text-[16px]">speed</span>
+    <div class="veri-card p-5 bg-card flex flex-col justify-between">
+      <div class="flex items-center justify-between text-text-subtle mb-2">
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Suite Latency</span>
+        <span class="material-symbols-outlined text-indigo-400 text-[20px]">speed</span>
       </div>
-      <div class="mt-2 flex items-baseline gap-2">
-        <span class="font-headline-lg text-headline-lg font-semibold text-on-surface">&lt; 15</span>
-        <span class="font-code-dense text-code-dense text-outline">ms / suite</span>
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="text-2xl font-extrabold text-white">&lt; 15</span>
+        <span class="text-[11px] font-mono text-indigo-300 uppercase">ms</span>
       </div>
-      <div class="w-full bg-surface-container-high h-1 rounded-full mt-2 overflow-hidden">
-        <div class="bg-tertiary h-full w-3/4"></div>
-      </div>
+      <span class="text-[11px] text-text-subtle">Sub-millisecond per cryptographic check</span>
     </div>
 
-    <div class="p-space-md rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
-      <div class="flex items-center justify-between text-outline">
-        <span class="font-label-sm text-label-sm uppercase tracking-wider">Ground Truth Mode</span>
-        <span class="material-symbols-outlined text-[16px]">lock</span>
+    <div class="veri-card p-5 bg-card flex flex-col justify-between">
+      <div class="flex items-center justify-between text-text-subtle mb-2">
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Test Isolation</span>
+        <span class="material-symbols-outlined text-amber-400 text-[20px]">lock</span>
       </div>
-      <div class="mt-2 flex items-baseline gap-2">
-        <span class="font-headline-lg text-headline-lg font-semibold text-secondary">Segregated</span>
-        <span class="font-code-dense text-code-dense text-outline">Isolated</span>
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="text-2xl font-extrabold text-white">Sandboxed</span>
+        <span class="text-[11px] font-mono text-amber-400 uppercase">Non-Mutating</span>
       </div>
-      <div class="w-full bg-surface-container-high h-1 rounded-full mt-2 overflow-hidden">
-        <div class="bg-secondary h-full w-full"></div>
-      </div>
+      <span class="text-[11px] text-text-subtle">Zero database pollution</span>
     </div>
   </div>
 
-  <!-- Anomaly Cards Grid -->
-  <div id="anomaly-cards-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-space-lg">
+  <!-- Anomaly Test Cards Grid -->
+  <div id="anomaly-cards-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     {% include "partials/anomaly_result.html" %}
   </div>
 
-  <!-- Live Execution Telemetry & Forensic Console Section -->
-  <div class="rounded bg-surface-container-lowest flex flex-col shadow-sm border border-outline-variant/30 overflow-hidden">
-    <!-- Console Bar Header -->
-    <div class="px-space-lg py-2.5 bg-surface-container flex items-center justify-between border-b border-outline-variant/30">
-      <div class="flex items-center gap-space-md">
+  <!-- Telemetry Console Card -->
+  <div class="veri-card bg-card overflow-hidden shadow-lg">
+    <div class="px-5 py-3.5 bg-surface flex items-center justify-between border-b border-border">
+      <div class="flex items-center gap-3">
         <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-error/70"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-tertiary/70"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-primary/70"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-[16px] text-secondary">terminal</span>
-          <span class="font-code-dense text-code-dense uppercase tracking-wider font-semibold text-on-surface">Live Execution Telemetry & Forensic Console</span>
+          <span class="material-symbols-outlined text-[16px] text-brand">terminal</span>
+          <span class="text-xs font-mono uppercase font-bold text-white tracking-wider">Live Execution Telemetry &amp; Forensic Log</span>
         </div>
       </div>
-      <div class="flex items-center gap-space-xs">
-        <button 
-          onclick="document.getElementById('console-terminal').innerHTML = '<div class=\'text-outline\'>[SYSTEM] Telemetry console cleared. Ready for next test run...</div>';"
-          class="px-space-sm py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-outline hover:text-on-surface font-code-dense text-code-dense transition-colors">
-          Clear
-        </button>
-      </div>
+      <button 
+        onclick="document.getElementById('console-terminal').innerHTML = '<div class=\'text-text-subtle\'>[CONSOLE] Log cleared. Ready for next test run...</div>';"
+        class="px-2.5 py-1 rounded bg-elevated hover:bg-elevated/80 text-text-muted hover:text-white font-mono text-[11px] transition-colors cursor-pointer border border-border">
+        Clear
+      </button>
     </div>
 
     <!-- Terminal Window -->
-    <div id="console-terminal" class="p-space-lg bg-[#000d1a] font-code-dense text-code-dense text-on-surface-variant flex flex-col gap-1.5 max-h-64 overflow-y-auto leading-relaxed select-all">
-      <div class="text-outline">[SYSTEM INIT] VeriCred Sandboxed Anomaly Suite IV initialized.</div>
-      <div class="text-secondary">[POSTGRES 17] Append-only audit database connected on localhost:5432/credential_db.</div>
-      <div class="text-primary">[SECURITY] Ed25519 cryptographic key engine active. FIPS 140-3 verified.</div>
-      <div class="text-on-surface-variant">[TEST ENGINE] All 4 failure vector fixtures pre-loaded into memory enclave. Ready to execute.</div>
+    <div id="console-terminal" class="p-5 bg-canvas font-mono text-xs text-text-muted flex flex-col gap-2 max-h-64 overflow-y-auto leading-relaxed select-all">
+      <div class="text-text-subtle">[SYSTEM] VeriCred Sandboxed Anomaly Lab initialized.</div>
+      <div class="text-brand">[SECURITY] Cryptographic trust invariants enforced.</div>
+      <div class="text-emerald-400">[READY] 4 adversarial test vectors loaded into memory sandbox. Click any test to inspect live trace.</div>
     </div>
   </div>
 </div>
@@ -136,8 +122,8 @@
     const term = document.getElementById('console-terminal');
     const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
     const line = document.createElement('div');
-    line.className = 'text-primary-container';
-    line.innerHTML = `[${now}] <span class="text-secondary">[${caseId}]</span> <span class="text-on-surface font-semibold">${title}</span> (${duration}) → <span class="text-on-surface-variant">${trace}</span>`;
+    line.className = 'text-white flex items-start gap-2 pt-1 border-t border-border/40';
+    line.innerHTML = `<span class="text-text-subtle">[${now}]</span> <span class="text-brand font-bold">[${caseId}]</span> <span class="text-white font-semibold">${title}</span> <span class="text-emerald-400">(${duration})</span> <span class="text-text-muted">→ ${trace}</span>`;
     term.appendChild(line);
     term.scrollTop = term.scrollHeight;
   }

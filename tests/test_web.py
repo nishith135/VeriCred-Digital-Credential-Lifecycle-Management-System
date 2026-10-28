@@ -91,3 +91,29 @@ async def test_web_anomalies_lab(api_client: AsyncClient):
     assert resp_single.status_code == 200
     assert "Scenario 04: Altered Payload Hash Mismatch" in resp_single.text
     assert "TAMPERED" in resp_single.text
+
+
+@pytest.mark.asyncio
+async def test_web_rbac_login_and_role_switching(api_client: AsyncClient):
+    """Verify that login persona switcher and RBAC revocation restrictions operate correctly."""
+    # 1. Login page loads
+    resp_login = await api_client.get("/login")
+    assert resp_login.status_code == 200
+    assert "Select Your Persona to Continue" in resp_login.text
+    assert "University Registrar" in resp_login.text
+    assert "Public Verifier" in resp_login.text
+    assert "Compliance Auditor" in resp_login.text
+
+    # 2. Role switch sets cookie
+    resp_switch = await api_client.get("/role/switch?role=verifier&redirect=/verify", follow_redirects=False)
+    assert resp_switch.status_code == 303
+    assert "vericred_role=verifier" in resp_switch.headers.get("set-cookie", "")
+
+    # 3. Verifier persona cannot revoke credentials
+    resp_revoke_forbidden = await api_client.post(
+        "/web/revocation/revoke",
+        data={"credential_public_id": "CRED-2026-000001"},
+        cookies={"vericred_role": "verifier"},
+    )
+    assert resp_revoke_forbidden.status_code == 200
+    assert "Access Denied" in resp_revoke_forbidden.headers.get("hx-trigger", "")

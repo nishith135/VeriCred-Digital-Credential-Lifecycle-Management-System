@@ -16,13 +16,19 @@ from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Form, Query, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import distinct, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from backend.core.database import get_db_session
+from backend.core.rbac import (
+    Role,
+    ROLE_DEFINITIONS,
+    get_current_role,
+    get_role_context,
+)
 from backend.core.security import compute_payload_hash, verify_signature
 from backend.generator.anomalies import generate_anomaly_fixtures
 from backend.models import (
@@ -43,6 +49,52 @@ from pathlib import Path
 router = APIRouter(tags=["Web UI"])
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent.parent.parent / "frontend" / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+
+
+def render_template(
+    request: Request, name: str, context: Optional[Dict[str, Any]] = None
+) -> Response:
+    """Helper to render Jinja templates populated with global RBAC role context."""
+    ctx = get_role_context(request)
+    if context:
+        ctx.update(context)
+    return templates.TemplateResponse(request=request, name=name, context=ctx)
+
+
+# =============================================================================
+# Auth & Persona Switching (RBAC)
+# =============================================================================
+
+@router.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    """Render the login and persona switcher page."""
+    return render_template(
+        request=request,
+        name="pages/login.html",
+        context={"active_page": "login"},
+    )
+
+
+@router.get("/role/switch")
+@router.post("/role/switch")
+async def switch_role(
+    request: Request,
+    role: str = Query(...),
+    redirect: Optional[str] = Query(None),
+):
+    """Switch active persona role via session cookie."""
+    if role not in ROLE_DEFINITIONS:
+        role = Role.REGISTRAR.value
+    target_url = redirect or request.headers.get("referer") or "/verify"
+    response = RedirectResponse(url=target_url, status_code=303)
+    response.set_cookie(
+        key="vericred_role",
+        value=role,
+        max_age=3600 * 24 * 7,
+        httponly=False,
+        samesite="lax",
+    )
+    return response
 
 
 # =============================================================================
@@ -77,7 +129,7 @@ async def verify_page(
     sample_valid_id = valid_cred or "CRED-2026-000001"
     sample_revoked_id = revoked_cred or "CRED-2026-000002"
 
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="pages/verify.html",
         context={
@@ -128,7 +180,7 @@ async def perform_verification_htmx(
     )
     credential = (await db.execute(cred_stmt)).scalar_one_or_none()
 
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="partials/verification_badge.html",
         context={
@@ -213,7 +265,7 @@ async def registry_page(
             "completed_at": comp.completion_timestamp,
         })
 
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="pages/registry.html",
         context={
@@ -239,7 +291,7 @@ async def registry_table_htmx(
     credentials = await _query_credentials(
         db, search=search, status=status, limit=limit, offset=offset
     )
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="partials/registry_table.html",
         context={
@@ -259,6 +311,20 @@ async def revoke_credential_htmx(
     db: AsyncSession = Depends(get_db_session),
 ):
     """HTMX endpoint to revoke a credential and re-render the updated table rows."""
+    current_role_id = get_current_role(request)
+    role_def = ROLE_DEFINITIONS.get(current_role_id, {})
+    if not role_def.get("can_revoke", False):
+        credentials = await _query_credentials(db, limit=20, offset=0)
+        resp = render_template(
+            request=request,
+            name="partials/registry_table.html",
+            context={"credentials": credentials},
+        )
+        resp.headers["HX-Trigger"] = json.dumps({
+            "showToast": f"Access Denied: Persona '{role_def.get('name', current_role_id)}' lacks revocation authority. Switch to University Registrar."
+        })
+        return resp
+
     try:
         await RevocationService.revoke_credential(
             db=db,
@@ -269,7 +335,7 @@ async def revoke_credential_htmx(
         )
     except Exception as exc:
         credentials = await _query_credentials(db, limit=20, offset=0)
-        resp = templates.TemplateResponse(
+        resp = render_template(
             request=request,
             name="partials/registry_table.html",
             context={"credentials": credentials},
@@ -280,7 +346,7 @@ async def revoke_credential_htmx(
         return resp
 
     credentials = await _query_credentials(db, limit=20, offset=0)
-    resp = templates.TemplateResponse(
+    resp = render_template(
         request=request,
         name="partials/registry_table.html",
         context={"credentials": credentials},
@@ -384,7 +450,7 @@ async def audit_page(
 
     events = await _query_audit_events(db, limit=50, offset=0)
 
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="pages/audit.html",
         context={
@@ -417,7 +483,7 @@ async def audit_table_htmx(
         limit=limit,
         offset=offset,
     )
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="partials/audit_table.html",
         context={
@@ -647,7 +713,7 @@ async def anomalies_page(request: Request):
     """Render the anomaly stress-test lab page with initial evaluations."""
     cases = ["SIM-REV-094", "SIM-COLL-103", "SIM-POIS-519", "SIM-TAMP-882"]
     results = [_evaluate_single_anomaly(cid) for cid in cases]
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="pages/anomalies.html",
         context={
@@ -661,7 +727,7 @@ async def anomalies_page(request: Request):
 async def run_single_anomaly_htmx(request: Request, scenario_id: str):
     """HTMX endpoint to rerun a single anomaly scenario."""
     res = _evaluate_single_anomaly(scenario_id)
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="partials/anomaly_result.html",
         context={
@@ -675,7 +741,7 @@ async def run_all_anomalies_htmx(request: Request):
     """HTMX endpoint to run all 4 anomaly scenarios simultaneously."""
     cases = ["SIM-REV-094", "SIM-COLL-103", "SIM-POIS-519", "SIM-TAMP-882"]
     results = [_evaluate_single_anomaly(cid) for cid in cases]
-    return templates.TemplateResponse(
+    return render_template(
         request=request,
         name="partials/anomaly_result.html",
         context={
