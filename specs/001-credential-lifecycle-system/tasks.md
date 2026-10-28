@@ -10,9 +10,9 @@
 
 **Purpose**: Project initialization, dependency management, and configuration.
 
-- [ ] T001 Create project directory tree (`src/core/`, `src/models/`, `src/schemas/`, `src/services/`, `src/generator/`, `src/api/`, `src/templates/`, `src/static/`, `tests/`) per implementation plan
-- [ ] T002 [P] Create `requirements.txt` with core dependencies (FastAPI, uvicorn, SQLAlchemy 2.0, asyncpg, psycopg2-binary, alembic, pydantic, pydantic-settings, jinja2, cryptography, faker, pytest, httpx)
-- [ ] T003 [P] Configure application settings in `src/core/config.py` using Pydantic `BaseSettings` (`DATABASE_URL`, `SECRET_KEY`, `APP_ENV`, `DEFAULT_SEED`)
+- [X] T001 Create project directory tree (`src/core/`, `src/models/`, `src/schemas/`, `src/services/`, `src/generator/`, `src/api/`, `src/templates/`, `src/static/`, `tests/`) per implementation plan
+- [X] T002 [P] Create `requirements.txt` with core dependencies (FastAPI, uvicorn, SQLAlchemy 2.0, asyncpg, psycopg2-binary, alembic, pydantic, pydantic-settings, jinja2, cryptography, faker, pytest, httpx)
+- [X] T003 [P] Configure application settings in `src/core/config.py` using Pydantic `BaseSettings` (`DATABASE_URL`, `SECRET_KEY`, `APP_ENV`, `DEFAULT_SEED`)
 
 ---
 
@@ -22,11 +22,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Setup database connection and session management in `src/core/database.py` (SQLAlchemy async and sync engine/session makers, DeclarativeBase)
-- [ ] T005 Initialize Alembic migration environment in `alembic/` and configure `alembic/env.py` to target SQLAlchemy models
-- [ ] T006 [P] Implement cryptographic security primitives in `src/core/security.py` (Canonical JSON serialization, SHA-256 payload hashing, Ed25519 key generation, message signing, and signature verification)
-- [ ] T007 [P] Implement core exception handlers and structured error responses in `src/core/exceptions.py`
-- [ ] T008 Setup FastAPI application factory, static file mounting, Jinja2 template engine, and CORS in `src/main.py`
+- [X] T004 Setup database connection and session management in `src/core/database.py` (SQLAlchemy async and sync engine/session makers, DeclarativeBase)
+- [X] T005 Initialize Alembic migration environment in `alembic/` and configure `alembic/env.py` to target SQLAlchemy models
+- [X] T006 [P] Implement cryptographic security primitives in `src/core/security.py` (Canonical JSON serialization, SHA-256 payload hashing, Ed25519 key generation, message signing, and signature verification)
+- [X] T007 [P] Implement core exception handlers and structured error responses in `src/core/exceptions.py`
+- [X] T008 Setup FastAPI application factory, static file mounting, Jinja2 template engine, and CORS in `src/main.py`
 
 **Checkpoint**: Foundation ready — database connection, migration scaffold, and cryptographic primitives operational.
 

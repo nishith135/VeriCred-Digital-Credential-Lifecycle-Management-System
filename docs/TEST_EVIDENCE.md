@@ -54,7 +54,26 @@ This document maintains empirical evidence of all automated tests, manual checks
 - **Raw Summary:**
   Committed 39 files (commit `528f995`). Configured tracking branch `main -> origin/main` at `https://github.com/nishith135/digital_credential_lifecycle_management_system.git`. Push verified clean.
 
+### Verification 005: Cryptographic Primitives & Health Check Suite
+- **Date:** 2026-10-28T11:28:06+05:30
+- **Command:** `.\.venv\Scripts\pytest -v`
+- **Exit Code:** `0`
+- **Raw Summary:**
+  ```
+  tests/test_health.py::test_health_check_endpoint PASSED                  [ 25%]
+  tests/test_security.py::test_canonical_json_deterministic_ordering PASSED [ 50%]
+  tests/test_security.py::test_payload_hash_tamper_detection PASSED        [ 75%]
+  tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED [100%]
+  ============================== 4 passed in 0.97s ==============================
+  ```
+- **Findings:**
+  - Canonical JSON serialization generates identical strings regardless of dictionary key ordering.
+  - SHA-256 payload digest immediately detects score modifications (tamper-evident).
+  - Ed25519 asymmetric signing and verification correctly validates authentic issuer signatures and rejects tampered digests and alien public keys.
+  - FastAPI application factory lifecycle and `/health` probe are verified operational.
+
 ---
 
 ## 3. Boundary & Assumption Verification
 *(Will record boundary checks, edge-case scores, date-order validations, and hash-mismatch detections as they are implemented).*
+
