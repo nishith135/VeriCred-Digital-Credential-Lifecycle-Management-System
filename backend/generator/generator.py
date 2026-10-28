@@ -19,6 +19,8 @@ import json
 import random
 from typing import Any, Dict, List, Optional, Tuple
 
+from faker import Faker
+
 from backend.core.security import (
     compute_payload_hash,
     generate_deterministic_ed25519_keypair,
@@ -47,32 +49,32 @@ class SyntheticDataset:
     audit_events: List[Dict[str, Any]] = field(default_factory=list)
 
 
-FIRST_NAMES = [
-    "James", "Mary", "John", "Patricia", "Robert", "Jennifer", "Michael", "Linda",
-    "William", "Elizabeth", "David", "Barbara", "Richard", "Susan", "Joseph", "Jessica",
-    "Thomas", "Sarah", "Charles", "Karen", "Christopher", "Nancy", "Daniel", "Lisa",
-    "Matthew", "Betty", "Anthony", "Margaret", "Mark", "Sandra", "Donald", "Ashley",
-    "Steven", "Kimberly", "Paul", "Emily", "Andrew", "Donna", "Joshua", "Michelle",
-    "Kenneth", "Dorothy", "Kevin", "Carol", "Brian", "Amanda", "George", "Melissa",
-    "Edward", "Deborah", "Ronald", "Stephanie", "Timothy", "Rebecca", "Jason", "Sharon",
-    "Jeffrey", "Laura", "Ryan", "Cynthia", "Jacob", "Kathleen", "Gary", "Amy",
-]
-
-LAST_NAMES = [
-    "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
-    "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas",
-    "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White",
-    "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young",
-    "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
-    "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell",
-    "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker",
-]
-
-COURSE_SUBJECTS = [
-    "Computer Science", "Data Engineering", "Machine Learning", "Cybersecurity",
-    "Cloud Architecture", "Distributed Systems", "Quantum Computing", "Software Verification",
-    "DevOps Automation", "Applied Cryptography", "Database Internals", "Artificial Intelligence",
-    "Digital Forensics", "Network Protocols", "Microservices Design", "Information Security",
+COURSE_SPECIALIZATIONS = [
+    "Advanced Cryptography & Zero-Knowledge Proofs",
+    "Distributed Cloud Architecture & High Availability",
+    "Full-Stack Machine Learning Engineering",
+    "Scalable Data Pipelines & Stream Processing",
+    "Offensive Cybersecurity & Penetration Testing",
+    "Quantum Computing Algorithms & Qiskit",
+    "Microservices & Kubernetes Orchestration",
+    "Deep Learning & Transformer Architectures",
+    "Database Internals & Concurrency Control",
+    "Autonomous Robotics, SLAM & Computer Vision",
+    "Digital Forensics & Incident Response",
+    "High-Frequency Quantitative Systems",
+    "Software Verification & Formal Methods",
+    "Mobile Computing & Cross-Platform Architecture",
+    "Embedded Real-Time Operating Systems (RTOS)",
+    "Natural Language Processing & Large Language Models",
+    "Network Security & Secure Protocols Design",
+    "Decentralized Systems & Smart Contract Auditing",
+    "Applied AI in Healthcare & Bioinformatics",
+    "Compiler Design & Programming Language Theory",
+    "Computer Systems & Hardware Architecture",
+    "DevSecOps Automation & Infrastructure as Code",
+    "Applied Data Science with Python & R",
+    "Graph Algorithms & Social Network Analysis",
+    "Computer Graphics & Interactive Rendering",
 ]
 
 
@@ -89,6 +91,8 @@ class DataGenerator:
         self.scale = scale
         self.ref_time = reference_time or REFERENCE_DATETIME
         self.rng = random.Random(seed)
+        self.fake = Faker("en_IN")
+        self.fake.seed_instance(seed)
 
     def generate(self) -> SyntheticDataset:
         """Run the end-to-end topological dataset generation."""
@@ -133,13 +137,15 @@ class DataGenerator:
         return dataset
 
     def _generate_issuers(self, dataset: SyntheticDataset) -> None:
-        """Generate 5 authorized academic institutions with Ed25519 cryptographic keypairs."""
+        """Generate authorized academic institutions with Ed25519 cryptographic keypairs."""
         issuer_names = [
-            "National Institute of Technology",
-            "Apex Cyber University",
-            "Global Standards Polytechnic",
-            "Metropolitan Academic Consortium",
-            "Veritas Institute of Higher Learning",
+            "Indian Institute of Technology (IIT) Delhi",
+            "Indian Institute of Science (IISc) Bengaluru",
+            "National Institute of Technology (NIT) Trichy",
+            "Birla Institute of Technology and Science (BITS) Pilani",
+            "International Institute of Information Technology (IIIT) Hyderabad",
+            "Delhi Technological University (DTU)",
+            "Anna University College of Engineering",
         ]
         
         for idx, name in enumerate(issuer_names, start=1):
@@ -162,9 +168,9 @@ class DataGenerator:
         """Generate course catalog and associated credential eligibility rules."""
         rule_id_seq = 1
         for idx in range(1, n_courses + 1):
-            subject = self.rng.choice(COURSE_SUBJECTS)
+            spec = self.rng.choice(COURSE_SPECIALIZATIONS)
             level = self.rng.choice(["101", "201", "301", "401", "501"])
-            title = f"{subject} {level}"
+            title = f"{spec} ({level})"
             created_at = self.ref_time - timedelta(days=self.rng.randint(300, 600))
             
             course = {
@@ -193,12 +199,13 @@ class DataGenerator:
             rule_id_seq += 1
 
     def _generate_learners(self, dataset: SyntheticDataset, n_learners: int) -> None:
-        """Generate learner master records with realistic variation and unique emails."""
+        """Generate learner master records with realistic variation and unique emails using Faker Indian locale."""
         for idx in range(1, n_learners + 1):
-            first = self.rng.choice(FIRST_NAMES)
-            last = self.rng.choice(LAST_NAMES)
-            full_name = f"{first} {last}"
-            email = f"learner_{idx:06d}@edu-network.org"
+            full_name = self.fake.name()
+            clean_slug = "".join(c.lower() for c in full_name if c.isalnum() or c == " ").strip().replace(" ", ".")
+            if not clean_slug:
+                clean_slug = f"student.{idx}"
+            email = f"{clean_slug}.{idx:04d}@edu-network.in"
             created_at = self.ref_time - timedelta(days=self.rng.randint(60, 365))
             
             learner = {
@@ -439,3 +446,4 @@ class DataGenerator:
         dataset.audit_events.sort(key=lambda e: (e["occurred_at"], e["id"]))
         for idx, event in enumerate(dataset.audit_events, start=1):
             event["id"] = idx
+            event["event_id"] = f"EVT-{idx:08d}"

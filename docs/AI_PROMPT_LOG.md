@@ -1427,10 +1427,34 @@ go ahead
 - **Output Status:** Complete, verified, and committed.
 - **Review / Validation Performed:** Full test suite execution (`pytest -v` 37/37 passed) and manual verification of routes.
 - **Test Commands & Results:**
-  - `.\.venv\Scripts\python.exe -m pytest -v`: 37 passed in 5.45s.
-- **Known Issues / Follow-up Actions:** Ready for final walkthrough and submission.
+### Entry 021: Faker Indian Locale Integration & Academic Curriculum Diversification
+- **Entry ID:** `PROMPT-021`
+- **Date & Time:** 2026-10-28T18:03:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Integrate the installed `faker` library with `en_IN` (Indian) locale, replace generic Western names with diverse Indian student names, expand the course catalog to 25+ cutting-edge technical specializations (Distributed Systems, Applied Cryptography, Machine Learning, SLAM Robotics, Quantum Computing), update accredited issuers to recognized Indian institutions (IIT Delhi, IISc Bengaluru, NIT Trichy, BITS Pilani, IIIT Hyderabad), fix `event_id` in synthetic audit events, and reload PostgreSQL database.
+- **Exact Prompt:**
+```text
+also one last change for this session, i think the faker module only produced data with the same name for the the student throughout, the same course name and the saem issuer name as well, populated teh db witht he saem things, i want you to use the module properly, generate names based on the indian locale, populate teh courses with different courses and also change the issuer and the ui looks great btw, good job
+go ahead
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `backend/generator/generator.py` (Integrated `Faker('en_IN')` with deterministic seeding, enriched course specializations and levels, updated issuers to Indian institutions, and populated `event_id` on audit events)
+  - `exports/` (Re-exported synthetic CSV, JSON, and SQL datasets with updated checksums in `manifest.sha256`)
+- **Summary of AI Output:**
+  - Replaced hardcoded Western name lists with `Faker('en_IN')` generating authentic Indian student names and clean university emails.
+  - Replaced 5 generic institutions with recognized Indian universities: IIT Delhi, IISc Bengaluru, NIT Trichy, BITS Pilani, and IIIT Hyderabad.
+  - Replaced basic subjects with 25 diverse courses spanning AI, Cybersecurity, Cloud, Robotics, and Cryptography.
+  - Executed database reload (`python -m backend.generator.cli --seed 20261022 --scale 0.05 --load-db --truncate`), inserting 1,000 learners, 50 courses, 500 credentials, 15 revocations, 250 verifications, and 565 audit events in 0.295s.
+  - Validated that all 37 tests in the automated test suite pass in 8.41s.
+- **Output Status:** Complete and verified.
+- **Review / Validation Performed:** Database inspection query and full test suite run (`pytest -v` 37/37 passed).
+- **Test Commands & Results:**
+  - `& ".\.venv\Scripts\python.exe" -m backend.generator.cli --seed 20261022 --scale 0.05 --load-db --truncate`: Completed in 0.52s.
+  - `& ".\.venv\Scripts\python.exe" -m pytest -v`: 37 passed in 8.41s.
+- **Known Issues / Follow-up Actions:** Ready for live demo and evaluation walkthrough.
 
 ---
+
 
 
 ## C. AI Contribution Summary
