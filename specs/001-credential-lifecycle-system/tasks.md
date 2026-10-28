@@ -127,16 +127,16 @@
 **Independent Test**: Run generator twice with seed `42`, assert identical SHA-256 checksums across CSV/JSON/SQL exports, and evaluate the 4 anomalies against ground truth.
 
 ### Tests for User Story 5
-- [ ] T040 [P] [US5] Unit test for generator seed determinism and checksum repeatability in `tests/test_generator_determinism.py`
-- [ ] T041 [P] [US5] Evaluation test verifying all 4 anomaly scenarios against segregated ground truth in `tests/test_anomalies.py`
+- [X] T040 [P] [US5] Unit test for generator seed determinism and checksum repeatability in `tests/test_generator_determinism.py`
+- [X] T041 [P] [US5] Evaluation test verifying all 4 anomaly scenarios against segregated ground truth in `tests/test_anomalies.py`
 
 ### Implementation for User Story 5
-- [ ] T042 [US5] Implement PRNG-seeded entity generators in `src/generator/generator.py` (`issuers`, `courses`, `rules`, `learners`, `completions`, `credentials`, `verifications`, `audits`) in strict topological order
-- [ ] T043 [US5] Implement high-performance bulk insertion using SQLAlchemy Core batch inserts in `src/generator/db_loader.py`
-- [ ] T044 [US5] Implement the four mandatory anomaly fixture generators in `src/generator/anomalies.py` (Premature Issuance, Duplicate ID, Stale Revocation Verification, Altered Payload) with independent ground-truth JSON labeling
-- [ ] T045 [US5] Implement CSV, JSON, and SQL export engine with SHA-256 digest manifest generation in `src/generator/exporter.py`
-- [ ] T046 [US5] Implement CLI interface in `src/generator/cli.py` (`python -m src.generator.cli --seed 42 --scale 1.0 --output-dir ./exports`)
-- [ ] T047 [US5] Implement dataset validation script in `src/generator/validator.py` (validating PK/FK referential integrity and date ordering)
+- [X] T042 [US5] Implement PRNG-seeded entity generators in `src/generator/generator.py` (`issuers`, `courses`, `rules`, `learners`, `completions`, `credentials`, `verifications`, `audits`) in strict topological order
+- [X] T043 [US5] Implement high-performance bulk insertion using SQLAlchemy Core batch inserts in `src/generator/db_loader.py`
+- [X] T044 [US5] Implement the four mandatory anomaly fixture generators in `src/generator/anomalies.py` (Premature Issuance, Duplicate ID, Stale Revocation Verification, Altered Payload) with independent ground-truth JSON labeling
+- [X] T045 [US5] Implement CSV, JSON, and SQL export engine with SHA-256 digest manifest generation in `src/generator/exporter.py`
+- [X] T046 [US5] Implement CLI interface in `src/generator/cli.py` (`python -m src.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports`)
+- [X] T047 [US5] Implement dataset validation script in `src/generator/validator.py` (validating PK/FK referential integrity and date ordering)
 
 **Checkpoint**: Full-scale synthetic data pipeline verified with seed repeatability and anomaly fixtures.
 

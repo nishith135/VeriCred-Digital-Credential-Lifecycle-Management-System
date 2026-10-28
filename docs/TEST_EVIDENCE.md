@@ -179,10 +179,73 @@ This document maintains empirical evidence of all automated tests, manual checks
   - REST API endpoint `GET /api/v1/audit/events` correctly performs cursor/limit-offset pagination with exact count representation.
   - Full regression test suite (24/24 tests) passes cleanly in <5 seconds.
 
+### Verification 009: Phase 7 (Synthetic Data Generation & 4 Mandatory Anomalies Suite)
+- **Date:** 2026-10-28T13:46:20+05:30
+- **Command:** `.\.venv\Scripts\pytest -v` and `.\.venv\Scripts\python scripts/generate_data.py --seed 20261022 --scale 1.0 --output-dir ./exports`
+- **Database:** Local PostgreSQL 17 (`credential_db`) via `asyncpg` and `psycopg2`
+- **Exit Code:** `0`
+- **Raw Pytest Summary:**
+  ```
+  tests/test_anomalies.py::test_anomaly_1_premature_issuance_detected PASSED [  3%]
+  tests/test_anomalies.py::test_anomaly_2_duplicate_credential_id_detected PASSED [  6%]
+  tests/test_anomalies.py::test_anomaly_3_revoked_verifies_as_active_in_stale_cache PASSED [  9%]
+  tests/test_anomalies.py::test_anomaly_4_altered_payload_detected_by_canonical_sha256 PASSED [ 12%]
+  tests/test_audit.py::test_audit_event_logging_and_multi_criteria_filtering PASSED [ 16%]
+  tests/test_audit.py::test_audit_rest_api_endpoint_pagination_and_query PASSED [ 19%]
+  tests/test_eligibility.py::test_eligibility_passing_boundary_80_percent PASSED [ 22%]
+  tests/test_eligibility.py::test_eligibility_failing_boundary_79_99_percent PASSED [ 25%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_status_not_completed PASSED [ 29%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_outside_rule_date_window PASSED [ 32%]
+  tests/test_generator_determinism.py::test_generator_seed_determinism_in_memory PASSED [ 35%]
+  tests/test_generator_determinism.py::test_export_manifest_sha256_repeatability PASSED [ 38%]
+  tests/test_generator_determinism.py::test_validator_detects_clean_generated_dataset PASSED [ 41%]
+  tests/test_health.py::test_health_check_endpoint PASSED                  [ 45%]
+  tests/test_issuance.py::test_atomic_issuance_success_and_cryptographic_verification PASSED [ 48%]
+  tests/test_issuance.py::test_duplicate_issuance_strictly_prevented PASSED [ 51%]
+  tests/test_issuance.py::test_ineligible_issuance_raises_error PASSED     [ 54%]
+  tests/test_issuance.py::test_issuance_rest_api_endpoints PASSED          [ 58%]
+  tests/test_revocation.py::test_authorized_revocation_success_and_audit PASSED [ 61%]
+  tests/test_revocation.py::test_double_revocation_raises_error PASSED     [ 64%]
+  tests/test_revocation.py::test_revoking_nonexistent_credential_raises_error PASSED [ 67%]
+  tests/test_revocation.py::test_live_revocation_reflection_in_verification_api PASSED [ 70%]
+  tests/test_security.py::test_canonical_json_deterministic_ordering PASSED [ 74%]
+  tests/test_security.py::test_payload_hash_tamper_detection PASSED        [ 77%]
+  tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED [ 80%]
+  tests/test_verification.py::test_verification_valid_active_credential PASSED [ 83%]
+  tests/test_verification.py::test_verification_not_found_credential PASSED [ 87%]
+  tests/test_verification.py::test_verification_detects_tampered_payload PASSED [ 90%]
+  tests/test_verification.py::test_tampering_strictly_overrides_revocation PASSED [ 93%]
+  tests/test_verification.py::test_verification_detects_invalid_issuer_signature PASSED [ 96%]
+  tests/test_verification.py::test_public_verification_rest_endpoint PASSED [100%]
+  ============================= 31 passed in 7.65s ==============================
+  ```
+- **CLI Generation Benchmark Output (Scale 1.0 Baseline):**
+  ```
+  Total Duration: 1.67s (target < 60s)
+  Learners:       20,000
+  Courses:        1,000
+  Completions:    14,000
+  Credentials:    10,000
+  Revocations:    300
+  Verifications:  5,000
+  Audit Events:   11,300
+  Anomalies:      4 fixtures (ground_truth.json)
+  Exported Files: 14 files + manifest.sha256
+  ```
+- **Findings:**
+  - Seed determinism verified: Two independent runs using seed `20261022` produce bit-for-bit identical records, canonical hashes, Ed25519 signatures, and identical `manifest.sha256` digests.
+  - The 4 mandatory anomalies are 100% detected against segregated ground truth:
+    1. Premature issuance detected as `INVALID_ISSUANCE`.
+    2. Duplicate credential ID detected and flagged as `REJECTED_DUPLICATE`.
+    3. Stale revocation cache corrected to `REVOKED` via live database verification.
+    4. Altered payload claims detected as `TAMPERED` via canonical SHA-256 hash mismatch.
+  - Baseline dataset generation (20,000 learners, 10,000 credentials) generates and exports in **1.67 seconds**, comfortably beating the 60-second requirement.
+
 ---
 
 ## 3. Boundary & Assumption Verification
 *(Will record boundary checks, edge-case scores, date-order validations, and hash-mismatch detections as they are implemented).*
+
 
 
 

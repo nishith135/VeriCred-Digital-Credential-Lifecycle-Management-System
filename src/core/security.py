@@ -42,12 +42,35 @@ def compute_payload_hash(payload: dict[str, Any]) -> str:
 
 
 def generate_ed25519_keypair() -> Tuple[str, str]:
-    """Generate an Ed25519 asymmetric keypair.
+    """Generate an Ed25519 asymmetric keypair using OS entropy."""
+    private_key = ed25519.Ed25519PrivateKey.generate()
+    public_key = private_key.public_key()
+
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ).decode("utf-8")
+
+    public_pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    ).decode("utf-8")
+
+    return private_pem, public_pem
+
+
+def generate_deterministic_ed25519_keypair(seed_material: bytes) -> Tuple[str, str]:
+    """Generate a deterministic Ed25519 asymmetric keypair derived from seed bytes.
+
+    Args:
+        seed_material: Arbitrary length byte sequence, hashed via SHA-256 to exactly 32 bytes.
 
     Returns:
         Tuple[str, str]: (private_key_pem, public_key_pem) formatted as UTF-8 strings.
     """
-    private_key = ed25519.Ed25519PrivateKey.generate()
+    raw_32_bytes = hashlib.sha256(seed_material).digest()
+    private_key = ed25519.Ed25519PrivateKey.from_private_bytes(raw_32_bytes)
     public_key = private_key.public_key()
 
     private_pem = private_key.private_bytes(

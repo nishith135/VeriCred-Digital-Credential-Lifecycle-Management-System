@@ -1,0 +1,176 @@
+[
+  {
+    "case_id": "CASE-ANOMALY-001",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "public_id": "CRED-ANOMALY-001",
+    "completion_timestamp": "2026-10-17T12:00:00+00:00",
+    "issued_at": "2026-10-12T12:00:00+00:00",
+    "assessment_score": 58.5,
+    "completion_status": "IN_PROGRESS",
+    "payload_hash": "b44a1586b1788dbb6efe553683930850d6bb2515042b895123d6922de316df94",
+    "signature": "576J8nJpztZ8zUeiXNUpKcm9aOLpUAFAeXudFL24B0NbuS8A0/Q29x42bXN4KB9Lqdj3xZHuwX6GdHGMunusDw==",
+    "payload_snapshot": {
+      "credential_id": "CRED-ANOMALY-001",
+      "course": {
+        "code": "CS-ANOMALY-101",
+        "title": "Advanced Algorithmic Integrity"
+      },
+      "learner": {
+        "id": "LRN-ANOMALY-001",
+        "name": "Alice Premature"
+      },
+      "assessment": {
+        "score": 58.5,
+        "status": "IN_PROGRESS"
+      },
+      "issued_at": "2026-10-12T12:00:00+00:00",
+      "completion_timestamp": "2026-10-17T12:00:00+00:00",
+      "issuer": {
+        "id": "ISS-ANOMALY-001",
+        "name": "Acme Cyber Academy"
+      }
+    },
+    "issuer_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAeY4UltYagJlJwIAds0uRZl5pFvkH9wopL/nHHBULYls=\n-----END PUBLIC KEY-----\n"
+  },
+  {
+    "case_id": "CASE-ANOMALY-002",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "public_id": "CRED-ANOMALY-DUP-002",
+    "record_a": {
+      "public_id": "CRED-ANOMALY-DUP-002",
+      "learner_name": "Bob Original",
+      "payload_snapshot": {
+        "credential_id": "CRED-ANOMALY-DUP-002",
+        "course": {
+          "code": "MATH-201",
+          "title": "Discrete Math"
+        },
+        "learner": {
+          "id": "LRN-002A",
+          "name": "Bob Original"
+        },
+        "assessment": {
+          "score": 92.0,
+          "status": "COMPLETED"
+        },
+        "issued_at": "2026-10-02T12:00:00+00:00",
+        "issuer": {
+          "id": "ISS-ANOMALY-001",
+          "name": "Acme Cyber Academy"
+        }
+      },
+      "payload_hash": "392775c682154ad1860a7c65883f98a0d266aa52ef9aa957f06e1201068b28db",
+      "signature": "VEUQJvr5tBBm6bX8feclf83/G6WIANvy9SnTvlVKhla5EW0s/NyMTGvxutgCsdK1dapr3kOksGDIRmjGXl7ZDQ=="
+    },
+    "record_b": {
+      "public_id": "CRED-ANOMALY-DUP-002",
+      "learner_name": "Charlie Duplicate",
+      "payload_snapshot": {
+        "credential_id": "CRED-ANOMALY-DUP-002",
+        "course": {
+          "code": "MATH-201",
+          "title": "Discrete Math"
+        },
+        "learner": {
+          "id": "LRN-002B",
+          "name": "Charlie Duplicate"
+        },
+        "assessment": {
+          "score": 88.0,
+          "status": "COMPLETED"
+        },
+        "issued_at": "2026-10-07T12:00:00+00:00",
+        "issuer": {
+          "id": "ISS-ANOMALY-001",
+          "name": "Acme Cyber Academy"
+        }
+      },
+      "payload_hash": "c8bdbd9536f081de093159a8a88b18e90df07286c7330f5494de616a8bce1797",
+      "signature": "VxqG6Uf5A3gaBTSniMwDY1THUt6B39l8Fi/ZhKR3UZfGJt5oG5/R1Cd49CiN0rVK7RyMPs1zgCbRhMrR5+E3Dg=="
+    }
+  },
+  {
+    "case_id": "CASE-ANOMALY-003",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "public_id": "CRED-ANOMALY-REV-003",
+    "revocation_record": {
+      "revoked_at": "2026-10-19T12:00:00+00:00",
+      "reason_code": "ACADEMIC_MISCONDUCT",
+      "revoked_by": "DEAN-OFFICE"
+    },
+    "stale_cache_claim": "VALID",
+    "payload_snapshot": {
+      "credential_id": "CRED-ANOMALY-REV-003",
+      "course": {
+        "code": "SEC-301",
+        "title": "Network Defense"
+      },
+      "learner": {
+        "id": "LRN-003",
+        "name": "David Revoked"
+      },
+      "assessment": {
+        "score": 85.0,
+        "status": "COMPLETED"
+      },
+      "issued_at": "2026-09-22T12:00:00+00:00",
+      "issuer": {
+        "id": "ISS-ANOMALY-001",
+        "name": "Acme Cyber Academy"
+      }
+    },
+    "payload_hash": "f7ebd70ecc5f3ccfdb380d859925691111ef81ebab936241c300d10b583d6806",
+    "signature": "HEZQYdPeEWAfVkJ89JZPVl9APQTv7D0DhQ826qC/2mxf/q/n8Xvu9E6CdpihsPBNsrhKzsFxCHeM8YeaQMFeAQ==",
+    "issuer_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAeY4UltYagJlJwIAds0uRZl5pFvkH9wopL/nHHBULYls=\n-----END PUBLIC KEY-----\n"
+  },
+  {
+    "case_id": "CASE-ANOMALY-004",
+    "issue_type": "ALTERED_PAYLOAD_TAMPERING",
+    "public_id": "CRED-ANOMALY-TAMPER-004",
+    "original_payload": {
+      "credential_id": "CRED-ANOMALY-TAMPER-004",
+      "course": {
+        "code": "DATA-401",
+        "title": "Data Engineering"
+      },
+      "learner": {
+        "id": "LRN-004",
+        "name": "Eve Tampered"
+      },
+      "assessment": {
+        "score": 81.0,
+        "grade": "B",
+        "status": "COMPLETED"
+      },
+      "issued_at": "2026-10-10T12:00:00+00:00",
+      "issuer": {
+        "id": "ISS-ANOMALY-001",
+        "name": "Acme Cyber Academy"
+      }
+    },
+    "tampered_payload": {
+      "credential_id": "CRED-ANOMALY-TAMPER-004",
+      "course": {
+        "code": "DATA-401",
+        "title": "Data Engineering"
+      },
+      "learner": {
+        "id": "LRN-004",
+        "name": "Eve Tampered"
+      },
+      "assessment": {
+        "score": 99.5,
+        "grade": "A+",
+        "status": "COMPLETED"
+      },
+      "issued_at": "2026-10-10T12:00:00+00:00",
+      "issuer": {
+        "id": "ISS-ANOMALY-001",
+        "name": "Acme Cyber Academy"
+      }
+    },
+    "signed_payload_hash": "d7cefed9abafe06449df6cb0df01fd2823a45830a5e1a989c64eec3a1f59a68d",
+    "signature": "AaTOE3Pd/fONmFnxVhmcX3/tv7POAjG+SrXn3Dt/dGhrirG4btbRDGs/s9nCLRIbEAwWKnED7mGIEwyWxQdPBQ==",
+    "issuer_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAeY4UltYagJlJwIAds0uRZl5pFvkH9wopL/nHHBULYls=\n-----END PUBLIC KEY-----\n"
+  }
+]

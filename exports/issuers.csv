@@ -1,0 +1,21 @@
+id,public_id,name,public_key_pem,status,created_at
+1,ISS-00001,National Institute of Technology,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAERn64fEei0zj62oNIvSHdWs7GFg01QXnstEzGjYrQd4=
+-----END PUBLIC KEY-----
+",ACTIVE,2024-10-22T12:00:00+00:00
+2,ISS-00002,Apex Cyber University,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAC6FCdwfy3OcIvzvOBJj10SgNRJcGrmciapWuodNHsx8=
+-----END PUBLIC KEY-----
+",ACTIVE,2024-10-22T12:00:00+00:00
+3,ISS-00003,Global Standards Polytechnic,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAr3pUA73qKe0Kaj48kHTf4+EZvOy2WYkPKTMLryGoMiQ=
+-----END PUBLIC KEY-----
+",ACTIVE,2024-10-22T12:00:00+00:00
+4,ISS-00004,Metropolitan Academic Consortium,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEA/YR48qol2Qr2X5+Blfm4xNk/4MnUkR79nug4QGT5mlg=
+-----END PUBLIC KEY-----
+",ACTIVE,2024-10-22T12:00:00+00:00
+5,ISS-00005,Veritas Institute of Higher Learning,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEACsvKIinh8kS3yBl07/2r6x1w9FuzO1jt+IviOW39cYY=
+-----END PUBLIC KEY-----
+",ACTIVE,2024-10-22T12:00:00+00:00

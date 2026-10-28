@@ -1,0 +1,18 @@
+{
+  "seed": 20261022,
+  "scale": 1.0,
+  "reference_time": "2026-10-22T12:00:00+00:00",
+  "counts": {
+    "issuers": 5,
+    "courses": 1000,
+    "rules": 1000,
+    "learners": 20000,
+    "completions": 14000,
+    "credentials": 10000,
+    "revocations": 300,
+    "verifications": 5000,
+    "audit_events": 11300,
+    "anomaly_fixtures": 4,
+    "ground_truth_records": 4
+  }
+}
