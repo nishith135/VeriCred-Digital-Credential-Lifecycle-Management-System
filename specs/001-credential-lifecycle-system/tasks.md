@@ -64,15 +64,15 @@
 **Independent Test**: Query verification service with valid IDs, altered payloads (tampered score), and non-existent IDs. Assert return of `VALID`, `TAMPERED`, or `NOT_FOUND` with 100% precision.
 
 ### Tests for User Story 2
-- [ ] T020 [P] [US2] Unit test for multi-factor verification logic (hash integrity vs signature authenticity) in `tests/test_verification_logic.py`
-- [ ] T021 [P] [US2] Integration test for public verification REST API endpoint in `tests/test_verification_api.py`
+- [X] T020 [P] [US2] Unit test for multi-factor verification logic (hash integrity vs signature authenticity) in `tests/test_verification.py`
+- [X] T021 [P] [US2] Integration test for public verification REST API endpoint in `tests/test_verification.py`
 
 ### Implementation for User Story 2
-- [ ] T022 [P] [US2] Create ORM model for `VerificationRequest` in `src/models/verification.py`
-- [ ] T023 [P] [US2] Create Pydantic schemas for verification queries and detailed result representations in `src/schemas/verification.py`
-- [ ] T024 [US2] Implement multi-factor verification service in `src/services/verification.py` (evaluates existence, SHA-256 payload integrity, Ed25519 issuer signature, and revocation state; logs verification attempt)
-- [ ] T025 [US2] Implement public verification REST endpoint in `src/api/v1/verification.py` (`POST /api/v1/verification/verify`)
-- [ ] T026 [US2] Generate and apply Alembic migration for `verification_requests` table
+- [X] T022 [P] [US2] Create ORM model for `VerificationRequest` in `src/models/verification.py`
+- [X] T023 [P] [US2] Create Pydantic schemas for verification queries and detailed result representations in `src/schemas/verification.py`
+- [X] T024 [US2] Implement multi-factor verification service in `src/services/verification.py` (evaluates existence, SHA-256 payload integrity, Ed25519 issuer signature, and revocation state; logs verification attempt)
+- [X] T025 [US2] Implement public verification REST endpoint in `src/api/v1/verification.py` (`POST /api/v1/verification/verify`)
+- [X] T026 [US2] Generate and apply Alembic migration for `verification_requests` table
 
 **Checkpoint**: User Stories 1 AND 2 working independently. Credentials can be both issued and verified.
 
@@ -85,15 +85,16 @@
 **Independent Test**: Revoke an active credential, verify creation of `Revocation` record, and assert that subsequent verification requests immediately return status `REVOKED` without mutating original issuance data.
 
 ### Tests for User Story 3
-- [ ] T027 [P] [US3] Unit test for revocation service, reason code validation, and idempotency in `tests/test_revocation.py`
-- [ ] T028 [P] [US3] Integration test verifying that revoked credentials immediately return `REVOKED` on verification in `tests/test_revocation_integration.py`
+- [X] T027 [P] [US3] Unit test for revocation service, reason code validation, and idempotency in `tests/test_revocation.py`
+- [X] T028 [P] [US3] Integration test verifying that revoked credentials immediately return `REVOKED` on verification in `tests/test_revocation.py`
 
 ### Implementation for User Story 3
-- [ ] T029 [P] [US3] Create ORM model for `Revocation` in `src/models/revocation.py` with foreign key to `credentials` and unique constraint
-- [ ] T030 [P] [US3] Create Pydantic schemas for revocation request and response in `src/schemas/revocation.py`
-- [ ] T031 [US3] Implement revocation service in `src/services/revocation.py` (records revocation, transitions credential status to `REVOKED`, appends audit event)
-- [ ] T032 [US3] Implement administrative revocation REST endpoint in `src/api/v1/revocation.py` (`POST /api/v1/revocation/revoke`)
-- [ ] T033 [US3] Generate and apply Alembic migration for `revocations` table
+- [X] T029 [P] [US3] Create ORM model for `Revocation` in `src/models/revocation.py` with foreign key to `credentials` and unique constraint
+- [X] T030 [P] [US3] Create Pydantic schemas for revocation request and response in `src/schemas/revocation.py`
+- [X] T031 [US3] Implement revocation service in `src/services/revocation.py` (records revocation, transitions credential status to `REVOKED`, appends audit event)
+- [X] T032 [US3] Implement administrative revocation REST endpoint in `src/api/v1/revocation.py` (`POST /api/v1/revocation/revoke`)
+- [X] T033 [US3] Generate and apply Alembic migration for `revocations` table
+
 
 **Checkpoint**: Complete credential lifecycle (Issuance -> Verification -> Revocation -> Live Verification) fully functional.
 

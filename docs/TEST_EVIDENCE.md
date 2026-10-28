@@ -100,8 +100,49 @@ This document maintains empirical evidence of all automated tests, manual checks
   - Duplicate issuance attempts trigger database unique constraint violations and are cleanly handled as `DuplicateIssuanceError` / HTTP 409 Conflict.
   - Audit events (`CREDENTIAL_ISSUED`) are persisted atomically with issuance.
 
+### Verification 007: Phase 4 & Phase 5 (Verification & Revocation Suite)
+- **Date:** 2026-10-28T12:54:01+05:30
+- **Command:** `.\.venv\Scripts\pytest -v`
+- **Database:** Local PostgreSQL 17 (`credential_db`) via `asyncpg` and `psycopg2`
+- **Exit Code:** `0`
+- **Raw Summary:**
+  ```
+  tests/test_eligibility.py::test_eligibility_passing_boundary_80_percent PASSED [  4%]
+  tests/test_eligibility.py::test_eligibility_failing_boundary_79_99_percent PASSED [  9%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_status_not_completed PASSED [ 13%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_outside_rule_date_window PASSED [ 18%]
+  tests/test_health.py::test_health_check_endpoint PASSED                  [ 22%]
+  tests/test_issuance.py::test_atomic_issuance_success_and_cryptographic_verification PASSED [ 27%]
+  tests/test_issuance.py::test_duplicate_issuance_strictly_prevented PASSED [ 31%]
+  tests/test_issuance.py::test_ineligible_issuance_raises_error PASSED     [ 36%]
+  tests/test_issuance.py::test_issuance_rest_api_endpoints PASSED          [ 40%]
+  tests/test_revocation.py::test_authorized_revocation_success_and_audit PASSED [ 45%]
+  tests/test_revocation.py::test_double_revocation_raises_error PASSED     [ 50%]
+  tests/test_revocation.py::test_revoking_nonexistent_credential_raises_error PASSED [ 54%]
+  tests/test_revocation.py::test_live_revocation_reflection_in_verification_api PASSED [ 59%]
+  tests/test_security.py::test_canonical_json_deterministic_ordering PASSED [ 63%]
+  tests/test_security.py::test_payload_hash_tamper_detection PASSED        [ 68%]
+  tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED [ 72%]
+  tests/test_verification.py::test_verification_valid_active_credential PASSED [ 77%]
+  tests/test_verification.py::test_verification_not_found_credential PASSED [ 81%]
+  tests/test_verification.py::test_verification_detects_tampered_payload PASSED [ 86%]
+  tests/test_verification.py::test_tampering_strictly_overrides_revocation PASSED [ 90%]
+  tests/test_verification.py::test_verification_detects_invalid_issuer_signature PASSED [ 95%]
+  tests/test_verification.py::test_public_verification_rest_endpoint PASSED [100%]
+  ============================= 22 passed in 5.05s ==============================
+  ```
+- **Findings:**
+  - Multi-factor verification independently assesses existence, payload SHA-256 integrity, Ed25519 authenticity, and live revocation status.
+  - Altered claims payloads (e.g. boosted score, changed course title) are detected as `TAMPERED` with 100% precision.
+  - Tampering strictly overrides revocation: a revoked credential whose claims have also been altered returns `TAMPERED`.
+  - Forged signatures with alien public keys fail issuer authenticity (`INVALID_ISSUANCE`).
+  - Authorized revocation transitions status to `REVOKED` without deleting historical issuance evidence.
+  - Revocations immediately reflect in public verification queries (`REVOKED` outcome with reason code).
+  - Every verification attempt is logged in `verification_requests` with client IP and outcome.
+
 ---
 
 ## 3. Boundary & Assumption Verification
 *(Will record boundary checks, edge-case scores, date-order validations, and hash-mismatch detections as they are implemented).*
+
 

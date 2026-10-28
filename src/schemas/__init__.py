@@ -14,6 +14,16 @@ from src.schemas.credential import (
     LearnerCreate,
     LearnerResponse,
 )
+from src.schemas.revocation import (
+    RevocationReasonCode,
+    RevocationRequest,
+    RevocationResponse,
+)
+from src.schemas.verification import (
+    VerificationFactorResult,
+    VerificationQueryRequest,
+    VerificationResponse,
+)
 
 __all__ = [
     "EligibilityEvaluationRequest",
@@ -28,4 +38,10 @@ __all__ = [
     "CourseResponse",
     "CompletionRecordCreate",
     "CompletionRecordResponse",
+    "VerificationQueryRequest",
+    "VerificationFactorResult",
+    "VerificationResponse",
+    "RevocationReasonCode",
+    "RevocationRequest",
+    "RevocationResponse",
 ]
