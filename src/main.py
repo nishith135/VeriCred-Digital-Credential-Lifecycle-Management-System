@@ -63,12 +63,14 @@ def create_app() -> FastAPI:
     app.add_exception_handler(DomainException, domain_exception_handler)
 
     # API Routers
+    from src.api.v1.audit import router as audit_router
     from src.api.v1.issuance import router as issuance_router
     from src.api.v1.revocation import router as revocation_router
     from src.api.v1.verification import router as verification_router
     app.include_router(issuance_router)
     app.include_router(verification_router)
     app.include_router(revocation_router)
+    app.include_router(audit_router)
 
     @app.get("/health", tags=["System"])
     async def health_check() -> dict[str, str]:

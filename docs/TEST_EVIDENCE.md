@@ -140,9 +140,49 @@ This document maintains empirical evidence of all automated tests, manual checks
   - Revocations immediately reflect in public verification queries (`REVOKED` outcome with reason code).
   - Every verification attempt is logged in `verification_requests` with client IP and outcome.
 
+### Verification 008: Phase 6 (Append-Only Audit History Suite)
+- **Date:** 2026-10-28T13:15:45+05:30
+- **Command:** `.\.venv\Scripts\pytest -v`
+- **Database:** Local PostgreSQL 17 (`credential_db`) via `asyncpg` and `psycopg2`
+- **Exit Code:** `0`
+- **Raw Summary:**
+  ```
+  tests/test_audit.py::test_audit_event_logging_and_multi_criteria_filtering PASSED [  4%]
+  tests/test_audit.py::test_audit_rest_api_endpoint_pagination_and_query PASSED [  8%]
+  tests/test_eligibility.py::test_eligibility_passing_boundary_80_percent PASSED [ 12%]
+  tests/test_eligibility.py::test_eligibility_failing_boundary_79_99_percent PASSED [ 16%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_status_not_completed PASSED [ 20%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_outside_rule_date_window PASSED [ 25%]
+  tests/test_health.py::test_health_check_endpoint PASSED                  [ 29%]
+  tests/test_issuance.py::test_atomic_issuance_success_and_cryptographic_verification PASSED [ 33%]
+  tests/test_issuance.py::test_duplicate_issuance_strictly_prevented PASSED [ 37%]
+  tests/test_issuance.py::test_ineligible_issuance_raises_error PASSED     [ 41%]
+  tests/test_issuance.py::test_issuance_rest_api_endpoints PASSED          [ 45%]
+  tests/test_revocation.py::test_authorized_revocation_success_and_audit PASSED [ 50%]
+  tests/test_revocation.py::test_double_revocation_raises_error PASSED     [ 54%]
+  tests/test_revocation.py::test_revoking_nonexistent_credential_raises_error PASSED [ 58%]
+  tests/test_revocation.py::test_live_revocation_reflection_in_verification_api PASSED [ 62%]
+  tests/test_security.py::test_canonical_json_deterministic_ordering PASSED [ 66%]
+  tests/test_security.py::test_payload_hash_tamper_detection PASSED        [ 70%]
+  tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED [ 75%]
+  tests/test_verification.py::test_verification_valid_active_credential PASSED [ 79%]
+  tests/test_verification.py::test_verification_not_found_credential PASSED [ 83%]
+  tests/test_verification.py::test_verification_detects_tampered_payload PASSED [ 87%]
+  tests/test_verification.py::test_tampering_strictly_overrides_revocation PASSED [ 91%]
+  tests/test_verification.py::test_verification_detects_invalid_issuer_signature PASSED [ 95%]
+  tests/test_verification.py::test_public_verification_rest_endpoint PASSED [100%]
+  ============================= 24 passed in 4.73s ==============================
+  ```
+- **Findings:**
+  - Audit logging operates append-only across all lifecycle states (`CREDENTIAL_ISSUED`, `CREDENTIAL_REVOKED`, `RULE_MODIFIED`).
+  - Multi-criteria filtering supports querying by `target_entity_id`, `event_type`, `actor_id`, and ISO 8601 date ranges.
+  - REST API endpoint `GET /api/v1/audit/events` correctly performs cursor/limit-offset pagination with exact count representation.
+  - Full regression test suite (24/24 tests) passes cleanly in <5 seconds.
+
 ---
 
 ## 3. Boundary & Assumption Verification
 *(Will record boundary checks, edge-case scores, date-order validations, and hash-mismatch detections as they are implemented).*
+
 
 

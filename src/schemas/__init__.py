@@ -1,5 +1,9 @@
 """Pydantic schemas export."""
 
+from src.schemas.audit import (
+    AuditEventResponse,
+    AuditLogListResponse,
+)
 from src.schemas.credential import (
     CompletionRecordCreate,
     CompletionRecordResponse,

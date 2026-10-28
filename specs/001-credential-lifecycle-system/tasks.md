@@ -107,14 +107,14 @@
 **Independent Test**: Execute full lifecycle sequence, query audit log, and assert exact sequential event reconstruction. Verify application rejects any update or delete operations on audit records.
 
 ### Tests for User Story 4
-- [ ] T034 [P] [US4] Integration test for append-only audit event recording and query filtering in `tests/test_audit.py`
+- [X] T034 [P] [US4] Integration test for append-only audit event recording and query filtering in `tests/test_audit.py`
 
 ### Implementation for User Story 4
-- [ ] T035 [P] [US4] Create ORM model for `AuditEvent` in `src/models/audit.py` with JSONB details and indexed target fields
-- [ ] T036 [P] [US4] Create Pydantic schemas for audit query parameters and event responses in `src/schemas/audit.py`
-- [ ] T037 [US4] Implement centralized audit logging service in `src/services/audit.py`
-- [ ] T038 [US4] Implement audit query REST endpoint in `src/api/v1/audit.py` (`GET /api/v1/audit/events`)
-- [ ] T039 [US4] Generate and apply Alembic migration for `audit_events` table
+- [X] T035 [P] [US4] Create ORM model for `AuditEvent` in `src/models/audit.py` with JSONB details and indexed target fields
+- [X] T036 [P] [US4] Create Pydantic schemas for audit query parameters and event responses in `src/schemas/audit.py`
+- [X] T037 [US4] Implement centralized audit logging service in `src/services/audit.py`
+- [X] T038 [US4] Implement audit query REST endpoint in `src/api/v1/audit.py` (`GET /api/v1/audit/events`)
+- [X] T039 [US4] Generate and apply Alembic migration for `audit_events` table
 
 **Checkpoint**: Audit logging active across all operations. Complete data layer and API operational.
 
