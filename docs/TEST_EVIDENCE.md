@@ -72,6 +72,34 @@ This document maintains empirical evidence of all automated tests, manual checks
   - Ed25519 asymmetric signing and verification correctly validates authentic issuer signatures and rejects tampered digests and alien public keys.
   - FastAPI application factory lifecycle and `/health` probe are verified operational.
 
+### Verification 006: User Story 1 (Eligibility & Atomic Issuance Suite)
+- **Date:** 2026-10-28T12:37:15+05:30
+- **Command:** `.\.venv\Scripts\pytest -v`
+- **Database:** Local PostgreSQL 17 (`credential_db`) via `asyncpg` and `psycopg2`
+- **Exit Code:** `0`
+- **Raw Summary:**
+  ```
+  tests/test_eligibility.py::test_eligibility_passing_boundary_80_percent PASSED [  8%]
+  tests/test_eligibility.py::test_eligibility_failing_boundary_79_99_percent PASSED [ 16%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_status_not_completed PASSED [ 25%]
+  tests/test_eligibility.py::test_eligibility_rejected_if_outside_rule_date_window PASSED [ 33%]
+  tests/test_health.py::test_health_check_endpoint PASSED                  [ 41%]
+  tests/test_issuance.py::test_atomic_issuance_success_and_cryptographic_verification PASSED [ 50%]
+  tests/test_issuance.py::test_duplicate_issuance_strictly_prevented PASSED [ 58%]
+  tests/test_issuance.py::test_ineligible_issuance_raises_error PASSED     [ 66%]
+  tests/test_issuance.py::test_issuance_rest_api_endpoints PASSED          [ 75%]
+  tests/test_security.py::test_canonical_json_deterministic_ordering PASSED [ 83%]
+  tests/test_security.py::test_payload_hash_tamper_detection PASSED        [ 91%]
+  tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED [100%]
+  ============================= 12 passed in 3.02s ==============================
+  ```
+- **Findings:**
+  - Exact 80.00% score threshold passes eligibility; 79.99% boundary condition is strictly rejected.
+  - Incomplete (`IN_PROGRESS`, `FAILED`) completions and out-of-window completion dates are strictly rejected.
+  - Atomic issuance creates unique credentials with canonical SHA-256 hashes and authentic Ed25519 signatures in a single transaction.
+  - Duplicate issuance attempts trigger database unique constraint violations and are cleanly handled as `DuplicateIssuanceError` / HTTP 409 Conflict.
+  - Audit events (`CREDENTIAL_ISSUED`) are persisted atomically with issuance.
+
 ---
 
 ## 3. Boundary & Assumption Verification

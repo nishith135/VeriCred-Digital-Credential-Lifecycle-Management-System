@@ -39,19 +39,19 @@
 **Independent Test**: Verify by submitting completion records with scores above and below the 80% threshold, asserting that eligible records create unique credentials with canonical SHA-256 hashes and audit events in a single transaction, while ineligible records are cleanly rejected with zero state mutation.
 
 ### Tests for User Story 1
-- [ ] T009 [P] [US1] Unit test for canonical payload hashing and Ed25519 signing in `tests/test_security.py`
-- [ ] T010 [P] [US1] Unit test for eligibility evaluation business rules and score boundary conditions in `tests/test_eligibility.py`
-- [ ] T011 [P] [US1] Integration test for atomic issuance, audit logging, and duplicate issuance prevention in `tests/test_issuance.py`
+- [X] T009 [P] [US1] Unit test for canonical payload hashing and Ed25519 signing in `tests/test_security.py`
+- [X] T010 [P] [US1] Unit test for eligibility evaluation business rules and score boundary conditions in `tests/test_eligibility.py`
+- [X] T011 [P] [US1] Integration test for atomic issuance, audit logging, and duplicate issuance prevention in `tests/test_issuance.py`
 
 ### Implementation for User Story 1
-- [ ] T012 [P] [US1] Create ORM models for `Issuer` (`src/models/issuer.py`), `Course` (`src/models/course.py`), and `Learner` (`src/models/learner.py`)
-- [ ] T013 [P] [US1] Create ORM models for `CredentialRule` (`src/models/credential_rule.py`) and `CompletionRecord` (`src/models/completion.py`)
-- [ ] T014 [P] [US1] Create ORM model for `Credential` (`src/models/credential.py`) with unique constraint on `completion_id` and public ID index
-- [ ] T015 [P] [US1] Create Pydantic schemas for issuance request, eligibility evaluation, and credential response in `src/schemas/credential.py`
-- [ ] T016 [US1] Implement eligibility rule evaluation service in `src/services/eligibility.py`
-- [ ] T017 [US1] Implement atomic credential issuance service in `src/services/issuance.py` (canonical payload construction, SHA-256 hashing, Ed25519 signing, atomic DB commit)
-- [ ] T018 [US1] Implement REST API endpoints in `src/api/v1/issuance.py` (`POST /api/v1/issuance/evaluate`, `POST /api/v1/issuance/issue`)
-- [ ] T019 [US1] Generate and apply initial Alembic migration for US1 tables (`alembic revision --autogenerate`, `alembic upgrade head`)
+- [X] T012 [P] [US1] Create ORM models for `Issuer` (`src/models/issuer.py`), `Course` (`src/models/course.py`), and `Learner` (`src/models/learner.py`)
+- [X] T013 [P] [US1] Create ORM models for `CredentialRule` (`src/models/credential_rule.py`) and `CompletionRecord` (`src/models/completion.py`)
+- [X] T014 [P] [US1] Create ORM model for `Credential` (`src/models/credential.py`) with unique constraint on `completion_id` and public ID index
+- [X] T015 [P] [US1] Create Pydantic schemas for issuance request, eligibility evaluation, and credential response in `src/schemas/credential.py`
+- [X] T016 [US1] Implement eligibility rule evaluation service in `src/services/eligibility.py`
+- [X] T017 [US1] Implement atomic credential issuance service in `src/services/issuance.py` (canonical payload construction, SHA-256 hashing, Ed25519 signing, atomic DB commit)
+- [X] T018 [US1] Implement REST API endpoints in `src/api/v1/issuance.py` (`POST /api/v1/issuance/evaluate`, `POST /api/v1/issuance/issue`)
+- [X] T019 [US1] Generate and apply initial Alembic migration for US1 tables (`alembic revision --autogenerate`, `alembic upgrade head`)
 
 **Checkpoint**: User Story 1 fully functional and testable independently. Core issuance vertical slice working.
 

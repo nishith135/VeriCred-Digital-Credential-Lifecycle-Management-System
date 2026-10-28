@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.abspath("."))
 
 from src.core.config import settings
 from src.core.database import Base
+import src.models  # noqa: F401 - Register all models with Base.metadata
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,8 +21,8 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Set SQLAlchemy URL from application configuration
-config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL)
+# Set SQLAlchemy URL from application configuration (escape % for configparser)
+config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL.replace("%", "%%"))
 
 # Target DeclarativeBase metadata for autogenerate support
 target_metadata = Base.metadata

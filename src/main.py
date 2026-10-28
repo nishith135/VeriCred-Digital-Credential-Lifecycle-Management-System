@@ -62,6 +62,10 @@ def create_app() -> FastAPI:
     # Domain Exception Handling
     app.add_exception_handler(DomainException, domain_exception_handler)
 
+    # API Routers
+    from src.api.v1.issuance import router as issuance_router
+    app.include_router(issuance_router)
+
     @app.get("/health", tags=["System"])
     async def health_check() -> dict[str, str]:
         """System health and environment probe."""

@@ -57,7 +57,7 @@ class IneligibleIssuanceError(DomainException):
         super().__init__(
             message=message,
             code="ELIGIBILITY_REQUIREMENTS_NOT_MET",
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=422,
             details=det,
         )
 

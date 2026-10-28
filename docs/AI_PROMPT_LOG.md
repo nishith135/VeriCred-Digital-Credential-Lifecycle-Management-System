@@ -1176,6 +1176,50 @@ yes i amhappy with the exceution plan, go ahead with building
   - `.\.venv\Scripts\alembic --help`: Exit code 0.
 - **Known Issues / Follow-up Actions:** Ready to proceed to Phase 3: User Story 1 (Core Eligibility Evaluation & Atomic Issuance).
 
+### Entry 013: Phase 3 (User Story 1 — Eligibility Evaluation & Atomic Issuance) Implementation
+- **Entry ID:** `PROMPT-013`
+- **Date & Time:** 2026-10-28T12:19:29+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Implement Phase 3 core academic credential issuance workflow: ORM models for all 9 entities, initial Alembic migration applied to PostgreSQL, Pydantic schemas, EligibilityService, IssuanceService, REST API router, and automated unit/integration test suite.
+- **Exact Prompt:**
+```text
+implement the phase 3
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `src/models/issuer.py`: `Issuer` model with public key PEM and status.
+  - `src/models/course.py`: `Course` model with versioning and status.
+  - `src/models/learner.py`: `Learner` model with unique email and immutable public ID.
+  - `src/models/credential_rule.py`: `CredentialRule` model with 80% passing threshold and date checks.
+  - `src/models/completion.py`: `CompletionRecord` with score and status checks.
+  - `src/models/credential.py`: `Credential` with `completion_id UNIQUE`, SHA-256 hash, and Ed25519 signature.
+  - `src/models/audit.py`: `AuditEvent` append-only audit model.
+  - `src/models/revocation.py`: `Revocation` historical tracking model.
+  - `src/models/verification.py`: `VerificationRequest` audit log model.
+  - `src/models/__init__.py`: Registered all models on `Base.metadata`.
+  - `src/schemas/credential.py`: Pydantic validation schemas.
+  - `src/services/eligibility.py`: `EligibilityService` enforcing score thresholds, dates, and duplicate prevention.
+  - `src/services/issuance.py`: `IssuanceService` implementing atomic transaction commits.
+  - `src/api/v1/issuance.py`: REST endpoints (`POST /api/v1/issuance/evaluate`, `POST /api/v1/issuance/issue`).
+  - `src/main.py`: Mounted issuance router.
+  - `alembic/versions/20261028_0703_3891f21a6ba9_create_initial_credential_lifecycle_.py`: Migration script applied to PostgreSQL.
+  - `tests/conftest.py`: PostgreSQL fixtures with NullPool and per-test isolation.
+  - `tests/test_eligibility.py`: Unit tests for score boundary conditions and date window validation.
+  - `tests/test_issuance.py`: Integration tests for atomic issuance, audit logging, and duplicate prevention.
+  - `specs/001-credential-lifecycle-system/tasks.md`: Marked T009–T019 complete.
+  - `docs/TEST_EVIDENCE.md`: Added Verification 006.
+  - `docs/STATUS.md`: Updated M3 to COMPLETED and M4 to NEXT UP.
+- **Summary of AI Output:**
+  - Configured PostgreSQL connection string with password provided by user.
+  - Generated and executed Alembic migration creating all 9 tables in PostgreSQL.
+  - Resolved expired ORM object attribute access during rollback.
+  - Verified 12 out of 12 tests passing with 0 warnings.
+- **Output Status:** Complete and verified operational against PostgreSQL.
+- **Review / Validation Performed:** Ran `pytest -v` across test suite (exit code 0, 12/12 passed).
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\alembic upgrade head`: Applied migration `3891f21a6ba9`.
+  - `.\.venv\Scripts\pytest -v`: 12 passed in 3.02s.
+- **Known Issues / Follow-up Actions:** Ready for Phase 4 (User Story 2 & 3: Verification & Revocation).
+
 ---
 
 ## C. AI Contribution Summary
