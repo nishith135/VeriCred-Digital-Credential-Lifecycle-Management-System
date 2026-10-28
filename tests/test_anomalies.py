@@ -14,9 +14,9 @@ from decimal import Decimal
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.security import compute_payload_hash, verify_signature
-from src.generator.anomalies import generate_anomaly_fixtures
-from src.models import (
+from backend.core.security import compute_payload_hash, verify_signature
+from backend.generator.anomalies import generate_anomaly_fixtures
+from backend.models import (
     CompletionRecord,
     Course,
     Credential,
@@ -25,7 +25,7 @@ from src.models import (
     Learner,
     Revocation,
 )
-from src.services.verification import VerificationService
+from backend.services.verification import VerificationService
 
 
 @pytest.mark.asyncio

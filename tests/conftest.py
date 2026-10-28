@@ -8,11 +8,11 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from src.core.config import settings
-from src.core.database import Base, get_db_session
-from src.core.security import generate_ed25519_keypair
-from src.main import app
-from src.models import (
+from backend.core.config import settings
+from backend.core.database import Base, get_db_session
+from backend.core.security import generate_ed25519_keypair
+from backend.main import app
+from backend.models import (
     CompletionRecord,
     Course,
     CredentialRule,

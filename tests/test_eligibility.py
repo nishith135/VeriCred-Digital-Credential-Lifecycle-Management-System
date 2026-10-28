@@ -5,8 +5,8 @@ from decimal import Decimal
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import CompletionRecord
-from src.services.eligibility import EligibilityService
+from backend.models import CompletionRecord
+from backend.services.eligibility import EligibilityService
 
 
 @pytest.mark.asyncio

@@ -4,10 +4,10 @@ import filecmp
 from pathlib import Path
 import pytest
 
-from src.generator.anomalies import generate_anomaly_fixtures
-from src.generator.exporter import DatasetExporter
-from src.generator.generator import DEFAULT_SEED, DataGenerator
-from src.generator.validator import DatasetValidator
+from backend.generator.anomalies import generate_anomaly_fixtures
+from backend.generator.exporter import DatasetExporter
+from backend.generator.generator import DEFAULT_SEED, DataGenerator
+from backend.generator.validator import DatasetValidator
 
 
 def test_generator_seed_determinism_in_memory():

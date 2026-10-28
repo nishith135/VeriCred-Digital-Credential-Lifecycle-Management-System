@@ -1348,6 +1348,33 @@ go ahead
   - `.\.venv\Scripts\python.exe -m pytest -v`: 36 passed in 6.49s.
 - **Known Issues / Follow-up Actions:** Ready for Phase 9 (Final Convergence Audit, Quickstart Verification, and Submission Walkthrough Packaging, T055–T059).
 
+### Entry 018: Top-Level Repository Separation (backend/ and frontend/)
+- **Entry ID:** `PROMPT-018`
+- **Date & Time:** 2026-10-28T17:08:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Reorganize repository structure to establish clean, symmetrical top-level `backend/` and `frontend/` folders, moving original design specs from `ui/` into `frontend/ui/`, renaming `src/` to `backend/`, and updating all 43 Python module import paths.
+- **Exact Prompt:**
+```text
+before that can we seperate the backend files and frontend files?
+yup go ahead
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - Renamed `src/` to `backend/` via `git mv`
+  - Renamed `ui/` to `frontend/ui/` via `git mv`
+  - Updated all `from src.` / `import src.` references across 43 Python files (`backend/`, `tests/`, `scripts/`, `alembic/env.py`)
+  - Updated `alembic.ini` and `docs/DECISIONS.md` (ADR-006)
+- **Summary of AI Output:**
+  - Consulted user on preferred structure and received confirmation for Option 1 (`backend/` and `frontend/`).
+  - Executed git directory renames and automated regex import updates without introducing breaking changes.
+  - Verified 36/36 tests passing in 5.66s.
+  - Tested CLI synthetic data generation (`python -m backend.generator.cli`).
+- **Output Status:** Complete and verified.
+- **Review / Validation Performed:** Ran full `pytest -v` suite (36/36 passed) and `python -m backend.generator.cli --scale 0.01`.
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\python.exe -m pytest -v`: 36 passed in 5.66s.
+  - `.\.venv\Scripts\python.exe -m backend.generator.cli --scale 0.01`: 0.10s execution time.
+- **Known Issues / Follow-up Actions:** Ready for Phase 9 (Submission Readiness & Polish).
+
 ---
 
 ## C. AI Contribution Summary

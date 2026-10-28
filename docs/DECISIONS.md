@@ -95,4 +95,21 @@ This document records the foundational technical and organizational decisions ma
   - *Trade-off:* UI elements must be translated from Stitch prototypes into Jinja2 components.
   - *Mitigation:* Clean, single-port Python application where FastAPI endpoints serve both JSON and HTMX HTML fragments with zero build latency.
 
+---
 
+## ADR-006: Top-Level Repository Separation — `backend/` and `frontend/`
+- **Date:** 2026-10-28
+- **Status:** Approved
+- **Context:**
+  The project originally placed backend Python code in `src/`, with templates in `frontend/templates/` and original design text files in `ui/`. To maximize architectural clarity and establish an intuitive, modular structure for evaluation and review, the user requested an explicit top-level separation between backend and frontend.
+- **Decision:**
+  1. Rename `src/` to `backend/`.
+  2. Move all design files (`ui/`) into `frontend/ui/`.
+  3. Consolidate all frontend assets (templates, static files, and UI specifications) under `frontend/`.
+  4. Update all Python imports from `from src.` to `from backend.`.
+- **Alternatives Considered:**
+  1. *Moving tests and alembic inside `backend/`:* Rejected to keep project configuration (`pytest.ini`, `alembic.ini`) standard at the repository root.
+  2. *Keeping `src/` and only consolidating `ui/`:* Rejected by user preference in favor of symmetrical top-level `backend/` and `frontend/` directories.
+- **Trade-offs & Mitigations:**
+  - *Trade-off:* 43 Python import paths updated.
+  - *Mitigation:* Validated with full 36/36 pytest suite and CLI data generator test.

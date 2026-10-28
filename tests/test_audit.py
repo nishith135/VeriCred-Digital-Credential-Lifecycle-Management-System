@@ -6,10 +6,10 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import CompletionRecord
-from src.services.audit import AuditService
-from src.services.issuance import IssuanceService
-from src.services.revocation import RevocationService
+from backend.models import CompletionRecord
+from backend.services.audit import AuditService
+from backend.services.issuance import IssuanceService
+from backend.services.revocation import RevocationService
 
 
 @pytest.mark.asyncio

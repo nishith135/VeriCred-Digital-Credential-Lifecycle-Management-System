@@ -14,11 +14,11 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.security import generate_ed25519_keypair, sign_payload_hash
-from src.models import CompletionRecord, VerificationRequest
-from src.services.issuance import IssuanceService
-from src.services.revocation import RevocationService
-from src.services.verification import VerificationService
+from backend.core.security import generate_ed25519_keypair, sign_payload_hash
+from backend.models import CompletionRecord, VerificationRequest
+from backend.services.issuance import IssuanceService
+from backend.services.revocation import RevocationService
+from backend.services.verification import VerificationService
 
 
 @pytest.mark.asyncio

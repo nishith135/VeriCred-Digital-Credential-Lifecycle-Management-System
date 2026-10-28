@@ -15,11 +15,11 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import CredentialNotFoundError, RevocationError
-from src.models import CompletionRecord, Revocation
-from src.services.issuance import IssuanceService
-from src.services.revocation import RevocationService
-from src.services.verification import VerificationService
+from backend.core.exceptions import CredentialNotFoundError, RevocationError
+from backend.models import CompletionRecord, Revocation
+from backend.services.issuance import IssuanceService
+from backend.services.revocation import RevocationService
+from backend.services.verification import VerificationService
 
 
 @pytest.mark.asyncio

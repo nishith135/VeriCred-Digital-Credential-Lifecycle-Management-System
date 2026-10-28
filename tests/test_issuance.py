@@ -7,10 +7,10 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import DuplicateIssuanceError, IneligibleIssuanceError
-from src.core.security import compute_payload_hash, verify_signature
-from src.models import AuditEvent, CompletionRecord
-from src.services.issuance import IssuanceService
+from backend.core.exceptions import DuplicateIssuanceError, IneligibleIssuanceError
+from backend.core.security import compute_payload_hash, verify_signature
+from backend.models import AuditEvent, CompletionRecord
+from backend.services.issuance import IssuanceService
 
 
 @pytest.mark.asyncio

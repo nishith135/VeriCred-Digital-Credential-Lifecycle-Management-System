@@ -8,9 +8,9 @@ from alembic import context
 # Ensure workspace root is in sys.path
 sys.path.insert(0, os.path.abspath("."))
 
-from src.core.config import settings
-from src.core.database import Base
-import src.models  # noqa: F401 - Register all models with Base.metadata
+from backend.core.config import settings
+from backend.core.database import Base
+import backend.models  # noqa: F401 - Register all models with Base.metadata
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

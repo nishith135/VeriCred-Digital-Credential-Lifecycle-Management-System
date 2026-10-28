@@ -7,7 +7,7 @@ Verifies:
 """
 
 import pytest
-from src.core.security import (
+from backend.core.security import (
     canonical_json_dumps,
     compute_payload_hash,
     generate_ed25519_keypair,
