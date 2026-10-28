@@ -1,0 +1,84 @@
+{% if events %}
+  {% for event in events %}
+    <tr class="hover:bg-surface-container-high/60 transition-colors border-b border-surface-container-highest/40">
+      <td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold whitespace-nowrap">
+        <div class="flex items-center gap-space-xs">
+          {% if event.event_type == 'CREDENTIAL_ISSUED' %}
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          {% elif event.event_type == 'CREDENTIAL_REVOKED' %}
+            <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+          {% elif 'VERIFICATION' in event.event_type %}
+            <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          {% else %}
+            <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+          {% endif %}
+          <span>{{ event.event_id }}</span>
+        </div>
+      </td>
+      <td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+        {{ event.occurred_at.strftime('%Y-%m-%d %H:%M:%S UTC') if event.occurred_at else 'N/A' }}
+      </td>
+      <td class="py-space-md px-space-md whitespace-nowrap">
+        {% if event.event_type == 'CREDENTIAL_ISSUED' %}
+          <span class="inline-flex items-center px-space-xs py-0.5 rounded bg-primary-container/20 text-primary-container font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+            CREDENTIAL_ISSUED
+          </span>
+        {% elif event.event_type == 'CREDENTIAL_REVOKED' %}
+          <span class="inline-flex items-center px-space-xs py-0.5 rounded bg-error-container text-error font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+            CREDENTIAL_REVOKED
+          </span>
+        {% elif 'VERIFICATION' in event.event_type %}
+          <span class="inline-flex items-center px-space-xs py-0.5 rounded bg-secondary-container/40 text-secondary font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+            {{ event.event_type }}
+          </span>
+        {% else %}
+          <span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-highest text-tertiary font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+            {{ event.event_type }}
+          </span>
+        {% endif %}
+      </td>
+      <td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+        {{ event.actor_id or 'SYSTEM' }}
+      </td>
+      <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+        <span class="text-outline">{{ event.target_entity_type }}:</span> {{ event.target_entity_id }}
+      </td>
+      <td class="py-space-md px-space-md text-on-surface-variant max-w-xs xl:max-w-md truncate font-code-dense text-code-dense">
+        {% if event.details %}
+          {{ event.details | tojson }}
+        {% else %}
+          —
+        {% endif %}
+      </td>
+      <td class="py-space-md px-space-md text-right whitespace-nowrap">
+        <button 
+          onclick="const p = document.getElementById('payload-{{ event.id }}'); p.classList.toggle('hidden');"
+          class="inline-flex items-center gap-1 px-space-xs py-1 rounded bg-surface-container hover:bg-surface-container-highest text-outline hover:text-on-surface font-code-dense text-code-dense transition-colors">
+          <span class="material-symbols-outlined text-[14px]">code</span>
+          <span>Payload</span>
+        </button>
+      </td>
+    </tr>
+    <!-- Collapsible JSON Payload Row -->
+    <tr id="payload-{{ event.id }}" class="hidden bg-surface-container-lowest/80 border-b border-surface-container-highest/60">
+      <td colspan="7" class="p-space-md font-code-dense text-code-dense">
+        <div class="p-space-sm rounded bg-surface-container border border-outline-variant/30 flex flex-col gap-space-xs">
+          <div class="flex items-center justify-between text-outline text-[11px] font-semibold">
+            <span>AUDIT EVENT CANONICAL RECORD // {{ event.event_id }}</span>
+            <span>TARGET: {{ event.target_entity_type }}:{{ event.target_entity_id }}</span>
+          </div>
+          <pre class="text-secondary overflow-x-auto whitespace-pre-wrap text-[11px] max-h-48 overflow-y-auto leading-relaxed select-all"><code>{{ event.details | tojson(indent=2) }}</code></pre>
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+{% else %}
+  <tr>
+    <td colspan="7" class="py-12 text-center text-outline font-code-dense text-code-dense">
+      <div class="flex flex-col items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[32px] text-outline/50">search_off</span>
+        <span>No audit events match the specified query filters</span>
+      </div>
+    </td>
+  </tr>
+{% endif %}

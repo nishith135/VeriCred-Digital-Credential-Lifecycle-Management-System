@@ -1,0 +1,65 @@
+{% for cred in credentials %}
+<tr class="hover:bg-surface-container transition-colors group">
+  <td class="py-space-md px-space-md">
+    <div class="flex items-center gap-space-xs">
+      <span class="font-code-dense text-body-sm font-semibold text-on-surface">{{ cred.public_id }}</span>
+      <button class="text-outline hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+              onclick="navigator.clipboard.writeText('{{ cred.public_id }}'); showToast('Copied {{ cred.public_id }}');" title="Copy ID">
+        <span class="material-symbols-outlined text-[14px]">content_copy</span>
+      </button>
+    </div>
+    <div class="font-code-dense text-code-dense text-outline">
+      SHA: {{ cred.canonical_payload_hash[:8] }}...{{ cred.canonical_payload_hash[-6:] }}
+    </div>
+  </td>
+  <td class="py-space-md px-space-md">
+    <div class="font-headline-sm text-headline-sm text-on-surface">{{ cred.learner_name }}</div>
+    <div class="font-code-dense text-code-dense text-secondary">{{ cred.learner_public_id }}</div>
+  </td>
+  <td class="py-space-md px-space-md">
+    <div class="text-on-surface font-medium truncate max-w-[220px]">{{ cred.course_title }}</div>
+    <div class="font-code-dense text-code-dense text-outline">{{ cred.course_public_id }}</div>
+  </td>
+  <td class="py-space-md px-space-md text-center">
+    <span class="font-code-dense text-body-sm font-bold text-primary">{{ "%.1f"|format(cred.assessment_score) }}%</span>
+  </td>
+  <td class="py-space-md px-space-md text-center">
+    <span class="px-2 py-0.5 rounded text-[11px] font-code-dense uppercase tracking-wider
+      {% if cred.status == 'ACTIVE' %}bg-primary/10 text-primary border border-primary/30
+      {% else %}bg-error/10 text-error border border-error/30{% endif %}">
+      {{ cred.status }}
+    </span>
+  </td>
+  <td class="py-space-md px-space-md">
+    <span class="font-body-sm text-on-surface-variant truncate block max-w-[150px]">{{ cred.issuer_name }}</span>
+  </td>
+  <td class="py-space-md px-space-md font-code-dense text-code-dense text-outline">
+    {{ cred.issued_at.strftime('%Y-%m-%d %H:%M') if cred.issued_at else '' }}
+  </td>
+  <td class="py-space-md px-space-md text-right">
+    <div class="flex items-center justify-end gap-1.5">
+      <a href="/verify?id={{ cred.public_id }}"
+         class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high text-primary font-code-dense text-code-dense transition-colors">
+        Verify
+      </a>
+      {% if cred.status == 'ACTIVE' %}
+      <button type="button"
+              onclick="openRevokeModal('{{ cred.public_id }}', '{{ cred.learner_name }}', '{{ cred.course_title }}')"
+              class="px-2 py-1 rounded bg-error-container/20 hover:bg-error-container text-error font-code-dense text-code-dense transition-colors">
+        Revoke
+      </button>
+      {% else %}
+      <span class="px-2 py-1 rounded text-outline font-code-dense text-code-dense opacity-50 cursor-not-allowed">
+        Revoked
+      </span>
+      {% endif %}
+    </div>
+  </td>
+</tr>
+{% else %}
+<tr>
+  <td colspan="8" class="py-space-xl text-center text-outline font-code-dense">
+    No credentials found matching query criteria.
+  </td>
+</tr>
+{% endfor %}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>{% block title %}VeriCred — Cryptographic Trust & Credential Lifecycle{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+  
+  <style>
+    @layer base {
+      html, body { margin:0; padding:0; }
+      body { overscroll-behavior:none; }
+      main > :first-child { margin-top:0 !important; }
+      main > :last-child { margin-bottom:0 !important; }
+    }
+    ::-webkit-scrollbar { display:none; }
+  </style>
+
+  <!-- Tailwind CSS Runtime -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "secondary-fixed": "#d8e2ff",
+          "on-surface": "#d3e4fd",
+          "primary-container": "#27d99a",
+          "on-secondary-fixed": "#001a42",
+          "on-tertiary-fixed": "#281900",
+          "on-secondary": "#002e6a",
+          "tertiary": "#ffd595",
+          "on-secondary-fixed-variant": "#004495",
+          "inverse-primary": "#006c4a",
+          "surface-container-low": "#0b1d2e",
+          "surface-tint": "#34e0a0",
+          "on-error-container": "#ffdad6",
+          "on-tertiary": "#432c00",
+          "outline": "#85948a",
+          "secondary-container": "#0564d4",
+          "error-container": "#93000a",
+          "error": "#ffb4ab",
+          "surface-container": "#0f2133",
+          "surface": "#031426",
+          "on-primary-fixed": "#002114",
+          "surface-container-lowest": "#000f20",
+          "surface-variant": "#253649",
+          "on-secondary-container": "#e0e8ff",
+          "on-surface-variant": "#bacabf",
+          "on-error": "#690005",
+          "inverse-surface": "#d3e4fd",
+          "primary": "#53f6b4",
+          "surface-container-highest": "#253649",
+          "tertiary-fixed": "#ffdead",
+          "on-tertiary-container": "#694700",
+          "tertiary-container": "#f4b443",
+          "background": "#031426",
+          "surface-container-high": "#1a2b3e",
+          "inverse-on-surface": "#213244",
+          "secondary": "#adc6ff",
+          "primary-fixed": "#5cfdbb",
+          "on-primary-fixed-variant": "#005237",
+          "on-tertiary-fixed-variant": "#604100",
+          "surface-dim": "#031426",
+          "surface-bright": "#2a3a4e",
+          "on-primary": "#003824",
+          "secondary-fixed-dim": "#adc6ff",
+          "outline-variant": "#3c4a42",
+          "primary-fixed-dim": "#34e0a0",
+          "tertiary-fixed-dim": "#fcbb49",
+          "on-background": "#d3e4fd",
+          "on-primary-container": "#005a3c"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-xs": "0.25rem",
+          "space-2xl": "2rem",
+          "margin": "1rem",
+          "gutter": "1rem",
+          "space-xl": "1.5rem",
+          "space-md": "0.75rem",
+          "space-sm": "0.5rem",
+          "gutter-lg": "1.5rem",
+          "space-lg": "1rem",
+          "margin-lg": "1.5rem"
+        },
+        "fontFamily": {
+          "headline-md": ["Geist"],
+          "body-md": ["JetBrains Mono"],
+          "headline-lg-mobile": ["Geist"],
+          "headline-sm": ["Geist"],
+          "label-md": ["JetBrains Mono"],
+          "body-lg": ["JetBrains Mono"],
+          "headline-lg": ["Geist"],
+          "label-sm": ["JetBrains Mono"],
+          "body-sm": ["JetBrains Mono"],
+          "code-dense": ["JetBrains Mono"],
+          "display-lg": ["Geist"]
+        }
+      }
+    }
+  }
+  </script>
+
+  <!-- HTMX 2.0 Library -->
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+
+  <!-- Sidebar Navigation -->
+  <aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container-lowest border-r border-outline-variant z-50 flex flex-col justify-between">
+    <div class="flex flex-col">
+      <!-- Logo / Title -->
+      <div class="h-14 px-space-lg flex items-center gap-space-sm border-b border-outline-variant bg-surface-container-lowest">
+        <div class="w-8 h-8 rounded-lg bg-surface-container-high border border-primary/30 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-[20px]">verified_user</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-space-xs">
+            <span class="font-headline-sm text-headline-sm font-semibold tracking-tight text-on-surface">VeriCred</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-code-dense uppercase bg-surface-container-high text-primary border border-outline-variant">Core</span>
+          </div>
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Cryptographic Trust</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="px-space-md py-space-sm">
+        <div class="px-space-sm py-space-xs text-label-sm font-label-sm uppercase tracking-wider text-outline">Modules &amp; Services</div>
+        <nav class="flex flex-col gap-1 mt-1">
+          <a href="/verify" class="flex items-center gap-space-md px-space-md py-space-sm rounded font-label-md transition-colors {% if active_page == 'verify' %}bg-surface-container-high text-primary border-l-2 border-primary{% else %}text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface{% endif %}">
+            <span class="material-symbols-outlined text-[18px]">gpp_good</span>
+            <span>Verify Credential</span>
+          </a>
+          <a href="/registry" class="flex items-center gap-space-md px-space-md py-space-sm rounded font-label-md transition-colors {% if active_page == 'registry' %}bg-surface-container-high text-primary border-l-2 border-primary{% else %}text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface{% endif %}">
+            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+            <span>Credential Registry</span>
+          </a>
+          <a href="/audit" class="flex items-center gap-space-md px-space-md py-space-sm rounded font-label-md transition-colors {% if active_page == 'audit' %}bg-surface-container-high text-primary border-l-2 border-primary{% else %}text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface{% endif %}">
+            <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+            <span>Audit Ledger</span>
+          </a>
+          <a href="/anomalies" class="flex items-center gap-space-md px-space-md py-space-sm rounded font-label-md transition-colors {% if active_page == 'anomalies' %}bg-surface-container-high text-primary border-l-2 border-primary{% else %}text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface{% endif %}">
+            <span class="material-symbols-outlined text-[18px]">biotech</span>
+            <span>Anomaly Lab</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Enclave Status Footer -->
+    <div class="p-space-md border-t border-outline-variant bg-surface-container-lowest">
+      <div class="p-space-sm rounded bg-surface-container border border-outline-variant flex flex-col gap-1.5">
+        <div class="flex items-center justify-between">
+          <span class="font-code-dense text-code-dense uppercase tracking-wider text-outline">Crypto Engine</span>
+          <span class="inline-flex items-center gap-1 font-code-dense text-code-dense text-primary">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>Ed25519-ph
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+          <span>Backend</span>
+          <span class="text-on-surface-variant">PostgreSQL 17</span>
+        </div>
+        <div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+          <span>Integrity</span>
+          <span class="text-primary truncate">SHA-256 Canonical</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrap -->
+  <div class="pl-[260px]">
+    <!-- Top App Bar -->
+    <header class="fixed top-0 left-[260px] right-0 h-14 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant z-40 px-space-lg flex items-center justify-between gap-space-lg">
+      <div class="flex items-center gap-space-md">
+        <div class="inline-flex items-center gap-2 px-space-sm py-1 rounded bg-surface-container border border-outline-variant">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          <span class="font-code-dense text-code-dense text-on-surface-variant uppercase tracking-wider">System Online • PostgreSQL 17 • Ed25519 Signed</span>
+        </div>
+        <div class="hidden xl:inline-flex items-center gap-1.5 px-space-sm py-1 rounded bg-surface-container border border-outline-variant text-secondary">
+          <span class="material-symbols-outlined text-[14px]">lock</span>
+          <span class="font-code-dense text-code-dense uppercase tracking-wider">Tamper-Precedence Security Invariant Enforced</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-space-lg">
+        <div class="flex items-center gap-space-md border-l border-outline-variant pl-space-md">
+          <div class="flex flex-col text-right hidden sm:flex">
+            <span class="font-label-sm text-label-sm text-on-surface font-medium">SecOps Authority</span>
+            <span class="font-code-dense text-code-dense text-outline uppercase">Registrar Node</span>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="relative pt-14 w-full px-space-lg min-h-screen bg-surface">
+      <div class="flex flex-col w-full pb-space-2xl pt-space-lg">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+
+  <!-- Global Toast Container -->
+  <div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none" id="toastNotification">
+    <div class="flex items-center gap-space-sm px-space-md py-space-sm bg-surface-container-high rounded shadow-xl font-code-dense text-body-sm text-on-surface border border-outline-variant">
+      <span class="material-symbols-outlined text-[20px] text-primary" id="toastIcon">check_circle</span>
+      <span id="toastMessage">Action completed successfully</span>
+    </div>
+  </div>
+
+  <script>
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = message;
+      if (isError) {
+        toastIcon.textContent = 'error';
+        toastIcon.className = 'material-symbols-outlined text-[20px] text-error';
+      } else {
+        toastIcon.textContent = 'check_circle';
+        toastIcon.className = 'material-symbols-outlined text-[20px] text-primary';
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

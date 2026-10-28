@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed": "#001a42", "on-secondary-fixed-variant": "#004495", "on-primary-container": "#005a3c", "primary-fixed": "#5cfdbb", "outline-variant": "#3c4a42", "tertiary-fixed": "#ffdead", "primary": "#53f6b4", "secondary-fixed-dim": "#adc6ff", "primary-fixed-dim": "#34e0a0", "on-surface-variant": "#bacabf", "on-secondary": "#002e6a", "on-tertiary": "#432c00", "on-error-container": "#ffdad6", "on-tertiary-container": "#694700", "on-error": "#690005", "surface-container-low": "#0b1d2e", "surface-container-high": "#1a2b3e", "surface-container-highest": "#253649", "on-primary-fixed-variant": "#005237", "surface-variant": "#253649", "error": "#ffb4ab", "surface-bright": "#2a3a4e", "surface-dim": "#031426", "inverse-surface": "#d3e4fd", "surface": "#031426", "on-tertiary-fixed": "#281900", "inverse-primary": "#006c4a", "surface-container-lowest": "#000f20", "surface-tint": "#34e0a0", "secondary": "#adc6ff", "tertiary-container": "#f4b443", "on-surface": "#d3e4fd", "surface-container": "#0f2133", "on-primary-fixed": "#002114", "on-background": "#d3e4fd", "secondary-fixed": "#d8e2ff", "background": "#031426", "secondary-container": "#0564d4", "on-tertiary-fixed-variant": "#604100", "tertiary": "#ffd595", "on-secondary-container": "#e0e8ff", "outline": "#85948a", "inverse-on-surface": "#213244", "on-primary": "#003824", "error-container": "#93000a", "primary-container": "#27d99a", "tertiary-fixed-dim": "#fcbb49" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "margin": "1rem", "space-lg": "1rem", "space-xl": "1.5rem", "space-md": "0.75rem", "gutter": "1rem", "margin-lg": "1.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-2xl": "2rem" }, "fontFamily": { "headline-sm": [ "Geist" ], "headline-lg-mobile": [ "Geist" ], "label-md": [ "JetBrains Mono" ], "body-md": [ "JetBrains Mono" ], "code-dense": [ "JetBrains Mono" ], "body-lg": [ "JetBrains Mono" ], "label-sm": [ "JetBrains Mono" ], "headline-lg": [ "Geist" ], "headline-md": [ "Geist" ], "body-sm": [ "JetBrains Mono" ], "display-lg": [ "Geist" ] }, "fontSize": { "headline-sm": [ "1rem", { "lineHeight": "1.5rem", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "headline-lg-mobile": [ "1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "label-md": [ "0.8125rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "500" } ], "body-md": [ "0.875rem", { "lineHeight": "1.375rem", "letterSpacing": "0em", "fontWeight": "400" } ], "code-dense": [ "0.6875rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "400" } ], "body-lg": [ "0.9375rem", { "lineHeight": "1.5rem", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "label-sm": [ "0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "600" } ], "headline-lg": [ "1.75rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "headline-md": [ "1.25rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.015em", "fontWeight": "500" } ], "body-sm": [ "0.75rem", { "lineHeight": "1.125rem", "letterSpacing": "0.01em", "fontWeight": "400" } ], "display-lg": [ "2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.025em", "fontWeight": "600" } ] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary"><aside class="fixed left-0 top-0 h-full w-60 bg-surface-container-low flex flex-col justify-between z-50"><div class="flex flex-col"><div class="h-11 px-margin flex items-center gap-space-sm bg-surface-container-lowest"><div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center"><span class="material-symbols-outlined text-on-primary font-bold text-[16px]">verified_user</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight uppercase leading-none font-semibold">VeriCred</span><span class="font-code-dense text-code-dense text-outline tracking-wider uppercase">Trust Platform</span></div></div><div class="px-margin pt-space-lg pb-space-xs"><span class="font-code-dense text-code-dense text-outline uppercase tracking-wider">Navigation Protocol</span></div><nav class="flex flex-col gap-space-xs px-margin" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_0_1px_#27D99A]"><a class="flex items-center gap-space-sm px-space-md py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="verify-credential" href="#"><span class="material-symbols-outlined text-[18px]">fact_check</span><span class="font-label-md text-label-md">Verify Credential</span></a><a class="flex items-center gap-space-sm px-space-md py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="credential-registry" href="#"><span class="material-symbols-outlined text-[18px]">fingerprint</span><span class="font-label-md text-label-md">Credential Registry</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-xs transition-all bg-primary-container text-on-primary-container font-semibold rounded-lg shadow-[0_0_0_1px_#27D99A]" data-path="audit-ledger" href="#"><span class="material-symbols-outlined text-[18px]">history_edu</span><span class="font-label-md text-label-md">Audit Ledger</span></a><a class="flex items-center gap-space-sm px-space-md py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="anomaly-lab" href="#"><span class="material-symbols-outlined text-[18px]">biotech</span><span class="font-label-md text-label-md">Anomaly Lab</span></a></nav></div><div class="m-margin p-space-md bg-surface-container rounded-lg flex flex-col gap-space-xs"><div class="flex items-center justify-between pb-space-xs"><span class="font-code-dense text-code-dense text-outline uppercase font-semibold">Crypto Engine</span><div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div></div><div class="flex flex-col gap-space-xs font-code-dense text-code-dense text-on-surface-variant"><div class="flex justify-between items-center"><span class="text-outline">CORE</span><span class="text-on-surface font-label-sm text-label-sm">Ed25519-ph</span></div><div class="flex justify-between items-center"><span class="text-outline">DB</span><span class="text-on-surface font-label-sm text-label-sm">PostgreSQL 17.2</span></div><div class="flex justify-between items-center"><span class="text-outline">NODE</span><span class="text-on-surface font-label-sm text-label-sm">SecOps-Prod-01</span></div></div></div></aside><div class="pl-60 min-h-screen flex flex-col bg-background"><header class="fixed top-0 left-60 right-0 h-11 bg-surface-container-low/95 backdrop-blur-md z-40 px-margin flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest"><span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span><span class="font-code-dense text-code-dense uppercase tracking-wider text-on-surface-variant">SYSTEM ONLINE • POSTGRESQL 17 • ED25519 SIGNED</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span><span class="font-code-dense text-code-dense uppercase tracking-wider text-secondary">FIPS 140-3 LEVEL 4 KEYRING</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center bg-surface-container-highest px-space-md py-space-xs rounded gap-space-sm"><span class="material-symbols-outlined text-[16px] text-outline">search</span><span class="font-code-dense text-code-dense text-outline">Quick Query...</span><kbd class="bg-surface-container px-space-xs rounded font-code-dense text-code-dense text-outline">⌘K</kbd></div><div class="flex items-center gap-space-sm bg-surface-container-highest px-space-sm py-space-xs rounded-full"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col pr-space-sm"><span class="font-label-sm text-label-sm text-on-surface leading-none">SecOps Lead</span><span class="font-code-dense text-code-dense text-outline leading-tight">Registrar Authority</span></div></div></div></header><main class="w-full pt-11 px-margin pb-space-2xl bg-background flex-1"><div class="flex flex-col w-full">
+<!-- Top Forensic Breadcrumb & Terminal Status Strip -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-md">
+<div class="flex items-center gap-space-xs font-code-dense text-code-dense text-outline">
+<span>AUDIT_LEDGER</span>
+<span>/</span>
+<span>EPOCH_2026_Q1</span>
+<span>/</span>
+<span class="text-primary-container">MERKLE_TREE_SEALED</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs">
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest text-on-surface-variant font-code-dense text-code-dense">
+<span class="text-outline">STORE:</span>
+<span class="text-on-surface">PostgreSQL 17 Append-Only</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest text-on-surface-variant font-code-dense text-code-dense">
+<span class="text-outline">TOTAL EVENTS:</span>
+<span class="text-on-surface font-semibold">48,190</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container-lowest text-on-surface-variant font-code-dense text-code-dense">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="text-outline">SYNC HEIGHT:</span>
+<span class="text-primary-container">Block 1,849,202</span>
+</div>
+</div>
+</div>
+<!-- Header Section with Audit Action Affordances -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg pb-space-lg">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-semibold">Audit Ledger</h1>
+<span class="px-space-sm py-space-xs rounded bg-surface-container-highest text-secondary font-code-dense text-code-dense uppercase tracking-wider font-semibold">Immutable V2.8</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Trace credential lifecycle events with persistent, reviewable audit history and tamper-evident cryptographic state hashes. Real-time deterministic journal for forensic non-repudiation.
+      </p>
+</div>
+<!-- Export Controls -->
+<div class="flex items-center gap-space-xs shrink-0">
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md rounded transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-outline">table_view</span>
+<span>Export CSV</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md rounded transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary-container">data_object</span>
+<span>Export JSON (Full Schema)</span>
+</button>
+<div class="h-6 w-px bg-surface-container-highest mx-space-xs"></div>
+<button class="flex items-center justify-center p-space-xs bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface rounded transition-colors" title="Ledger Verification Integrity Test" type="button">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</button>
+</div>
+</div>
+<!-- Metric Overview Strip (Forensic Key Indicators) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter mb-space-lg">
+<!-- Metric 1: 24h Velocity -->
+<div class="p-space-md rounded bg-surface-container flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-code-dense text-code-dense uppercase tracking-wider">24h Event Velocity</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">speed</span>
+</div>
+<div class="my-space-sm flex items-baseline justify-between">
+<div class="font-display-lg text-display-lg text-on-surface font-semibold tracking-tight">1,492</div>
+<div class="flex items-center gap-space-xs text-primary-container font-code-dense text-code-dense font-semibold">
+<span>+8.4%</span>
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+<span>PEAK: 142 EVT/MIN</span>
+<!-- Inline Micro Sparkline -->
+<svg class="w-20 h-4 text-primary-container opacity-80" fill="none" preserveaspectratio="none" viewbox="0 0 80 16">
+<path d="M0 13 L12 11 L24 14 L36 8 L48 9 L60 4 L72 7 L80 2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</div>
+</div>
+<!-- Metric 2: State Invalidation -->
+<div class="p-space-md rounded bg-surface-container flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-code-dense text-code-dense uppercase tracking-wider">State Invalidation</span>
+<span class="material-symbols-outlined text-[16px] text-error">gavel</span>
+</div>
+<div class="my-space-sm flex items-baseline justify-between">
+<div class="font-display-lg text-display-lg text-on-surface font-semibold tracking-tight">14</div>
+<div class="text-error font-code-dense text-code-dense">
+          30d Window
+        </div>
+</div>
+<div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+<span>MEAN RESOLUTION:</span>
+<span class="text-on-surface">1.2s LATENCY</span>
+</div>
+</div>
+<!-- Metric 3: Verified Requests -->
+<div class="p-space-md rounded bg-surface-container flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-code-dense text-code-dense uppercase tracking-wider">Verified Queries</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">fact_check</span>
+</div>
+<div class="my-space-sm flex items-baseline justify-between">
+<div class="font-display-lg text-display-lg text-on-surface font-semibold tracking-tight">39,410</div>
+<div class="flex items-center gap-space-xs text-primary-container font-code-dense text-code-dense font-semibold">
+<span>100% VALID</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+<span>DISCREPANCY RATIO:</span>
+<span class="text-primary-container">0.000%</span>
+</div>
+</div>
+<!-- Metric 4: Integrity Digest -->
+<div class="p-space-md rounded bg-surface-container flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between text-outline">
+<span class="font-code-dense text-code-dense uppercase tracking-wider">Integrity Merkle Root</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">lock</span>
+</div>
+<div class="my-space-sm flex flex-col">
+<div class="font-code-dense text-code-dense text-secondary truncate" title="SHA256: 9e0b82f1b4028d193fa7e4a839d3381a1795b9b819fbc1938fa73919ac2598c2">
+          SHA256: 9e0b82f1...c2598
+        </div>
+<div class="flex items-center gap-space-xs mt-space-xs text-outline font-code-dense text-code-dense">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>EPOCH SEALED &amp; AFFIRMED</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-outline font-code-dense text-code-dense">
+<span>ENCLAVE:</span>
+<span class="text-on-surface">FIPS 140-3 HSM #04</span>
+</div>
+</div>
+</div>
+<!-- Forensic Filter Toolbar -->
+<form class="p-space-md bg-surface-container rounded mb-space-lg shadow-sm" id="auditFilterForm" onsubmit="event.preventDefault(); applyLedgerFilters();">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-space-md items-end">
+<!-- Filter 1: Event Type -->
+<div class="flex flex-col gap-space-xs xl:col-span-1">
+<label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterEventType">Event Type</label>
+<div class="relative">
+<select class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-body-sm text-body-sm rounded appearance-none focus:outline-none focus:bg-surface-bright pr-space-lg cursor-pointer" id="filterEventType">
+<option value="ALL">All Events</option>
+<option value="CREDENTIAL_ISSUED">CREDENTIAL_ISSUED</option>
+<option selected="" value="CREDENTIAL_REVOKED">CREDENTIAL_REVOKED</option>
+<option value="VERIFICATION_REQUEST">VERIFICATION_REQUEST</option>
+<option value="RULE_MODIFIED">RULE_MODIFIED</option>
+<option value="PAYLOAD_TAMPER_FLAGGED">PAYLOAD_TAMPER_FLAGGED</option>
+<option value="ISSUER_CHANGED">ISSUER_CHANGED</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Filter 2: Actor ID Mask -->
+<div class="flex flex-col gap-space-xs xl:col-span-1">
+<label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterActorMask">Actor ID Mask</label>
+<div class="relative">
+<input class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-code-dense text-code-dense rounded focus:outline-none focus:bg-surface-bright" id="filterActorMask" placeholder="e.g. SEC-ADMIN-*" type="text" value="SEC-ADMIN-*"/>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">fingerprint</span>
+</div>
+</div>
+<!-- Filter 3: Target Entity Type -->
+<div class="flex flex-col gap-space-xs xl:col-span-1">
+<label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterEntityType">Target Entity Type</label>
+<div class="relative">
+<select class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-body-sm text-body-sm rounded appearance-none focus:outline-none focus:bg-surface-bright pr-space-lg cursor-pointer" id="filterEntityType">
+<option value="ALL">All Target Types</option>
+<option selected="" value="Credential">Credential</option>
+<option value="Rule">Rule</option>
+<option value="Issuer">Issuer</option>
+<option value="Enclave_Key">Enclave_Key</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Filter 4: Target Entity ID -->
+<div class="flex flex-col gap-space-xs xl:col-span-1">
+<label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterEntityId">Target Entity ID</label>
+<div class="relative">
+<input class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-code-dense text-code-dense rounded focus:outline-none focus:bg-surface-bright" id="filterEntityId" placeholder="e.g. CRED-2026-003819" type="text" value="CRED-2026-003819"/>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">pin</span>
+</div>
+</div>
+<!-- Filter 5: Temporal Scope -->
+<div class="flex flex-col gap-space-xs xl:col-span-1">
+<label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterDateRange">Temporal Scope</label>
+<div class="relative">
+<select class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-body-sm text-body-sm rounded appearance-none focus:outline-none focus:bg-surface-bright pr-space-lg cursor-pointer" id="filterDateRange">
+<option value="24h">Last 24 Hours</option>
+<option value="7d">Last 7 Days</option>
+<option selected="" value="30d">Last 30 Days (Jan 19 – Feb 18)</option>
+<option value="90d">Last Quarter (Q4/Q1)</option>
+<option value="epoch">Full Genesis Epoch</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">calendar_month</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-space-xs xl:col-span-1">
+<button class="flex-1 h-8 bg-secondary-container hover:bg-secondary text-on-secondary hover:text-on-secondary-fixed font-label-md text-label-md rounded flex items-center justify-center gap-space-xs transition-colors shadow-sm" type="submit">
+<span class="material-symbols-outlined text-[16px]">filter_alt</span>
+<span>Apply Filters</span>
+</button>
+<button class="h-8 px-space-sm bg-surface-container-highest hover:bg-surface-bright text-outline hover:text-on-surface rounded flex items-center justify-center font-code-dense text-code-dense transition-colors" onclick="document.getElementById('auditFilterForm').reset()" title="Reset Filters" type="button">
+          Reset
+        </button>
+</div>
+</div>
+</form>
+<!-- Ledger View Options Strip & Mode Toggles -->
+<div class="flex items-center justify-between pb-space-sm px-space-xs font-code-dense text-code-dense text-outline">
+<div class="flex items-center gap-space-md">
+<span class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-on-surface">LEDGER STREAM ONLINE</span>
+</span>
+<span>•</span>
+<span>INDEX ENGINE: PostgreSQL JSONB GIN</span>
+<span>•</span>
+<span class="hidden md:inline">CRYPTO PROOF: Ed25519-ph SHA-512</span>
+</div>
+<!-- UI State Simulation Switcher (HTMX / Jinja state preview) -->
+<div class="flex items-center gap-space-xs bg-surface-container-lowest p-space-xs rounded">
+<button class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface text-code-dense font-code-dense" id="btnStateTable" onclick="switchLedgerState('table')" type="button">Live Data</button>
+<button class="px-space-xs py-0.5 rounded text-outline hover:text-on-surface text-code-dense font-code-dense" id="btnStateLoading" onclick="switchLedgerState('loading')" type="button">Loading State</button>
+<button class="px-space-xs py-0.5 rounded text-outline hover:text-on-surface text-code-dense font-code-dense" id="btnStateEmpty" onclick="switchLedgerState('empty')" type="button">Empty State</button>
+</div>
+</div>
+<!-- Main Ledger Container -->
+<div class="w-full bg-surface-container rounded shadow-sm overflow-hidden flex flex-col" id="ledgerContentContainer">
+<!-- Forensic Table Wrapper -->
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest text-outline font-code-dense text-code-dense uppercase tracking-wider">
+<th class="py-space-sm px-space-md font-medium">EVENT ID</th>
+<th class="py-space-sm px-space-md font-medium">TIMESTAMP (UTC)</th>
+<th class="py-space-sm px-space-md font-medium">EVENT TYPE</th>
+<th class="py-space-sm px-space-md font-medium">ACTOR ID</th>
+<th class="py-space-sm px-space-md font-medium">TARGET ENTITY</th>
+<th class="py-space-sm px-space-md font-medium">EVENT SUMMARY</th>
+<th class="py-space-sm px-space-md font-medium text-right">ACTIONS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high font-body-sm text-body-sm">
+<!-- ROW 1: CREDENTIAL_REVOKED (Active Forensic Target, Row is Expanded by Default) -->
+<tr class="bg-surface-container-low hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>EVT-01849202-992</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 14:22:09 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-error-container/30 text-error font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                CREDENTIAL_REVOKED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              SEC-ADMIN-9402 <span class="text-outline">(Registrar)</span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Credential:</span> CRED-2026-003819
+            </td>
+<td class="py-space-md px-space-md text-on-surface max-w-md truncate">
+              Revocation committed: ACADEMIC_MISCONDUCT sanction (#2026-089A)
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" onclick="toggleDetailsRow('detail-row-1')" type="button">
+<span class="material-symbols-outlined text-[14px]" id="detail-icon-1">expand_less</span>
+<span id="detail-label-1">Collapse</span>
+</button>
+</td>
+</tr>
+<!-- EXPANDABLE INVESTIGATION DETAILS: Row 1 Subpanel -->
+<tr class="bg-surface-container-lowest" id="detail-row-1">
+<td class="p-space-lg" colspan="7">
+<div class="bg-surface-container-low rounded p-space-md flex flex-col gap-space-md">
+<!-- Expanded Subheader with Forensic Attestation Badge -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-error text-[20px]">assignment_late</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold">PostgreSQL JSONB State Transition Diff</span>
+<span class="font-code-dense text-code-dense text-outline">ATOMIC COMMIT RECORD • WAL POS 0x18F492E • TOMBSTONE HEIGHT 1,849,202</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-surface-container font-code-dense text-code-dense text-primary-container">
+<span class="material-symbols-outlined text-[14px]">verified_user</span>
+<span>HSM Keyring Attestation Verified</span>
+</div>
+<button class="px-space-xs py-space-xs text-outline hover:text-on-surface" title="Copy Raw Delta" type="button">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Forensic Dual-Pane Inspection View -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Left: JSON Diff Payload -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded p-space-md flex flex-col gap-space-xs font-code-dense text-code-dense">
+<div class="flex items-center justify-between pb-space-xs text-outline font-semibold">
+<span>DELTA PAYLOAD (v2.8 canonical)</span>
+<span>FORMAT: RFC 6902 JSON PATCH</span>
+</div>
+<pre class="text-on-surface-variant overflow-x-auto whitespace-pre leading-relaxed select-all"><code>{
+  <span class="text-outline">"event_id":</span> <span class="text-secondary">"EVT-01849202-992"</span>,
+  <span class="text-outline">"timestamp_utc":</span> <span class="text-secondary">"2026-02-18T14:22:09.104Z"</span>,
+  <span class="text-outline">"target_entity":</span> {
+    <span class="text-outline">"type":</span> <span class="text-secondary">"Credential"</span>,
+    <span class="text-outline">"id":</span> <span class="text-secondary">"CRED-2026-003819"</span>,
+    <span class="text-outline">"owner_fingerprint":</span> <span class="text-secondary">"sha256:4a02c819ff..."</span>
+  },
+  <span class="text-outline">"state_transition":</span> {
+    <span class="text-outline">"previous_status":</span> <span class="text-primary-container">"ACTIVE"</span>,
+    <span class="text-outline">"new_status":</span> <span class="text-error font-semibold">"REVOKED"</span>,
+    <span class="text-outline">"revocation_reason_code":</span> <span class="text-error font-semibold">"ACADEMIC_MISCONDUCT"</span>,
+    <span class="text-outline">"tombstone_block_height":</span> <span class="text-tertiary">1849202</span>
+  },
+  <span class="text-outline">"sanction_reference":</span> {
+    <span class="text-outline">"docket_id":</span> <span class="text-secondary">"CASE-2026-89A"</span>,
+    <span class="text-outline">"hearing_date":</span> <span class="text-on-surface">"2026-02-17"</span>,
+    <span class="text-outline">"affirmation_officer":</span> <span class="text-on-surface">"Dr. E. Vance, Dean of Academic Security"</span>
+  },
+  <span class="text-outline">"cryptographic_attestation":</span> {
+    <span class="text-outline">"actor_id":</span> <span class="text-on-surface">"SEC-ADMIN-9402"</span>,
+    <span class="text-outline">"key_engine":</span> <span class="text-on-surface">"ed25519:ph"</span>,
+    <span class="text-outline">"signature":</span> <span class="text-primary-container">"ed25519:7b30f0190a4dfb768a31e8c109bfcd87a9101bca09c84e112d8d1a49ce2b918a"</span>
+  }
+}</code></pre>
+</div>
+<!-- Right: Cryptographic Non-Repudiation Certificate Card -->
+<div class="lg:col-span-5 bg-surface-container rounded p-space-md flex flex-col justify-between">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-code-dense text-code-dense text-outline uppercase font-semibold">Attestation Proof Summary</span>
+<span class="px-space-xs py-0.5 rounded bg-primary-container/20 text-primary-container font-code-dense text-code-dense">VALIDATED</span>
+</div>
+<div class="flex flex-col gap-space-xs font-code-dense text-code-dense">
+<div class="flex flex-col">
+<span class="text-outline">MERKLE LEAF POSITION</span>
+<span class="text-on-surface">Leaf #1,849,202 / Tree Epoch Q1</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline">CRYPTOGRAPHIC HASH (BLAKE3)</span>
+<span class="text-secondary font-mono truncate">4e61a0b73c21a99f18a202dff8e1a7b0032</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline">AFFIRMATION HSM FINGERPRINT</span>
+<span class="text-on-surface font-mono">HSM-SEC-NODE-US-EAST-01-V4</span>
+</div>
+<div class="flex flex-col">
+<span class="text-outline">REVOCATION CASUALTY SCOPE</span>
+<span class="text-error">Public Credential Invalidation Propagated (12 API Gateways Synced)</span>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-md flex items-center justify-between gap-space-xs">
+<button class="w-full py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-sm text-label-sm rounded flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">policy</span>
+<span>View Docket Case #2026-89A</span>
+</button>
+<button class="py-space-xs px-space-sm bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-sm text-label-sm rounded flex items-center justify-center transition-colors" title="Download Cryptographic Attestation Block" type="button">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- ROW 2: CREDENTIAL_ISSUED -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>EVT-01849110-401</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 13:58:44 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-primary-container/20 text-primary-container font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                CREDENTIAL_ISSUED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              SYSTEM_ACCREDITATION_DAEMON
+            </td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Credential:</span> CRED-2026-084920
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              New credential batch minted after automated 80% score threshold pass
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+<!-- ROW 3: VERIFICATION_REQUEST -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>EVT-01848994-118</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 13:12:01 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                VERIFICATION_REQUEST
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              E-GATE_VERIFIER_04
+            </td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Credential:</span> CRED-2026-001249
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              Real-time TLS query verified authentic via MITx anchor
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+<!-- ROW 4: RULE_MODIFIED -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span>EVT-01848801-092</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 11:45:22 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-highest text-on-surface font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                RULE_MODIFIED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              SEC-ADMIN-1104
+            </td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Rule:</span> RULE_SCORE_THRESHOLD
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              Passing threshold affirmed at &gt;= 80.0% by Faculty Senate resolution
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+<!-- ROW 5: PAYLOAD_TAMPER_FLAGGED -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+<span>EVT-01848722-005</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 10:19:15 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-tertiary-container/20 text-tertiary font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                PAYLOAD_TAMPER_FLAGGED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              E-GATE_VERIFIER_02
+            </td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Credential:</span> CRED-2025-099411
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              Automated E-Gate intercepted hash divergence in gradeScore claim
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+<!-- ROW 6: CREDENTIAL_ISSUED -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>EVT-01848604-332</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 09:30:59 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-primary-container/20 text-primary-container font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                CREDENTIAL_ISSUED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              SEC-ADMIN-9402
+            </td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Credential:</span> CRED-2026-077180
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              Cryptographic dispatch approved for Computer Science honors
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+<!-- ROW 7: ISSUER_CHANGED -->
+<tr class="hover:bg-surface-container-high/60 transition-colors">
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface font-semibold">
+<div class="flex items-center gap-space-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+<span>EVT-01848529-810</span>
+</div>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface-variant whitespace-nowrap">
+              2026-02-18 08:14:02 UTC
+            </td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-highest text-secondary font-code-dense text-code-dense font-semibold uppercase tracking-wider">
+                ISSUER_CHANGED
+              </span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-on-surface whitespace-nowrap">
+              SEC-ADMIN-0001 <span class="text-outline">(Root)</span>
+</td>
+<td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
+<span class="text-outline">Issuer:</span> ISSUER-DEPT-ENGINEERING
+            </td>
+<td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
+              Public key rotation to ed25519:pk_live_2026_q1
+            </td>
+<td class="py-space-md px-space-md text-right whitespace-nowrap">
+<button class="px-space-sm py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface rounded font-label-sm text-label-sm inline-flex items-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">code</span>
+<span>View JSON</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Journal Scope Footer -->
+<div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="font-code-dense text-code-dense text-outline">
+        Showing <span class="text-on-surface font-semibold">1-7</span> of <span class="text-on-surface font-semibold">48,190</span> matching audit events
+      </div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-space-xs bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface rounded font-code-dense text-code-dense transition-colors" type="button">
+          First
+        </button>
+<button class="px-space-sm py-space-xs bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface rounded font-code-dense text-code-dense transition-colors" type="button">
+          Previous
+        </button>
+<div class="px-space-md py-space-xs bg-surface-container-high text-on-surface font-code-dense text-code-dense rounded font-semibold">
+          Page 1 of 6,885
+        </div>
+<button class="px-space-sm py-space-xs bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface rounded font-code-dense text-code-dense transition-colors" type="button">
+          Next
+        </button>
+<button class="px-space-sm py-space-xs bg-surface-container hover:bg-surface-container-high text-outline hover:text-on-surface rounded font-code-dense text-code-dense transition-colors" type="button">
+          Last
+        </button>
+</div>
+</div>
+</div>
+<!-- Loading State Representation (Hidden by default, toggleable via dev switch) -->
+<div class="hidden w-full bg-surface-container rounded p-space-2xl flex-col items-center justify-center gap-space-md text-center" id="ledgerLoadingState">
+<div class="w-8 h-8 rounded-full border-2 border-primary-container border-t-transparent animate-spin"></div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Synchronizing Append-Only Log</span>
+<span class="font-code-dense text-code-dense text-outline">Reconstructing Merkle validation tree from PostgreSQL WAL position...</span>
+</div>
+</div>
+<!-- Empty State Representation (Hidden by default, toggleable via dev switch) -->
+<div class="hidden w-full bg-surface-container rounded p-space-2xl flex-col items-center justify-center gap-space-md text-center" id="ledgerEmptyState">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[28px]">search_off</span>
+</div>
+<div class="flex flex-col gap-space-xs max-w-md">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Zero Matching Forensic Events</span>
+<span class="font-body-md text-body-md text-on-surface-variant">No journal transitions matched your filter mask. Adjust entity criteria, target ID, or broaden your temporal scope.</span>
+</div>
+<button class="mt-space-sm px-space-md py-space-xs bg-surface-container-highest hover:bg-surface-bright text-on-surface font-label-md text-label-md rounded transition-colors" onclick="switchLedgerState('table')" type="button">
+      Reset Filters
+    </button>
+</div>
+<!-- Client-Side State Toggle Script -->
+<script>
+    function toggleDetailsRow(rowId) {
+      const row = document.getElementById(rowId);
+      const icon = document.getElementById('detail-icon-1');
+      const label = document.getElementById('detail-label-1');
+      
+      if (!row) return;
+
+      if (row.classList.contains('hidden')) {
+        row.classList.remove('hidden');
+        if (icon) icon.textContent = 'expand_less';
+        if (label) label.textContent = 'Collapse';
+      } else {
+        row.classList.add('hidden');
+        if (icon) icon.textContent = 'expand_more';
+        if (label) label.textContent = 'Inspect';
+      }
+    }
+
+    function switchLedgerState(state) {
+      const table = document.getElementById('ledgerContentContainer');
+      const loading = document.getElementById('ledgerLoadingState');
+      const empty = document.getElementById('ledgerEmptyState');
+
+      const btnTable = document.getElementById('btnStateTable');
+      const btnLoading = document.getElementById('btnStateLoading');
+      const btnEmpty = document.getElementById('btnStateEmpty');
+
+      // Reset buttons
+      [btnTable, btnLoading, btnEmpty].forEach(btn => {
+        btn.className = "px-space-xs py-0.5 rounded text-outline hover:text-on-surface text-code-dense font-code-dense";
+      });
+
+      // Hide all
+      table.classList.add('hidden');
+      loading.classList.add('hidden');
+      loading.classList.remove('flex');
+      empty.classList.add('hidden');
+      empty.classList.remove('flex');
+
+      if (state === 'table') {
+        table.classList.remove('hidden');
+        btnTable.className = "px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface text-code-dense font-code-dense";
+      } else if (state === 'loading') {
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+        btnLoading.className = "px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface text-code-dense font-code-dense";
+      } else if (state === 'empty') {
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
+        btnEmpty.className = "px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface text-code-dense font-code-dense";
+      }
+    }
+
+    function applyLedgerFilters() {
+      // Micro visual confirmation for the analyst
+      const container = document.getElementById('ledgerContentContainer');
+      container.classList.add('opacity-50');
+      setTimeout(() => {
+        container.classList.remove('opacity-50');
+      }, 180);
+    }
+  </script>
+</div></main></div></body></html>

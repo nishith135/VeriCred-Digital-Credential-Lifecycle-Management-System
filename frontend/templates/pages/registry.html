@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Credential Registry — VeriCred Trust Operations{% endblock %}
+
+{% block content %}
+<!-- Context Indicator Strip -->
+<div class="flex flex-wrap items-center justify-between gap-space-md py-space-sm mb-space-md bg-surface-container-lowest px-space-md rounded shadow-sm border border-outline-variant">
+  <div class="flex items-center gap-space-md flex-wrap font-code-dense text-code-dense">
+    <span class="text-outline uppercase tracking-wider">Registry Authority:</span>
+    <span class="inline-flex items-center gap-1.5 px-space-xs py-0.5 rounded bg-surface-container text-primary">
+      <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+      REGISTRAR_ACTIVE [PostgreSQL 17.2]
+    </span>
+    <span class="text-outline-variant">/</span>
+    <span class="text-outline">Algorithm: <span class="text-secondary">Ed25519-ph + SHA-256</span></span>
+  </div>
+  <div class="flex items-center gap-space-sm font-code-dense text-code-dense text-outline">
+    <span>Pool:</span>
+    <span class="text-primary">Live Connection Pool</span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl">
+  <div>
+    <div class="flex items-center gap-space-sm mb-1">
+      <span class="px-space-xs py-0.5 rounded bg-surface-container-high text-primary font-code-dense text-label-sm uppercase tracking-wider">Registrar Engine</span>
+      <span class="text-outline font-code-dense text-label-sm">v1.0.0-prod</span>
+    </div>
+    <h1 class="font-display-lg text-display-lg text-on-surface font-semibold tracking-tight">Credential Registry</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1">
+      Manage credential lifecycle integrity, review candidate eligibility, and execute authoritative revocations across consortium nodes.
+    </p>
+  </div>
+  <div class="flex items-center gap-space-md flex-wrap">
+    <button type="button" onclick="document.getElementById('evaluationDrawer').classList.toggle('hidden')"
+            class="px-space-md py-space-sm bg-surface-container-high hover:bg-surface-bright text-on-surface rounded font-label-md text-label-md flex items-center gap-space-xs transition-colors shadow-sm border border-outline-variant">
+      <span class="material-symbols-outlined text-[18px] text-secondary">tune</span>
+      <span>Toggle Pre-Issuance Deck</span>
+    </button>
+  </div>
+</div>
+
+<!-- Live Metric Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-xl">
+  <!-- Total Issued -->
+  <div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-space-sm">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Total Issued</span>
+      <span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+    </div>
+    <div class="flex items-baseline gap-space-sm mb-space-xs">
+      <span class="font-display-lg text-headline-lg font-bold text-on-surface">{{ "{:,}".format(metrics.total_issued) }}</span>
+      <span class="font-code-dense text-code-dense text-secondary uppercase">All-time</span>
+    </div>
+    <span class="font-code-dense text-code-dense text-outline">100% committed to DB</span>
+  </div>
+
+  <!-- Active Credentials -->
+  <div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-space-sm">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Active Credentials</span>
+      <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+    </div>
+    <div class="flex items-baseline gap-space-sm mb-space-xs">
+      <span class="font-display-lg text-headline-lg font-bold text-primary">{{ "{:,}".format(metrics.active_count) }}</span>
+      <span class="font-code-dense text-code-dense text-primary uppercase">Valid</span>
+    </div>
+    <span class="font-code-dense text-code-dense text-outline">Authoritative state: ACTIVE</span>
+  </div>
+
+  <!-- Revoked Credentials -->
+  <div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-space-sm">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Revoked Credentials</span>
+      <span class="material-symbols-outlined text-error text-[20px]">cancel</span>
+    </div>
+    <div class="flex items-baseline gap-space-sm mb-space-xs">
+      <span class="font-display-lg text-headline-lg font-bold text-error">{{ "{:,}".format(metrics.revoked_count) }}</span>
+      <span class="font-code-dense text-code-dense text-error uppercase">Tombstoned</span>
+    </div>
+    <span class="font-code-dense text-code-dense text-outline">Immutable ledger audit</span>
+  </div>
+
+  <!-- Total Verifications -->
+  <div class="bg-surface-container-low p-space-lg rounded-xl shadow-sm border border-outline-variant flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-space-sm">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Verification Requests</span>
+      <span class="material-symbols-outlined text-secondary text-[20px]">shield</span>
+    </div>
+    <div class="flex items-baseline gap-space-sm mb-space-xs">
+      <span class="font-display-lg text-headline-lg font-bold text-secondary">{{ "{:,}".format(metrics.verifications_count) }}</span>
+      <span class="font-code-dense text-code-dense text-secondary uppercase">Queries</span>
+    </div>
+    <span class="font-code-dense text-code-dense text-outline">Logged verification attempts</span>
+  </div>
+</div>
+
+<!-- Pre-Issuance Evaluation Workflow Deck -->
+<div class="mb-space-xl bg-surface-container-low rounded-xl p-space-lg shadow-sm border border-outline-variant hidden" id="evaluationDrawer">
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-md pb-space-md mb-space-md bg-surface-container-lowest p-space-md rounded">
+    <div class="flex items-center gap-space-md">
+      <div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined text-[24px]">verified_user</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-space-sm">
+          <span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-semibold">Pre-Issuance Rule Engine</span>
+          <span class="px-1.5 py-0.2 rounded bg-surface-container font-code-dense text-code-dense text-outline">SQLAlchemy Domain Invariant</span>
+        </div>
+        <h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Eligibility &amp; Automated Attestation Workflow</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md font-body-sm text-body-sm">
+    <div class="p-space-md rounded bg-surface-container space-y-2">
+      <span class="font-label-sm text-outline uppercase tracking-wider block">Candidate Evaluation Criteria</span>
+      <div class="flex items-center justify-between"><span>Minimum Assessment Score:</span><strong class="text-primary font-code-dense">80.00%</strong></div>
+      <div class="flex items-center justify-between"><span>Required Status:</span><strong class="text-primary font-code-dense">COMPLETED</strong></div>
+      <div class="flex items-center justify-between"><span>Duplicate Issuance:</span><strong class="text-error font-code-dense">STRICTLY PROHIBITED</strong></div>
+    </div>
+
+    <div class="p-space-md rounded bg-surface-container flex flex-col justify-between">
+      <span class="font-label-sm text-outline uppercase tracking-wider block">Signing Node Keypair</span>
+      <p class="text-on-surface-variant font-code-dense text-code-dense">
+        Keys managed via Ed25519 asymmetric cryptography. Atomic snapshot is generated, hashed, and signed before database commit.
+      </p>
+      <div class="font-code-dense text-code-dense text-secondary pt-2">
+        Enclave: FIPS 140-3 Compliant Seed
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toolbar & Search Form -->
+<div class="bg-surface-container-low p-space-md rounded-xl mb-space-md shadow-sm border border-outline-variant">
+  <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+    <!-- Live Search Input -->
+    <div class="relative flex-1">
+      <span class="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[18px]">search</span>
+      <input type="text" id="credentialSearch" name="search"
+             hx-get="/web/registry/table"
+             hx-trigger="keyup changed delay:300ms, search"
+             hx-target="#credentialsTableBody"
+             hx-include="[name='status']"
+             placeholder="Search by Credential ID, Learner Name, or Course..."
+             class="w-full h-10 pl-10 pr-4 rounded bg-surface-container font-code-dense text-body-sm text-on-surface placeholder-outline focus:outline-none focus:border-secondary border border-outline-variant transition-colors" />
+    </div>
+
+    <!-- Status Dropdown Filter -->
+    <div class="flex items-center gap-space-sm">
+      <div class="relative">
+        <select name="status"
+                hx-get="/web/registry/table"
+                hx-trigger="change"
+                hx-target="#credentialsTableBody"
+                hx-include="[name='search']"
+                class="h-10 pl-3 pr-8 rounded bg-surface-container font-code-dense text-label-md text-on-surface appearance-none cursor-pointer focus:outline-none border border-outline-variant">
+          <option value="ALL">Status: All Statuses</option>
+          <option value="ACTIVE" selected>Status: ACTIVE</option>
+          <option value="REVOKED">Status: REVOKED</option>
+        </select>
+        <span class="material-symbols-outlined absolute right-2.5 top-2.5 text-outline text-[18px] pointer-events-none">expand_more</span>
+      </div>
+
+      <button type="button"
+              hx-get="/web/registry/table"
+              hx-target="#credentialsTableBody"
+              hx-include="[name='search'], [name='status']"
+              class="h-10 w-10 rounded bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center border border-outline-variant transition-colors" title="Sync table">
+        <span class="material-symbols-outlined text-[18px]">sync</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Credential Table -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden shadow-sm border border-outline-variant mb-space-xl">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container-lowest text-outline font-label-sm text-label-sm uppercase tracking-wider border-b border-outline-variant">
+          <th class="py-space-sm px-space-md font-semibold">Credential ID</th>
+          <th class="py-space-sm px-space-md font-semibold">Learner</th>
+          <th class="py-space-sm px-space-md font-semibold">Course</th>
+          <th class="py-space-sm px-space-md font-semibold text-center">Score</th>
+          <th class="py-space-sm px-space-md font-semibold text-center">Status</th>
+          <th class="py-space-sm px-space-md font-semibold">Issuer</th>
+          <th class="py-space-sm px-space-md font-semibold">Issued (UTC)</th>
+          <th class="py-space-sm px-space-md font-semibold text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="credentialsTableBody" class="divide-y divide-outline-variant/30 font-body-sm text-body-sm">
+        {% include "partials/registry_table.html" %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Revocation Modal Dialog -->
+<div id="revocationModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+  <div class="bg-surface-container-lowest w-full max-w-xl rounded-xl border border-outline-variant shadow-2xl overflow-hidden">
+    <div class="p-space-lg bg-error/10 border-b border-error/20 flex items-start gap-space-md">
+      <div class="w-10 h-10 rounded-lg bg-error/20 flex items-center justify-center text-error shrink-0">
+        <span class="material-symbols-outlined text-[24px]">gavel</span>
+      </div>
+      <div>
+        <h3 class="font-headline-sm text-headline-sm font-bold text-error">Warning: Cryptographic Revocation is Irreversible</h3>
+        <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          This writes an immutable tombstone record directly to the persistent registry and audit ledger.
+        </p>
+      </div>
+    </div>
+
+    <form hx-post="/web/revocation/revoke"
+          hx-target="#credentialsTableBody"
+          hx-swap="innerHTML"
+          onsubmit="closeRevokeModal();"
+          class="p-space-lg space-y-space-md">
+      <!-- Hidden ID input -->
+      <input type="hidden" name="credential_public_id" id="modalCredIdInput" />
+
+      <div class="bg-surface-container p-space-md rounded space-y-1.5 font-code-dense text-body-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-outline uppercase text-[11px]">Target Credential:</span>
+          <strong class="text-error" id="modalCredId"></strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-outline uppercase text-[11px]">Learner:</span>
+          <span class="text-on-surface" id="modalLearner"></span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-outline uppercase text-[11px]">Course:</span>
+          <span class="text-on-surface truncate max-w-[280px]" id="modalCourse"></span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-label-sm text-label-sm uppercase tracking-wider text-outline mb-1">
+          Actor Identifier
+        </label>
+        <input type="text" name="actor_id" required value="REGISTRAR-DEAN-01"
+               class="w-full h-10 px-3 rounded bg-surface-container font-code-dense text-body-sm text-on-surface border border-outline-variant focus:outline-none focus:border-secondary" />
+      </div>
+
+      <div>
+        <label class="block font-label-sm text-label-sm uppercase tracking-wider text-outline mb-1">
+          Standard Reason Code
+        </label>
+        <div class="relative">
+          <select name="reason_code" required
+                  class="w-full h-10 px-3 rounded bg-surface-container font-code-dense text-body-sm text-on-surface border border-outline-variant appearance-none focus:outline-none">
+            <option value="ACADEMIC_MISCONDUCT">ACADEMIC_MISCONDUCT (Honor Council Sanction)</option>
+            <option value="ADMINISTRATIVE_ERROR">ADMINISTRATIVE_ERROR (Incorrect Metadata / Record Error)</option>
+            <option value="RESCINDED">RESCINDED (Voluntary Rescission)</option>
+            <option value="OTHER">OTHER (Specified in signed audit note)</option>
+          </select>
+          <span class="material-symbols-outlined absolute right-3 top-2.5 text-outline text-[18px] pointer-events-none">expand_more</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-label-sm text-label-sm uppercase tracking-wider text-outline mb-1">
+          Explanatory Audit Notes
+        </label>
+        <textarea name="notes" rows="2"
+                  class="w-full p-2.5 rounded bg-surface-container font-code-dense text-body-sm text-on-surface border border-outline-variant focus:outline-none"
+                  placeholder="Record formal justification for the permanent audit ledger..."></textarea>
+      </div>
+
+      <div class="p-space-sm rounded bg-surface-container flex items-start gap-space-sm">
+        <input type="checkbox" id="governanceCheck" required class="mt-1 w-4 h-4 rounded text-primary cursor-pointer" />
+        <label for="governanceCheck" class="font-body-sm text-body-sm text-on-surface select-none cursor-pointer">
+          I verify that this revocation adheres to academic governance invariants and confirm tombstone creation.
+        </label>
+      </div>
+
+      <div class="flex items-center justify-end gap-space-md pt-2 border-t border-outline-variant">
+        <button type="button" onclick="closeRevokeModal()"
+                class="px-space-md py-space-sm rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-space-lg py-space-sm rounded bg-error-container text-on-error-container hover:bg-error font-label-md text-label-md font-bold transition-all shadow-md flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-[18px]">gavel</span>
+          <span>Confirm Irreversible Revocation</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openRevokeModal(credId, learner, course) {
+    document.getElementById('modalCredIdInput').value = credId;
+    document.getElementById('modalCredId').textContent = credId;
+    document.getElementById('modalLearner').textContent = learner;
+    document.getElementById('modalCourse').textContent = course;
+    document.getElementById('revocationModal').classList.remove('hidden');
+  }
+
+  function closeRevokeModal() {
+    document.getElementById('revocationModal').classList.add('hidden');
+  }
+</script>
+{% endblock %}

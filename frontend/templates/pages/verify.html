@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Credential — VeriCred Cryptographic E-Gate{% endblock %}
+
+{% block content %}
+<!-- System Status Strip -->
+<div class="flex flex-wrap items-center justify-between gap-space-md py-space-sm mb-space-md bg-surface-container-lowest px-space-md rounded shadow-sm border border-outline-variant">
+  <div class="flex items-center gap-space-md flex-wrap">
+    <span class="font-code-dense text-code-dense text-outline uppercase tracking-wider">Public E-Gate Verifier</span>
+    <span class="inline-flex items-center gap-1.5 px-space-xs py-0.5 rounded bg-surface-container font-code-dense text-code-dense text-primary">
+      <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+      VERIFIER_ONLINE [Ed25519-ph]
+    </span>
+    <span class="text-outline-variant">/</span>
+    <span class="font-code-dense text-code-dense text-outline">Invariant: <span class="text-on-surface">Tamper-Precedence Active</span></span>
+  </div>
+  <div class="flex items-center gap-space-sm font-code-dense text-code-dense text-outline">
+    <span>Database:</span>
+    <span class="text-primary">PostgreSQL 17 Native</span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl">
+  <div>
+    <div class="flex items-center gap-space-sm mb-1">
+      <span class="px-space-xs py-0.5 rounded bg-surface-container-high text-primary font-code-dense text-label-sm uppercase tracking-wider">Independent Third-Party Portal</span>
+      <span class="text-outline font-code-dense text-label-sm">RFC 8032 Authentic</span>
+    </div>
+    <h1 class="font-display-lg text-display-lg text-on-surface font-semibold tracking-tight">Public Credential Verification</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1">
+      Perform zero-trust multi-factor verification across cryptographic signatures, canonical payload hashes, and live revocation registers.
+    </p>
+  </div>
+</div>
+
+<!-- Search Card & Quick-Fill Pills -->
+<div class="bg-surface-container-low p-space-lg rounded-xl mb-space-xl shadow-md border border-outline-variant">
+  <form hx-post="/web/verify" hx-target="#verificationResult" hx-indicator="#verifySpinner" class="space-y-space-md">
+    <div>
+      <label class="block font-label-md text-label-md uppercase tracking-wider text-outline mb-2">
+        Enter Public Credential Identifier
+      </label>
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3.5 text-outline text-[22px]">search</span>
+        <input type="text" name="credential_public_id" id="credentialInput" required
+               class="w-full h-12 pl-12 pr-32 rounded-lg bg-surface-container font-code-dense text-body-lg text-on-surface placeholder-outline focus:outline-none focus:border-primary border border-outline-variant transition-colors"
+               placeholder="e.g. CRED-2026-000001" value="{{ sample_valid_id or 'CRED-2026-000001' }}" />
+        <button type="submit"
+                class="absolute right-1.5 h-9 px-space-lg bg-primary hover:bg-primary-fixed-dim text-surface-container-lowest font-label-md font-bold rounded flex items-center gap-1.5 transition-all shadow-md">
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          <span>Verify</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Paste Test Pills -->
+    <div class="flex items-center gap-2 flex-wrap pt-1 font-code-dense text-code-dense text-outline">
+      <span>Quick Test Identifiers:</span>
+      <button type="button" onclick="setCredential('{{ sample_valid_id }}', '')"
+              class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high text-primary border border-primary/30 transition-colors">
+        Sample Active Valid
+      </button>
+      <button type="button" onclick="setCredential('{{ sample_revoked_id }}', '')"
+              class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high text-error border border-error/30 transition-colors">
+        Sample Revoked
+      </button>
+      <button type="button" onclick="setTamperPayload('{{ sample_valid_id }}')"
+              class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high text-tertiary border border-tertiary/30 transition-colors">
+        Simulate Tampered Claims
+      </button>
+    </div>
+
+    <!-- Tamper Simulation Accordion -->
+    <details class="bg-surface-container p-space-md rounded-lg border border-outline-variant text-body-sm" id="tamperDetails">
+      <summary class="font-label-md text-secondary cursor-pointer select-none flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">biotech</span>
+        <span>Simulate Third-Party Payload Tampering (Adversarial Test)</span>
+      </summary>
+      <div class="pt-space-md space-y-2">
+        <p class="text-on-surface-variant font-code-dense text-code-dense">
+          Modify any claim attribute below (e.g., change score from 85.00 to 99.00). The service canonicalizes the modified envelope and checks against the signed hash.
+        </p>
+        <textarea name="tamper_payload_json" id="tamperJson" rows="6"
+                  class="w-full p-space-sm rounded bg-surface-container-lowest font-code-dense text-code-dense text-primary border border-outline-variant focus:outline-none focus:border-secondary"
+                  placeholder='Optional JSON payload to verify against cryptographic signature'></textarea>
+      </div>
+    </details>
+  </form>
+</div>
+
+<!-- Loading Spinner Indicator -->
+<div id="verifySpinner" class="htmx-indicator flex items-center justify-center gap-space-sm py-space-xl text-primary font-code-dense text-body-md">
+  <span class="material-symbols-outlined animate-spin text-[28px]">progress_activity</span>
+  <span>Executing 4-factor cryptographic evaluation...</span>
+</div>
+
+<!-- Target Result Container -->
+<div id="verificationResult" class="space-y-space-md">
+  {% if default_result %}
+    {% set result = default_result %}
+    {% include "partials/verification_badge.html" %}
+  {% else %}
+    <div class="p-space-xl rounded-xl bg-surface-container-lowest border border-outline-variant/60 text-center text-outline">
+      <span class="material-symbols-outlined text-[48px] text-outline mb-2">shield_question</span>
+      <p class="font-body-md">Enter a Credential Public ID above or click a quick-test identifier to verify cryptographic proofs.</p>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  function setCredential(id, payload) {
+    document.getElementById('credentialInput').value = id;
+    document.getElementById('tamperJson').value = payload;
+    htmx.trigger(document.querySelector('form'), 'submit');
+  }
+
+  function setTamperPayload(id) {
+    document.getElementById('credentialInput').value = id;
+    document.getElementById('tamperDetails').open = true;
+    const tampered = {
+      "credential_id": id,
+      "assessment": { "score": 99.99, "status": "COMPLETED" },
+      "tampered_marker": "MUTATION_0x4F"
+    };
+    document.getElementById('tamperJson').value = JSON.stringify(tampered, null, 2);
+    htmx.trigger(document.querySelector('form'), 'submit');
+  }
+</script>
+{% endblock %}

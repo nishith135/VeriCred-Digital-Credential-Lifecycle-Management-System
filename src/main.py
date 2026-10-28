@@ -26,11 +26,11 @@ from src.core.exceptions import DomainException, domain_exception_handler
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan context manager for startup and shutdown hooks."""
-    # Startup: ensure static directories exist
-    os.makedirs("src/static/css", exist_ok=True)
-    os.makedirs("src/static/js", exist_ok=True)
-    os.makedirs("src/templates/pages", exist_ok=True)
-    os.makedirs("src/templates/partials", exist_ok=True)
+    # Startup: ensure frontend static directories exist
+    os.makedirs("frontend/static/css", exist_ok=True)
+    os.makedirs("frontend/static/js", exist_ok=True)
+    os.makedirs("frontend/templates/pages", exist_ok=True)
+    os.makedirs("frontend/templates/partials", exist_ok=True)
     yield
     # Shutdown: dispose of database engine pools
     await async_engine.dispose()
@@ -56,8 +56,9 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Static assets
-    app.mount("/static", StaticFiles(directory="src/static"), name="static")
+    # Static assets (physical and logical separation in frontend/static)
+    os.makedirs("frontend/static", exist_ok=True)
+    app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
     # Domain Exception Handling
     app.add_exception_handler(DomainException, domain_exception_handler)
@@ -67,6 +68,9 @@ def create_app() -> FastAPI:
     from src.api.v1.issuance import router as issuance_router
     from src.api.v1.revocation import router as revocation_router
     from src.api.v1.verification import router as verification_router
+    from src.api.views.web import router as web_router
+
+    app.include_router(web_router)
     app.include_router(issuance_router)
     app.include_router(verification_router)
     app.include_router(revocation_router)
@@ -85,4 +89,4 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-templates = Jinja2Templates(directory="src/templates")
+templates = Jinja2Templates(directory="frontend/templates")

@@ -149,13 +149,13 @@
 **Independent Test**: Open browser, enter credential ID, observe real-time HTMX verification badge response (<200ms) without page reload, and execute administrative revocation flow.
 
 ### Implementation for User Story 6
-- [ ] T048 [P] [US6] Create master Jinja2 layout shell in `src/templates/base.html` (Inter typography, HTMX inclusion, header/nav, toast container)
-- [ ] T049 [P] [US6] Create custom CSS stylesheet in `src/static/css/styles.css` adapting Google Stitch visual design references
-- [ ] T050 [US6] Create public verification page in `src/templates/pages/verify.html` and HTMX partial `src/templates/partials/verification_badge.html`
-- [ ] T051 [US6] Create administrative credential management table in `src/templates/pages/credentials.html` and revocation modal partial `src/templates/partials/revocation_modal.html`
-- [ ] T052 [US6] Create audit log exploration view in `src/templates/pages/audit.html`
-- [ ] T053 [US6] Implement FastAPI web route handlers in `src/api/views/web.py` supporting both full page loads and `HX-Request` partial swaps
-- [ ] T054 [US6] Validate live interactive UI workflows in running application
+- [X] T048 [P] [US6] Create master Jinja2 layout shell in `frontend/templates/base.html` (Inter/Geist typography, HTMX inclusion, header/nav, toast container)
+- [X] T049 [P] [US6] Create custom styling & Tailwind configuration adapting Google Stitch visual design references
+- [X] T050 [US6] Create public verification page in `frontend/templates/pages/verify.html` and HTMX partial `frontend/templates/partials/verification_badge.html`
+- [X] T051 [US6] Create administrative credential management table in `frontend/templates/pages/registry.html` and `frontend/templates/partials/registry_table.html`
+- [X] T052 [US6] Create audit log exploration view in `frontend/templates/pages/audit.html` and `frontend/templates/partials/audit_table.html`
+- [X] T053 [US6] Implement FastAPI web route handlers in `src/api/views/web.py` supporting both full page loads and `HX-Request` partial swaps
+- [X] T054 [US6] Validate live interactive UI workflows in running application (36/36 tests passing in `tests/test_web.py`)
 
 **Checkpoint**: Complete user interface active, interactive, and connected to working backend services.
 
