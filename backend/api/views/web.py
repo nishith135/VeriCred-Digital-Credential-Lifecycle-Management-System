@@ -38,8 +38,11 @@ from backend.models import (
 from backend.services.revocation import RevocationService
 from backend.services.verification import VerificationService
 
+from pathlib import Path
+
 router = APIRouter(tags=["Web UI"])
-templates = Jinja2Templates(directory="frontend/templates")
+TEMPLATES_DIR = Path(__file__).resolve().parent.parent.parent.parent / "frontend" / "templates"
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
 # =============================================================================

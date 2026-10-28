@@ -23,14 +23,22 @@ from backend.core.database import async_engine
 from backend.core.exceptions import DomainException, domain_exception_handler
 
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / "frontend"
+STATIC_DIR = FRONTEND_DIR / "static"
+TEMPLATES_DIR = FRONTEND_DIR / "templates"
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan context manager for startup and shutdown hooks."""
     # Startup: ensure frontend static directories exist
-    os.makedirs("frontend/static/css", exist_ok=True)
-    os.makedirs("frontend/static/js", exist_ok=True)
-    os.makedirs("frontend/templates/pages", exist_ok=True)
-    os.makedirs("frontend/templates/partials", exist_ok=True)
+    os.makedirs(STATIC_DIR / "css", exist_ok=True)
+    os.makedirs(STATIC_DIR / "js", exist_ok=True)
+    os.makedirs(TEMPLATES_DIR / "pages", exist_ok=True)
+    os.makedirs(TEMPLATES_DIR / "partials", exist_ok=True)
     yield
     # Shutdown: dispose of database engine pools
     await async_engine.dispose()
@@ -57,8 +65,8 @@ def create_app() -> FastAPI:
     )
 
     # Static assets (physical and logical separation in frontend/static)
-    os.makedirs("frontend/static", exist_ok=True)
-    app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+    os.makedirs(STATIC_DIR, exist_ok=True)
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
     # Domain Exception Handling
     app.add_exception_handler(DomainException, domain_exception_handler)
@@ -89,4 +97,4 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-templates = Jinja2Templates(directory="frontend/templates")
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
