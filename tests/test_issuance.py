@@ -131,8 +131,11 @@ async def test_ineligible_issuance_raises_error(
     course, learner, rule = sample_academic_setup
     now = datetime.now(timezone.utc)
 
+    learner_pub = learner.public_id
+    course_pub = course.public_id
+    failing_comp_pub = format_completion_id(learner_pub, course_pub)
     failing_completion = CompletionRecord(
-        public_id=format_completion_id(learner.public_id, course.public_id),
+        public_id=failing_comp_pub,
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -150,7 +153,20 @@ async def test_ineligible_issuance_raises_error(
             completion_id=failing_completion.id,
             issuer_public_id=issuer.public_id,
             issuer_private_key_pem=issuer_priv_pem,
+            actor_id="REGISTRAR-REJECT-TEST",
         )
+
+    # Verify ELIGIBILITY_CHECK_FAILED AuditEvent was committed even though issuance failed
+    stmt_failed = select(AuditEvent).where(
+        AuditEvent.event_type == "ELIGIBILITY_CHECK_FAILED",
+        AuditEvent.target_entity_id == failing_comp_pub,
+    )
+    failed_audit = (await db_session.execute(stmt_failed)).scalar_one_or_none()
+    assert failed_audit is not None
+    assert failed_audit.target_entity_type == "CompletionRecord"
+    assert failed_audit.details["learner_public_id"] == learner_pub
+    assert failed_audit.details["course_public_id"] == course_pub
+    assert "BELOW_MIN_SCORE" in failed_audit.details["failed_subchecks"]
 
 
 @pytest.mark.asyncio

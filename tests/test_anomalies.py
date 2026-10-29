@@ -82,16 +82,25 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
     fixtures, ground_truth = generate_anomaly_fixtures()
     fix_3 = next(f for f in fixtures if f["issue_type"] == "REVOKED_VERIFIES_AS_ACTIVE")
     gt_3 = next(gt for gt in ground_truth if gt["issue_type"] == "REVOKED_VERIFIES_AS_ACTIVE")
+    snap_3 = fix_3["payload_snapshot"]
     
-    # Seed persistent database with this revoked credential
+    # Seed persistent database with this revoked credential matching the fixture's relational claims
     issuer = Issuer(
-        public_id=format_issuer_id(1),
-        name="Anomaly Academy",
+        public_id=snap_3["issuer"]["id"],
+        name=snap_3["issuer"]["name"],
         public_key_pem=fix_3["issuer_public_key_pem"],
         status="ACTIVE",
     )
-    course = Course(public_id=format_course_id(1), title="Security Defense", status="ACTIVE")
-    learner = Learner(public_id=format_learner_id(1), full_name="David Revoked", email="rev_1@test.edu")
+    course = Course(
+        public_id=snap_3["course"]["code"],
+        title=snap_3["course"]["title"],
+        status="ACTIVE",
+    )
+    learner = Learner(
+        public_id=snap_3["learner"]["id"],
+        full_name=snap_3["learner"]["name"],
+        email=snap_3["learner"]["email"],
+    )
     db_session.add_all([issuer, course, learner])
     await db_session.flush()
 
@@ -109,9 +118,9 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
-        assessment_score=Decimal("85.00"),
-        status="COMPLETED",
-        completion_timestamp=datetime(2026, 1, 1, tzinfo=timezone.utc),
+        assessment_score=Decimal(str(snap_3["assessment"]["score"])),
+        status=snap_3["assessment"]["status"],
+        completion_timestamp=datetime.fromisoformat(snap_3["completion_timestamp"]),
     )
     db_session.add(completion)
     await db_session.flush()
@@ -121,10 +130,10 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
         public_id=fix_3["public_id"],
         completion_id=completion.id,
         issuer_id=issuer.id,
-        issued_at=datetime(2026, 1, 5, tzinfo=timezone.utc),
+        issued_at=datetime.fromisoformat(snap_3["issued_at"]),
         canonical_payload_hash=fix_3["payload_hash"],
         issuer_signature=fix_3["signature"],
-        payload_snapshot=fix_3["payload_snapshot"],
+        payload_snapshot=snap_3,
         status="REVOKED",  # Persistent state is REVOKED
     )
     db_session.add(cred)
@@ -161,16 +170,25 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
     fixtures, ground_truth = generate_anomaly_fixtures()
     fix_4 = next(f for f in fixtures if f["issue_type"] == "ALTERED_PAYLOAD_TAMPERING")
     gt_4 = next(gt for gt in ground_truth if gt["issue_type"] == "ALTERED_PAYLOAD_TAMPERING")
+    snap_4 = fix_4["original_payload"]
 
     # Seed persistent database with credential having original claims
     issuer = Issuer(
-        public_id=format_issuer_id(1),
-        name="Anomaly Academy",
+        public_id=snap_4["issuer"]["id"],
+        name=snap_4["issuer"]["name"],
         public_key_pem=fix_4["issuer_public_key_pem"],
         status="ACTIVE",
     )
-    course = Course(public_id=format_course_id(1), title="Data Eng", status="ACTIVE")
-    learner = Learner(public_id=format_learner_id(1), full_name="Eve Tampered", email="tamper_1@test.edu")
+    course = Course(
+        public_id=snap_4["course"]["code"],
+        title=snap_4["course"]["title"],
+        status="ACTIVE",
+    )
+    learner = Learner(
+        public_id=snap_4["learner"]["id"],
+        full_name=snap_4["learner"]["name"],
+        email=snap_4["learner"]["email"],
+    )
     db_session.add_all([issuer, course, learner])
     await db_session.flush()
 
@@ -188,9 +206,9 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
-        assessment_score=Decimal("81.00"),
-        status="COMPLETED",
-        completion_timestamp=datetime(2026, 1, 1, tzinfo=timezone.utc),
+        assessment_score=Decimal(str(snap_4["assessment"]["score"])),
+        status=snap_4["assessment"]["status"],
+        completion_timestamp=datetime.fromisoformat(snap_4["completion_timestamp"]),
     )
     db_session.add(completion)
     await db_session.flush()
@@ -201,10 +219,10 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
         public_id=fix_4["public_id"],
         completion_id=completion.id,
         issuer_id=issuer.id,
-        issued_at=datetime(2026, 1, 5, tzinfo=timezone.utc),
+        issued_at=datetime.fromisoformat(snap_4["issued_at"]),
         canonical_payload_hash=fix_4["signed_payload_hash"],  # Hash from original score 81.00
         issuer_signature=fix_4["signature"],
-        payload_snapshot=fix_4["original_payload"],
+        payload_snapshot=snap_4,
         status="ACTIVE",
     )
     db_session.add(cred)

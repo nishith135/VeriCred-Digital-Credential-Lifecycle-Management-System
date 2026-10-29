@@ -17,6 +17,7 @@ class EligibilityEvaluationResult(BaseModel):
 
     is_eligible: bool
     completion_id: int
+    completion_public_id: Optional[str] = None
     learner_public_id: str
     learner_name: str
     course_public_id: str
@@ -25,6 +26,7 @@ class EligibilityEvaluationResult(BaseModel):
     required_min_score: Decimal
     completion_status: str
     already_issued: bool
+    failed_subchecks: list[str] = Field(default_factory=list)
     reasons: list[str] = Field(default_factory=list)
 
 

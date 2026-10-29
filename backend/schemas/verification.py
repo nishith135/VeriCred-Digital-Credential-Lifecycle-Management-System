@@ -1,3 +1,4 @@
+
 """Pydantic schemas for Third-Party Multi-Factor Credential Verification."""
 
 from datetime import datetime
@@ -24,10 +25,18 @@ class VerificationFactorResult(BaseModel):
     """Detailed status breakdown of multi-factor verification checks."""
 
     record_found: bool = Field(..., description="Whether the credential identifier exists in the registry")
-    payload_integrity_valid: bool = Field(..., description="Whether canonical SHA-256 digest matches payload")
+    payload_integrity_valid: bool = Field(..., description="Whether canonical SHA-256 digest and relational cross-check match payload")
     issuer_authenticated: bool = Field(..., description="Whether Ed25519 asymmetric signature verified")
+    eligibility_valid: bool = Field(
+        default=True,
+        description="Whether completion eligibility rules and issuance timestamp chronology are satisfied",
+    )
     revocation_checked: bool = Field(..., description="Whether live revocation status was evaluated")
     is_revoked: bool = Field(..., description="Whether the credential has been revoked")
+    failed_subchecks: list[str] = Field(
+        default_factory=list,
+        description="Specific sub-checks that failed during verification (e.g., PREMATURE_ISSUANCE_TIMESTAMP, BELOW_MIN_SCORE)",
+    )
 
 
 class VerificationResponse(BaseModel):

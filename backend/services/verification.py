@@ -1,14 +1,18 @@
 """Multi-Factor Third-Party Credential Verification Service.
 
-Evaluates 4 independent integrity factors:
+Evaluates 5 independent integrity and lifecycle factors:
 1. Existence: Identifier registered in official ledger.
-2. Integrity: Canonical SHA-256 payload digest matches claims (tamper detection).
+2. Integrity: Canonical SHA-256 payload digest matches claims AND (when no external
+   payload is presented) relational cross-check via `build_credential_payload` matches
+   the stored `payload_snapshot` on all relational claim fields.
 3. Authenticity: Asymmetric Ed25519 signature valid for issuer public key.
-4. Revocation: Active status checked in real time against revocation ledger.
+4. Eligibility / Chronology: Reuses `EligibilityService.evaluate_completion_rules` to
+   verify `issued_at >= completion_timestamp`, `assessment_score >= rule.min_score`,
+   `status == COMPLETED`, and rule effective window.
+5. Revocation: Active status checked in real time against revocation ledger.
 
 Precedence Rule:
-Tampering strictly overrides revocation and valid status. An altered payload
-must always be flagged as TAMPERED.
+NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID.
 """
 
 from datetime import datetime, timezone
@@ -19,17 +23,29 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from backend.core.security import compute_payload_hash, verify_signature
+from backend.models.audit import AuditEvent
+from backend.models.completion import CompletionRecord
 from backend.models.credential import Credential
 from backend.models.verification import VerificationRequest
 from backend.schemas.verification import (
     VerificationFactorResult,
     VerificationResponse,
 )
+from backend.services.audit import AuditService
+from backend.services.eligibility import EligibilityService
 from backend.services.ids import VERIFICATION_SEQUENCE, format_verification_id, next_sequence_value
+from backend.services.payloads import build_credential_payload
+
+# Fields compared in the relational cross-check against `credential.payload_snapshot`.
+# `issued_at` and `completion_timestamp` are excluded from JSON string comparison because
+# `issued_at` is an issuance metadata timestamp (not derived from pre-issuance relational
+# entities) and both timestamps are compared directly as `datetime` objects in the
+# eligibility/chronology check.
+RELATIONAL_CLAIM_KEYS = ("credential_id", "course", "learner", "assessment", "issuer")
 
 
 class VerificationService:
-    """Verifies academic credentials with multi-factor integrity checks."""
+    """Verifies academic credentials with multi-factor integrity and eligibility checks."""
 
     @classmethod
     async def verify_credential(
@@ -39,17 +55,22 @@ class VerificationService:
         presented_payload: Optional[dict[str, Any]] = None,
         requester_ip: Optional[str] = None,
     ) -> VerificationResponse:
-        """Perform multi-factor verification and audit log query attempt."""
+        """Perform multi-factor verification and atomically log VerificationRequest + AuditEvent."""
         now = datetime.now(timezone.utc)
         verification_number = await next_sequence_value(db, VERIFICATION_SEQUENCE)
         verification_id = format_verification_id(verification_number, now)
+        event_id = await AuditService.generate_event_id(db)
+        actor = requester_ip or "PUBLIC_VERIFIER"
 
-        # 1. Existence Check
+        # 1. Existence Check (eagerly loading issuer, revocation, completion, learner, course, rule)
         stmt = (
             select(Credential)
             .options(
                 selectinload(Credential.issuer),
                 selectinload(Credential.revocation),
+                selectinload(Credential.completion).selectinload(CompletionRecord.learner),
+                selectinload(Credential.completion).selectinload(CompletionRecord.course),
+                selectinload(Credential.completion).selectinload(CompletionRecord.rule),
             )
             .where(Credential.public_id == credential_public_id)
         )
@@ -57,7 +78,6 @@ class VerificationService:
         credential = result.scalar_one_or_none()
 
         if not credential:
-            # Audit missing query
             verif_log = VerificationRequest(
                 public_id=verification_id,
                 credential_id=None,
@@ -69,7 +89,22 @@ class VerificationService:
                 issuer_authenticated=False,
                 requester_ip=requester_ip,
             )
+            audit_event = AuditEvent(
+                event_id=event_id,
+                event_type="VERIFICATION_PERFORMED",
+                actor_id=actor,
+                target_entity_type="VerificationRequest",
+                target_entity_id=verification_id,
+                occurred_at=now,
+                details={
+                    "requested_identifier": credential_public_id,
+                    "credential_public_id": None,
+                    "outcome": "NOT_FOUND",
+                    "reason_code": "CREDENTIAL_NOT_FOUND",
+                },
+            )
             db.add(verif_log)
+            db.add(audit_event)
             await db.commit()
 
             return VerificationResponse(
@@ -83,16 +118,49 @@ class VerificationService:
                     record_found=False,
                     payload_integrity_valid=False,
                     issuer_authenticated=False,
+                    eligibility_valid=False,
                     revocation_checked=False,
                     is_revoked=False,
+                    failed_subchecks=["CREDENTIAL_NOT_FOUND"],
                 ),
             )
 
-        # 2. Factor: Payload Integrity (Tamper Detection)
-        # Check against presented payload if provided, or stored snapshot
-        payload_to_check = presented_payload if presented_payload is not None else credential.payload_snapshot
+        failed_subchecks: list[str] = []
+
+        # 2. Factor: Payload Integrity (SHA-256 Digest + Relational Cross-Check)
+        payload_to_check = (
+            presented_payload if presented_payload is not None else credential.payload_snapshot
+        )
         computed_hash = compute_payload_hash(payload_to_check)
-        payload_integrity_valid = (computed_hash == credential.canonical_payload_hash)
+        hash_matches = computed_hash == credential.canonical_payload_hash
+        if not hash_matches:
+            failed_subchecks.append("PAYLOAD_DIGEST_MISMATCH")
+
+        relational_matches = True
+        comp = credential.completion
+        if presented_payload is None and comp and comp.learner and comp.course and credential.issuer:
+            rebuilt_payload = build_credential_payload(
+                credential_id=credential.public_id,
+                issued_at=credential.issued_at,
+                completion_timestamp=comp.completion_timestamp,
+                learner_id=comp.learner.public_id,
+                learner_name=comp.learner.full_name,
+                learner_email=comp.learner.email,
+                course_code=comp.course.public_id,
+                course_title=comp.course.title,
+                assessment_score=comp.assessment_score,
+                assessment_status=comp.status,
+                issuer_id=credential.issuer.public_id,
+                issuer_name=credential.issuer.name,
+            )
+            for key in RELATIONAL_CLAIM_KEYS:
+                if credential.payload_snapshot.get(key) != rebuilt_payload.get(key):
+                    relational_matches = False
+                    break
+            if not relational_matches:
+                failed_subchecks.append("RELATIONAL_PAYLOAD_MISMATCH")
+
+        payload_integrity_valid = hash_matches and relational_matches
 
         # 3. Factor: Issuer Authenticity (Ed25519 Asymmetric Signature)
         issuer_authenticated = verify_signature(
@@ -100,19 +168,46 @@ class VerificationService:
             payload_hash=credential.canonical_payload_hash,
             signature_b64=credential.issuer_signature,
         )
+        if not issuer_authenticated:
+            failed_subchecks.append("ISSUER_SIGNATURE_INVALID")
 
-        # 4. Factor: Live Revocation Check
+        # 4. Factor: Academic Eligibility & Issuance Chronology (shared with EligibilityService)
+        eligibility_valid = True
+        elig_failed_subchecks: list[str] = []
+        elig_reasons: list[str] = []
+        if comp is not None:
+            eligibility_valid, elig_failed_subchecks, elig_reasons = (
+                EligibilityService.evaluate_completion_rules(
+                    completion=comp,
+                    issued_at=credential.issued_at,
+                    check_effective_window=True,
+                )
+            )
+            failed_subchecks.extend(elig_failed_subchecks)
+
+        # 5. Factor: Live Revocation Check
         is_revoked = (credential.status == "REVOKED") or (credential.revocation is not None)
 
-        # Determine Outcome (Tampering strictly overrides revocation and validity)
+        # Determine Outcome (Precedence: NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID)
         if not payload_integrity_valid:
             outcome = "TAMPERED"
-            reason_code = "PAYLOAD_DIGEST_MISMATCH"
-            message = "Payload integrity violation detected: presented claims do not match cryptographic digest."
+            reason_code = (
+                "PAYLOAD_DIGEST_MISMATCH" if not hash_matches else "RELATIONAL_PAYLOAD_MISMATCH"
+            )
+            message = (
+                "Payload integrity violation detected: presented claims do not match cryptographic digest or relational records."
+            )
         elif not issuer_authenticated:
             outcome = "INVALID_ISSUANCE"
             reason_code = "ISSUER_SIGNATURE_INVALID"
             message = "Issuer signature verification failed: authenticity could not be verified."
+        elif not eligibility_valid:
+            outcome = "INVALID_ISSUANCE"
+            reason_code = elig_failed_subchecks[0]
+            message = (
+                f"Invalid issuance detected ({', '.join(elig_failed_subchecks)}): "
+                f"{' '.join(elig_reasons)}"
+            )
         elif is_revoked:
             outcome = "REVOKED"
             reason_code = (
@@ -126,7 +221,7 @@ class VerificationService:
             reason_code = "VERIFICATION_SUCCESSFUL"
             message = "Credential is authentic, unmodified, and currently active."
 
-        # Audit attempt in verification_requests
+        # Atomically persist VerificationRequest and VERIFICATION_PERFORMED AuditEvent
         verif_log = VerificationRequest(
             public_id=verification_id,
             credential_id=credential.id,
@@ -138,10 +233,25 @@ class VerificationService:
             issuer_authenticated=issuer_authenticated,
             requester_ip=requester_ip,
         )
+        audit_event = AuditEvent(
+            event_id=event_id,
+            event_type="VERIFICATION_PERFORMED",
+            actor_id=actor,
+            target_entity_type="VerificationRequest",
+            target_entity_id=verification_id,
+            occurred_at=now,
+            details={
+                "requested_identifier": credential_public_id,
+                "credential_public_id": credential.public_id,
+                "outcome": outcome,
+                "reason_code": reason_code,
+                "failed_subchecks": failed_subchecks,
+            },
+        )
         db.add(verif_log)
+        db.add(audit_event)
         await db.commit()
 
-        # Build detail structures
         cred_details = {
             "public_id": credential.public_id,
             "issuer_id": credential.issuer.public_id,
@@ -172,8 +282,10 @@ class VerificationService:
                 record_found=True,
                 payload_integrity_valid=payload_integrity_valid,
                 issuer_authenticated=issuer_authenticated,
+                eligibility_valid=eligibility_valid,
                 revocation_checked=True,
                 is_revoked=is_revoked,
+                failed_subchecks=failed_subchecks,
             ),
             credential_details=cred_details,
             revocation_details=rev_details,

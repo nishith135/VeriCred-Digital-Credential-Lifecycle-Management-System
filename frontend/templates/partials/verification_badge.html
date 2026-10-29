@@ -35,6 +35,7 @@
           {% if result.outcome == 'VALID' %}Authentic Credential Verified
           {% elif result.outcome == 'REVOKED' %}Revoked Credential (Tombstone Active)
           {% elif result.outcome == 'TAMPERED' %}Cryptographic Digest Mismatch (Tampered)
+          {% elif result.outcome == 'INVALID_ISSUANCE' %}Invalid Issuance (Eligibility or Signature Violation)
           {% else %}Credential Not Located in Registry{% endif %}
         </h2>
         <p class="text-xs text-text-muted mt-0.5">{{ result.message }}</p>
@@ -116,32 +117,33 @@
   </div>
 
   <!-- Credential Details Grid -->
-  {% if result.credential_details %}
+  {% if result.credential_details and result.credential_details.payload_snapshot %}
+  {% set snap = result.credential_details.payload_snapshot %}
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-xl bg-surface border border-border mb-4">
     <div>
       <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Credential Holder</span>
       <div class="text-sm font-bold text-white">
-        {{ result.credential_details.learner.name if result.credential_details.learner else 'N/A' }}
+        {{ snap.learner.name if snap.learner else 'N/A' }}
       </div>
       <div class="text-xs font-mono text-brand">
-        {{ result.credential_details.learner.id if result.credential_details.learner else '' }}
+        {{ snap.learner.id if snap.learner else '' }}
       </div>
     </div>
 
     <div>
       <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Accredited Program</span>
       <div class="text-sm font-bold text-white truncate">
-        {{ result.credential_details.course.title if result.credential_details.course else 'N/A' }}
+        {{ snap.course.title if snap.course else 'N/A' }}
       </div>
       <div class="text-xs font-mono text-text-muted">
-        Code: {{ result.credential_details.course.code if result.credential_details.course else '' }}
+        Code: {{ snap.course.code if snap.course else '' }}
       </div>
     </div>
 
     <div>
       <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Assessment Performance</span>
       <div class="text-sm font-extrabold text-emerald-400">
-        {{ result.credential_details.assessment.score if result.credential_details.assessment else 'N/A' }}%
+        {{ snap.assessment.score if snap.assessment else 'N/A' }}%
       </div>
       <div class="text-xs text-text-muted">
         Eligibility Status: Passing (&gt;= 80.0%)
@@ -159,7 +161,7 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
       <div><span class="text-text-subtle">Reason Code:</span> <strong class="text-white">{{ result.revocation_details.reason_code }}</strong></div>
-      <div><span class="text-text-subtle">Authorized By:</span> <strong class="text-white">{{ result.revocation_details.revoked_by }}</strong></div>
+      <div><span class="text-text-subtle">Authorized By:</span> <strong class="text-white">{{ result.revocation_details.revoked_by_actor_id }}</strong></div>
       <div><span class="text-text-subtle">Timestamp:</span> <span class="text-white">{{ result.revocation_details.revocation_timestamp }}</span></div>
     </div>
     {% if result.revocation_details.notes %}

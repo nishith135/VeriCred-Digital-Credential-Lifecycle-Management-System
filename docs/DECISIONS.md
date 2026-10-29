@@ -143,3 +143,15 @@ This document records the foundational technical and organizational decisions ma
 - **Trade-offs & Mitigations:**
   - *Trade-off:* Postgres sequences are non-transactional, so rolled-back runtime transactions can leave numeric gaps.
   - *Mitigation:* Guarantees race-safe sequential ID allocation under concurrent API requests without table locking.
+
+---
+
+### ADR-008: Verification Relational Cross-Check, Eligibility Re-Evaluation & Atomic Audit Reconciliation
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** Verification previously checked only `compute_payload_hash(payload) == credential.canonical_payload_hash`, Ed25519 signature, and revocation status, without checking whether `CompletionRecord` and `CredentialRule` actually satisfied academic eligibility (`issued_at >= completion_timestamp`, `assessment_score >= rule.min_score`, `status == COMPLETED`) or whether `credential.payload_snapshot` had drifted from the relational rows (`learner`, `course`, `completion`, `issuer`). In addition, `VerificationService` did not log `VERIFICATION_PERFORMED` `AuditEvent`s, and `IssuanceService` did not persist `ELIGIBILITY_CHECK_FAILED` events when rejecting ineligible candidates.
+- **Decision:**
+  1. Reuse `EligibilityService.evaluate_completion_rules` inside `VerificationService.verify_credential` and return `INVALID_ISSUANCE` (with failing sub-checks in `reason_code` and `factors.failed_subchecks`) while preserving outcome precedence `NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID`.
+  2. When `presented_payload is None`, rebuild the credential payload from the relational rows via `build_credential_payload` and compare `RELATIONAL_CLAIM_KEYS = ("credential_id", "course", "learner", "assessment", "issuer")` against `credential.payload_snapshot` (excluding `issued_at` and `completion_timestamp` from JSON string comparison because `issued_at` is issuance metadata and both timestamps are compared as `datetime` objects in `evaluate_completion_rules`). Any mismatch returns `TAMPERED` (`reason_code="RELATIONAL_PAYLOAD_MISMATCH"`).
+  3. Write a `VERIFICATION_PERFORMED` `AuditEvent` in the same transaction as `VerificationRequest` for every verification outcome (including `NOT_FOUND`), emit matching `VERIFICATION_PERFORMED` events in `DataGenerator` (`16,300` total audit events at `scale=1.0`), and log `ELIGIBILITY_CHECK_FAILED` in an independent `db_module.async_session_factory()` transaction when `IssuanceService` rejects an ineligible candidate.
+  4. Enforce full audit-event count and target resolution reconciliation in `DatasetValidator` for both exported datasets and live database tables (`DatasetValidator.from_database`).

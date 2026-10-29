@@ -445,8 +445,9 @@ class DataGenerator:
             audit_seq += 1
             
         # Credential revocation events
+        cred_lookup = {c["id"]: c for c in dataset.credentials}
         for rev in dataset.revocations:
-            cred = next(c for c in dataset.credentials if c["id"] == rev["credential_id"])
+            cred = cred_lookup[rev["credential_id"]]
             dataset.audit_events.append({
                 "id": audit_seq,
                 "event_type": "CREDENTIAL_REVOKED",
@@ -458,6 +459,25 @@ class DataGenerator:
                     "revocation_timestamp": rev["revocation_timestamp"].isoformat(),
                 },
                 "occurred_at": rev["revocation_timestamp"],
+            })
+            audit_seq += 1
+
+        # Verification performed events (1:1 with verification_requests)
+        for verif in dataset.verifications:
+            matched_cred = cred_lookup.get(verif["credential_id"]) if verif["credential_id"] else None
+            dataset.audit_events.append({
+                "id": audit_seq,
+                "event_type": "VERIFICATION_PERFORMED",
+                "target_entity_type": "VerificationRequest",
+                "target_entity_id": verif["public_id"],
+                "actor_id": verif["requester_ip"],
+                "details": {
+                    "requested_identifier": verif["requested_identifier"],
+                    "credential_public_id": matched_cred["public_id"] if matched_cred else None,
+                    "outcome": verif["outcome"],
+                    "reason_code": verif["reason_code"],
+                },
+                "occurred_at": verif["verification_timestamp"],
             })
             audit_seq += 1
             

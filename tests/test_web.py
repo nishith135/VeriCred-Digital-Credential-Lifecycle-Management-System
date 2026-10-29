@@ -117,3 +117,81 @@ async def test_web_rbac_login_and_role_switching(api_client: AsyncClient):
     )
     assert resp_revoke_forbidden.status_code == 200
     assert "Access Denied" in resp_revoke_forbidden.headers.get("hx-trigger", "")
+
+
+@pytest.mark.asyncio
+async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
+    api_client: AsyncClient,
+    db_session,
+    sample_issuer,
+    sample_academic_setup,
+):
+    """Verify verification_badge.html binds payload_snapshot.* and revoked_by_actor_id with zero N/A values."""
+    from datetime import datetime, timezone
+    from decimal import Decimal
+    from backend.models.completion import CompletionRecord
+    from backend.services.ids import format_completion_id
+    from backend.services.issuance import IssuanceService
+    from backend.services.revocation import RevocationService
+
+    issuer, priv_pem = sample_issuer
+    course, learner, rule = sample_academic_setup
+
+    comp = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
+        learner_id=learner.id,
+        course_id=course.id,
+        rule_id=rule.id,
+        assessment_score=Decimal("92.50"),
+        status="COMPLETED",
+        completion_timestamp=datetime.now(timezone.utc),
+    )
+    db_session.add(comp)
+    await db_session.commit()
+    await db_session.refresh(comp)
+
+    cred = await IssuanceService.issue_credential(
+        db=db_session,
+        completion_id=comp.id,
+        issuer_public_id=issuer.public_id,
+        issuer_private_key_pem=priv_pem,
+        actor_id="REGISTRAR-WEB-TEST",
+    )
+
+    # 1. Verify active credential via HTMX POST /web/verify
+    resp_valid = await api_client.post(
+        "/web/verify",
+        data={"credential_public_id": cred.public_id},
+    )
+    assert resp_valid.status_code == 200
+    html_valid = resp_valid.text
+    assert "Alice Q. Student" in html_valid
+    assert "LRN-000001" in html_valid
+    assert "Advanced Distributed Cryptographic Systems" in html_valid
+    assert "CRS-000001" in html_valid
+    assert "92.5%" in html_valid
+    assert "N/A" not in html_valid
+
+    # 2. Revoke the credential and verify revoked_by_actor_id and claims render with zero N/A
+    await RevocationService.revoke_credential(
+        db=db_session,
+        credential_public_id=cred.public_id,
+        reason_code="ACADEMIC_MISCONDUCT",
+        actor_id="DEAN-REVOKER-99",
+        notes="Confirmed Honour Code Violation",
+    )
+
+    resp_revoked = await api_client.post(
+        "/web/verify",
+        data={"credential_public_id": cred.public_id},
+    )
+    assert resp_revoked.status_code == 200
+    html_revoked = resp_revoked.text
+    assert "REVOKED" in html_revoked
+    assert "Alice Q. Student" in html_revoked
+    assert "Advanced Distributed Cryptographic Systems" in html_revoked
+    assert "92.5%" in html_revoked
+    assert "DEAN-REVOKER-99" in html_revoked
+    assert "ACADEMIC_MISCONDUCT" in html_revoked
+    assert "N/A" not in html_revoked
+

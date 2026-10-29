@@ -292,6 +292,23 @@ This document maintains empirical evidence of all automated tests, manual checks
   - `pytest -v`: **38 passed in 14.99s** on `credential_test_db`.
   - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
 
+### Verification 013: Verification Multi-Factor Correctness, Relational Cross-Check & Complete Audit Reconciliation
+- **Date & Time:** 2026-10-29T13:35:00+05:30
+- **Executed Commands:**
+  1. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db` (44 tests)
+  2. `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (and second run into `./exports_tmp_2`)
+  3. `DatasetValidator` reconciliation check at `scale=1.0` (in-memory/exports) and `DatasetValidator.from_database` on `credential_test_db`
+  4. Read-only row-count verification on `credential_db`
+- **Output:**
+  - `pytest -v`: **44 passed in 21.00s** on `credential_test_db`.
+  - Verified all 5 verification outcomes (`VALID`, `REVOKED`, `TAMPERED`, `NOT_FOUND`, `INVALID_ISSUANCE`) atomically create 1 `VerificationRequest` and 1 `VERIFICATION_PERFORMED` `AuditEvent` in the same transaction.
+  - Verified `ELIGIBILITY_CHECK_FAILED` is persisted in a separate transaction when `IssuanceService.issue_credential` rejects an ineligible candidate.
+  - Verified `VerificationService` evaluates `EligibilityService.evaluate_completion_rules` (`PREMATURE_ISSUANCE_TIMESTAMP`, `BELOW_MIN_SCORE`, `INELIGIBLE_COMPLETION_STATUS`, `OUTSIDE_RULE_EFFECTIVE_WINDOW`) and enforces precedence `NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID`.
+  - Verified relational cross-check (`RELATIONAL_CLAIM_KEYS = ("credential_id", "course", "learner", "assessment", "issuer")`) catches consistent-looking DB tamper where both `payload_snapshot` and `canonical_payload_hash` were modified directly in PostgreSQL (`reason_code="RELATIONAL_PAYLOAD_MISMATCH"`).
+  - Verified `verification_badge.html` renders real holder (`payload_snapshot.learner.name`), program (`payload_snapshot.course.title`), score (`payload_snapshot.assessment.score`), and revoker (`revoked_by_actor_id`) with zero `N/A` placeholders.
+  - Scale `1.0` generation (`seed=20261022`) emitted `16,300` `audit_events` (`10,000 CREDENTIAL_ISSUED + 1,000 ELIGIBILITY_PASSED + 300 CREDENTIAL_REVOKED + 5,000 VERIFICATION_PERFORMED`), passed all reconciliation checks (`0` unresolved audit targets), and produced byte-identical `manifest.sha256` across two runs.
+  - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
 ---
 
 ## 3. Boundary & Assumption Verification

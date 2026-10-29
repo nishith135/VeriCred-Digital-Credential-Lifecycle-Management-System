@@ -1584,6 +1584,109 @@ Follow-up: continue
 
 ---
 
+### Entry 025: Verification Correctness, Relational Cross-Check & Complete Audit Reconciliation
+- **Entry ID:** `PROMPT-025`
+- **Date & Time:** 2026-10-29T13:35:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Claude Opus 5.5 Medium / Gemini 4 Argon Medium)
+- **Purpose:** Log `VERIFICATION_PERFORMED` audit events atomically for every verification outcome (and in `DataGenerator`), log `ELIGIBILITY_CHECK_FAILED` in an independent transaction on issuance rejection, add eligibility/premature-issuance checks and relational cross-checks to `VerificationService`, fix `verification_badge.html` claim bindings, add audit reconciliation and `from_database` support to `DatasetValidator`, and execute acceptance checks a–i on `credential_test_db` without touching `credential_db`.
+- **Exact Prompt:**
+```text
+TASK: Fix verification correctness and make the audit trail complete.
+Use credential_test_db only. Do NOT touch credential_db. Do not change RBAC
+or presentation styling in this step (role redaction comes next step).
+
+1. VERIFICATION AUDIT EVENTS
+   - VerificationService.verify_credential must write a VERIFICATION_PERFORMED
+     AuditEvent in the SAME transaction as the VerificationRequest row, for
+     every outcome including NOT_FOUND. target_entity_type = "VerificationRequest",
+     target_entity_id = the VER- public_id; details must include the requested
+     identifier, the credential public_id (if found), and the outcome.
+   - DataGenerator must emit one matching VERIFICATION_PERFORMED event per
+     generated VerificationRequest, with the same timestamp as the request.
+   - ELIGIBILITY_CHECK_FAILED appears in the audit filter dropdown but is never
+     logged. Log it when IssuanceService rejects a candidate, and make sure
+     that audit row is committed even though the issuance itself is rolled
+     back (separate transaction or equivalent). Include candidate ids and the
+     failed rule(s) in details.
+
+2. ELIGIBILITY / PREMATURE-ISSUANCE CHECK IN VERIFICATION
+   - VerificationService must load the CompletionRecord and CredentialRule and
+     return INVALID_ISSUANCE when any of these hold: issued_at is earlier than
+     the completion timestamp, assessment_score < rule.min_score, or the
+     completion status is not COMPLETED. Reuse EligibilityService logic; do
+     not duplicate the rules.
+   - Keep outcome precedence: NOT_FOUND, TAMPERED, INVALID_ISSUANCE, REVOKED,
+     VALID. Return which sub-check failed in the result.
+
+3. RELATIONAL CROSS-CHECK
+   - When no presented_payload is supplied, also rebuild the claims from the
+     relational tables (learner, course, completion) with the shared
+     build_credential_payload and compare against credential.payload_snapshot.
+     A mismatch returns TAMPERED. Compare only fields derived from relational
+     data; if the builder includes fields that are not (for example
+     timestamps from issuance), exclude them and tell me which.
+
+4. VERIFICATION BADGE BUG
+   - partials/verification_badge.html reads result.credential_details.learner.name,
+     .course.title, .assessment.score, and revocation_details.revoked_by. These
+     do not exist. Bind them to the real structure (payload_snapshot.* and
+     revoked_by_actor_id). Holder, Program and Score must never show N/A for
+     a found credential. Add a rendering test that checks real values appear.
+
+5. VALIDATOR RECONCILIATION (backend/generator/validator.py)
+   Add checks that must pass on both exports and DB data:
+   - count(CREDENTIAL_ISSUED events) == count(credentials)
+   - count(CREDENTIAL_REVOKED events) == count(revocations)
+   - count(VERIFICATION_PERFORMED events) == count(verification_requests)
+   - every audit event target resolves to an existing entity.
+   Allow validator.py to run against a SQLAlchemy engine as well as in-memory
+   data (do not add the CLI entrypoint yet).
+
+ACCEPTANCE CHECKS (run and report)
+a. Test: one verification per outcome (VALID, REVOKED, TAMPERED, NOT_FOUND,
+   INVALID_ISSUANCE). Show each creates 1 VerificationRequest and 1
+   VERIFICATION_PERFORMED event.
+b. Test: premature issuance returns INVALID_ISSUANCE with the failing
+   sub-check named; below-min-score returns INVALID_ISSUANCE.
+c. Test: directly editing payload_snapshot AND canonical_payload_hash in the
+   DB (a consistent-looking tamper) is caught by the cross-check as TAMPERED.
+d. Test: after loading a generated dataset into credential_test_db via
+   db_loader, issuing a new credential returns max baseline number + 1
+   (proves the setval logic from the previous step), and the new
+   reconciliation checks all pass.
+e. Test: for a generated credential, build_credential_payload output hashes
+   to canonical_payload_hash.
+f. Generate at scale=1.0 into ./exports_tmp and show the new audit_events
+   row count (expect 11,300 + 5,000 = 16,300) and the validator
+   reconciliation output.
+g. Run the generator twice and show identical manifest.sha256.
+h. Full pytest summary, then credential_db counts (must still be 514 / 261 /
+   585).
+i. List every file changed.
+
+Follow-up: proceed but before that commit the chnages done previously
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `backend/schemas/credential.py` (added `completion_public_id` and `failed_subchecks` to `EligibilityEvaluationResult`)
+  - `backend/schemas/verification.py` (added `eligibility_valid` and `failed_subchecks` to `VerificationFactorResult`)
+  - `backend/services/eligibility.py` (added shared `EligibilityService.evaluate_completion_rules` static method)
+  - `backend/services/issuance.py` (logged `ELIGIBILITY_CHECK_FAILED` in a separate `db_module.async_session_factory()` transaction when rejecting an ineligible candidate)
+  - `backend/services/verification.py` (added relational cross-check over `RELATIONAL_CLAIM_KEYS`, eligibility re-evaluation via `EligibilityService.evaluate_completion_rules`, outcome precedence `NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID`, and atomic `VERIFICATION_PERFORMED` `AuditEvent` logging)
+  - `backend/generator/generator.py` (added `VERIFICATION_PERFORMED` audit event generation per `VerificationRequest`, bringing `scale=1.0` audit events to `16,300`)
+  - `backend/generator/validator.py` (added `_validate_audit_reconciliation` and `DatasetValidator.from_database`)
+  - `frontend/templates/partials/verification_badge.html` (bound holder, program, score, and revoker to `payload_snapshot.*` and `revoked_by_actor_id`, plus `INVALID_ISSUANCE` banner title)
+  - `tests/test_anomalies.py`, `tests/test_generator_determinism.py`, `tests/test_issuance.py`, `tests/test_verification.py`, `tests/test_web.py`
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Committed previous task (`cac4513`), implemented all 5 verification and audit trail requirements, added 6 new integration/unit tests across `test_verification.py`, `test_generator_determinism.py`, and `test_web.py` (plus updated `test_issuance.py` and `test_anomalies.py`), and executed all acceptance checks (a–i).
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `pytest -v`: 44 passed in 21.00s against `credential_test_db`.
+  - `python -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (run twice): 16,300 audit events, 100% reconciliation pass, identical `manifest.sha256`.
+  - `credential_db` row count check: 514 credentials, 261 verification_requests, 585 audit_events (untouched).
+
+---
+
 
 
 ## C. AI Contribution Summary

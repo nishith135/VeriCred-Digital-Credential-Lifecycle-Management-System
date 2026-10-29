@@ -12,6 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import backend.core.database as db_module
 from backend.core.exceptions import (
     DomainException,
     DuplicateIssuanceError,
@@ -68,9 +69,34 @@ class IssuanceService:
         if evaluation.already_issued:
             raise DuplicateIssuanceError(completion_id=str(completion_id))
         if not evaluation.is_eligible:
+            await db.rollback()
+            async with db_module.async_session_factory() as audit_db:
+                await AuditService.log_event(
+                    db=audit_db,
+                    event_type="ELIGIBILITY_CHECK_FAILED",
+                    target_entity_type="CompletionRecord",
+                    target_entity_id=evaluation.completion_public_id or str(completion_id),
+                    actor_id=actor_id or issuer_public_id,
+                    details={
+                        "completion_id": completion_id,
+                        "completion_public_id": evaluation.completion_public_id,
+                        "learner_public_id": evaluation.learner_public_id,
+                        "course_public_id": evaluation.course_public_id,
+                        "issuer_public_id": issuer_public_id,
+                        "assessment_score": float(evaluation.assessment_score),
+                        "required_min_score": float(evaluation.required_min_score),
+                        "completion_status": evaluation.completion_status,
+                        "failed_subchecks": evaluation.failed_subchecks,
+                        "reasons": evaluation.reasons,
+                    },
+                )
             raise IneligibleIssuanceError(
                 message=f"Learner is not eligible for credential issuance: {'; '.join(evaluation.reasons)}",
-                details={"reasons": evaluation.reasons, "completion_id": completion_id},
+                details={
+                    "reasons": evaluation.reasons,
+                    "failed_subchecks": evaluation.failed_subchecks,
+                    "completion_id": completion_id,
+                },
             )
 
         # 2. Issuer lookup and validation
