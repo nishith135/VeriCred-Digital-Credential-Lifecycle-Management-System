@@ -9,22 +9,18 @@
     <div>
       <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand/10 border border-brand/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
         <span class="material-symbols-outlined text-[14px]">gpp_good</span>
-        <span>Zero-Trust Verification E-Gate</span>
+        <span>Public Verification Portal</span>
       </div>
       <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Public Credential Verification</h1>
       <p class="text-text-muted text-sm mt-1 max-w-2xl">
-        Execute instant multi-factor verification across cryptographic signatures, canonical payload digests, and real-time revocation registers.
+        Execute 4 verification checks across cryptographic signatures, canonical payload digests, academic eligibility, and real-time revocation registers.
       </p>
-    </div>
-    <div class="flex items-center gap-2 text-xs text-text-subtle font-mono">
-      <span class="w-2 h-2 rounded-full bg-success"></span>
-      <span>RFC 8032 Authentic</span>
     </div>
   </div>
 
-  <!-- Verification Search Input Card -->
+  <!-- Verification Search Input Card (Single Input + Single Verify Button) -->
   <div class="veri-card p-6 md:p-8 bg-card shadow-xl">
-    <form hx-post="/web/verify" hx-target="#verificationResult" hx-indicator="#verifySpinner" class="space-y-5">
+    <form hx-post="/web/verify" hx-target="#verificationResult" hx-indicator="#verifySpinner" class="space-y-4">
       <div>
         <label for="credentialInput" class="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 font-mono">
           Public Credential Identifier
@@ -38,7 +34,7 @@
             required
             class="w-full h-13 pl-12 pr-36 rounded-xl bg-surface border border-border-focus font-mono text-sm text-white placeholder-text-subtle focus:border-brand focus:ring-1 focus:ring-brand transition-all"
             placeholder="e.g. CRD-2026-000001" 
-            value="{{ sample_valid_id or 'CRD-2026-000001' }}" 
+            value="{{ sample_valid_id or '' }}" 
           />
           <button 
             type="submit"
@@ -48,58 +44,13 @@
           </button>
         </div>
       </div>
-
-      <!-- Quick Test Pills -->
-      <div class="flex items-center gap-2 flex-wrap text-xs">
-        <span class="text-text-subtle font-mono text-[11px]">Quick Samples:</span>
-        <button 
-          type="button" 
-          onclick="setCredential('{{ sample_valid_id }}', '')"
-          class="px-3 py-1 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-          <span>Sample Active Valid</span>
-        </button>
-        <button 
-          type="button" 
-          onclick="setCredential('{{ sample_revoked_id }}', '')"
-          class="px-3 py-1 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
-          <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-          <span>Sample Revoked</span>
-        </button>
-        <button 
-          type="button" 
-          onclick="setTamperPayload('{{ sample_valid_id }}')"
-          class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-          <span>Simulate Tampered Payload</span>
-        </button>
-      </div>
-
-      <!-- Adversarial Tamper Simulation Accordion -->
-      <details class="rounded-xl bg-surface border border-border p-4 text-xs" id="tamperDetails">
-        <summary class="font-semibold text-text-muted hover:text-white cursor-pointer select-none flex items-center gap-2">
-          <span class="material-symbols-outlined text-brand text-[18px]">biotech</span>
-          <span>Simulate Third-Party Payload Tampering (Adversarial Stress Test)</span>
-        </summary>
-        <div class="pt-3 space-y-2">
-          <p class="text-text-subtle font-mono text-[11px]">
-            Modify any claim below (e.g. alter score from 85.00 to 99.00). The service computes the canonical SHA-256 digest and compares it with the issuer's signature.
-          </p>
-          <textarea 
-            name="tamper_payload" 
-            id="tamperJson" 
-            rows="5"
-            class="w-full p-3 rounded-lg bg-card font-mono text-xs text-indigo-300 border border-border focus:border-brand focus:outline-none"
-            placeholder='Optional modified JSON payload to test cryptographic tamper detection'></textarea>
-        </div>
-      </details>
     </form>
   </div>
 
   <!-- HTMX Progress Spinner -->
   <div id="verifySpinner" class="htmx-indicator flex items-center justify-center gap-3 py-8 text-brand font-mono text-xs">
     <span class="material-symbols-outlined animate-spin text-[22px]">progress_activity</span>
-    <span>Evaluating multi-factor cryptographic proof...</span>
+    <span>Running 4 verification checks...</span>
   </div>
 
   <!-- Dynamic Verification Result -->
@@ -111,35 +62,9 @@
       </div>
       <h3 class="text-base font-bold text-white mb-1">Ready for Verification</h3>
       <p class="text-xs text-text-muted max-w-md mx-auto">
-        Click <strong class="text-white">Verify</strong> or choose a sample above to validate cryptographic signatures, canonical hash integrity, and revocation records.
+        Enter a credential identifier above and click <strong class="text-white">Verify</strong> to run all 4 verification checks.
       </p>
     </div>
   </div>
 </div>
-
-<script>
-  function setCredential(credId, tamper) {
-    document.getElementById('credentialInput').value = credId;
-    document.getElementById('tamperJson').value = tamper;
-    if (!tamper) {
-      document.getElementById('tamperDetails').removeAttribute('open');
-    }
-    // Auto-trigger verification
-    htmx.trigger(document.querySelector('form'), 'submit');
-  }
-
-  function setTamperPayload(credId) {
-    document.getElementById('credentialInput').value = credId;
-    const fakePayload = {
-      "credential_id": credId,
-      "learner_name": "Tampered Learner Name",
-      "assessment_score": 99.99,
-      "degree": "Forged Master of Science",
-      "tampered_marker": true
-    };
-    document.getElementById('tamperJson').value = JSON.stringify(fakePayload, null, 2);
-    document.getElementById('tamperDetails').setAttribute('open', 'true');
-    htmx.trigger(document.querySelector('form'), 'submit');
-  }
-</script>
 {% endblock %}

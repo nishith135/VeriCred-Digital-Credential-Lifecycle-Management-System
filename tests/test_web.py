@@ -3,10 +3,12 @@
 import pytest
 from httpx import AsyncClient
 
+from backend.core.rbac import sign_role_cookie
+
 
 @pytest.mark.asyncio
 async def test_web_verify_pages_load(api_client: AsyncClient):
-    """Verify that public verification views render cleanly."""
+    """Verify that public verification views render cleanly with no sample chips or tamper editor."""
     # GET /
     resp_root = await api_client.get("/")
     assert resp_root.status_code == 200
@@ -15,7 +17,31 @@ async def test_web_verify_pages_load(api_client: AsyncClient):
     # GET /verify
     resp_verify = await api_client.get("/verify")
     assert resp_verify.status_code == 200
-    assert "Public Credential Verification" in resp_verify.text
+    html = resp_verify.text
+    assert "Public Credential Verification" in html
+    assert 'name="credential_public_id"' in html
+    assert "Verify" in html
+
+    # Must NOT contain sample chips, payload-tamper editor, or removed false/hardcoded strings
+    for forbidden in (
+        "Quick Samples",
+        "Sample Active Valid",
+        "Sample Revoked",
+        "Simulate Tampered Payload",
+        "tamper_payload",
+        "tamperDetails",
+        "tamperJson",
+        "Zero-Trust",
+        "RFC 8032 Authentic",
+        "Security Invariants",
+        "Canonical Hashes",
+        "Multi-Factor",
+        "consortium",
+        "Consensus",
+        "Tombstoned",
+        "Enclave",
+    ):
+        assert forbidden not in html
 
 
 @pytest.mark.asyncio
@@ -26,14 +52,14 @@ async def test_web_verify_htmx_post(api_client: AsyncClient):
         data={"credential_public_id": "CRD-2026-999999"},
     )
     assert resp.status_code == 200
-    assert "NOT_FOUND" in resp.text
-    assert "Audit ID:" in resp.text
-    assert "Security Consensus Checklist" in resp.text
+    assert "Not found" in resp.text
+    assert "CRD-2026-999999" in resp.text
 
 
 @pytest.mark.asyncio
 async def test_web_registry_pages_load(api_client: AsyncClient):
-    """Verify that Credential Registry views render cleanly."""
+    """Verify that Credential Registry views render cleanly for authorized staff."""
+    api_client.cookies.set("vericred_role", sign_role_cookie("registrar"))
     # GET /registry
     resp = await api_client.get("/registry")
     assert resp.status_code == 200
@@ -47,7 +73,8 @@ async def test_web_registry_pages_load(api_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_web_audit_pages_load(api_client: AsyncClient):
-    """Verify that Audit Ledger views and export endpoints operate cleanly."""
+    """Verify that Audit Ledger views and export endpoints operate cleanly for authorized staff."""
+    api_client.cookies.set("vericred_role", sign_role_cookie("auditor"))
     # GET /audit
     resp = await api_client.get("/audit")
     assert resp.status_code == 200
@@ -71,26 +98,55 @@ async def test_web_audit_pages_load(api_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_web_anomalies_lab(api_client: AsyncClient):
-    """Verify that Anomaly Stress-Test Lab renders and executes all scenarios."""
-    # GET /anomalies
+    """Verify that Anomaly Evaluation Lab shows 'Not run yet' initially, runs real scenarios, and contains no removed hardcoded strings."""
+    api_client.cookies.set("vericred_role", sign_role_cookie("registrar"))
+    forbidden_strings = [
+        "4 Vectors",
+        "100% 4/4",
+        "< 15 ms",
+        "&lt; 15",
+        "Sandboxed",
+        "Zero database pollution",
+        "Chris Doe",
+        "Enclave",
+        "Postgres Determinism",
+        "idx_unique_cred_hash",
+        "Policy Assertion Engine",
+        "Consensus Pass Rate",
+    ]
+
+    # GET /anomalies before any run -> shows "Not run yet"
     resp = await api_client.get("/anomalies")
     assert resp.status_code == 200
-    assert "Anomaly Stress-Test Lab" in resp.text
-    assert "SIM-REV-094" in resp.text
-    assert "SIM-TAMP-882" in resp.text
+    assert "Not run yet" in resp.text
+    assert "PREMATURE_ISSUANCE" in resp.text
+    assert "DUPLICATE_CREDENTIAL_ID" in resp.text
+    assert "REVOKED_VERIFIES_AS_ACTIVE" in resp.text
+    assert "ALTERED_PAYLOAD_NOT_DETECTED" in resp.text
+    assert "Payload-Tamper JSON Editor" in resp.text
+    assert "Quick Samples:" in resp.text
+    for s in forbidden_strings:
+        assert s not in resp.text
 
-    # POST /web/anomalies/run-all
+    # POST /web/anomalies/run-all -> renders real evaluation outcomes and row count delta 0
     resp_run = await api_client.post("/web/anomalies/run-all")
     assert resp_run.status_code == 200
-    assert "TEST PASSED" in resp_run.text
-    assert "SIM-COLL-103" in resp_run.text
-    assert "SIM-POIS-519" in resp_run.text
+    assert "PASS" in resp_run.text
+    assert "Read-only: row counts before/after delta 0" in resp_run.text
+    assert "INVALID_ISSUANCE" in resp_run.text
+    assert "REJECTED_DUPLICATE" in resp_run.text
+    assert "REVOKED" in resp_run.text
+    assert "TAMPERED" in resp_run.text
+    for s in forbidden_strings:
+        assert s not in resp_run.text
 
-    # POST /web/anomalies/run/SIM-TAMP-882
-    resp_single = await api_client.post("/web/anomalies/run/SIM-TAMP-882")
+    # POST /web/anomalies/run/ALTERED_PAYLOAD_NOT_DETECTED
+    resp_single = await api_client.post("/web/anomalies/run/ALTERED_PAYLOAD_NOT_DETECTED")
     assert resp_single.status_code == 200
-    assert "Scenario 04: Altered Payload Hash Mismatch" in resp_single.text
+    assert "Scenario 04: Altered Payload Snapshot" in resp_single.text
     assert "TAMPERED" in resp_single.text
+    for s in forbidden_strings:
+        assert s not in resp_single.text
 
 
 @pytest.mark.asyncio
@@ -104,19 +160,21 @@ async def test_web_rbac_login_and_role_switching(api_client: AsyncClient):
     assert "Public Verifier" in resp_login.text
     assert "Compliance Auditor" in resp_login.text
 
-    # 2. Role switch sets cookie
+    # 2. Role switch sets signed HttpOnly SameSite=lax cookie
     resp_switch = await api_client.get("/role/switch?role=verifier&redirect=/verify", follow_redirects=False)
     assert resp_switch.status_code == 303
-    assert "vericred_role=verifier" in resp_switch.headers.get("set-cookie", "")
+    set_cookie = resp_switch.headers.get("set-cookie", "")
+    assert "vericred_role=verifier." in set_cookie
+    assert "HttpOnly" in set_cookie
 
-    # 3. Verifier persona cannot revoke credentials
+    # 3. Verifier persona cannot revoke credentials (returns 403 error fragment)
+    api_client.cookies.set("vericred_role", sign_role_cookie("verifier"))
     resp_revoke_forbidden = await api_client.post(
         "/web/revocation/revoke",
         data={"credential_public_id": "CRD-2026-000001"},
-        cookies={"vericred_role": "verifier"},
     )
-    assert resp_revoke_forbidden.status_code == 200
-    assert "Access Denied" in resp_revoke_forbidden.headers.get("hx-trigger", "")
+    assert resp_revoke_forbidden.status_code == 403
+    assert "403 Forbidden" in resp_revoke_forbidden.text
 
 
 @pytest.mark.asyncio
@@ -126,7 +184,7 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     sample_issuer,
     sample_academic_setup,
 ):
-    """Verify verification_badge.html binds payload_snapshot.* and revoked_by_actor_id with zero N/A values."""
+    """Verify verification_badge.html binds payload_snapshot.* and revoked_by_actor_id with zero N/A values for staff."""
     from datetime import datetime, timezone
     from decimal import Decimal
     from backend.models.completion import CompletionRecord
@@ -134,6 +192,7 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     from backend.services.issuance import IssuanceService
     from backend.services.revocation import RevocationService
 
+    api_client.cookies.set("vericred_role", sign_role_cookie("registrar"))
     issuer, priv_pem = sample_issuer
     course, learner, rule = sample_academic_setup
 
@@ -158,7 +217,7 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
         actor_id="REGISTRAR-WEB-TEST",
     )
 
-    # 1. Verify active credential via HTMX POST /web/verify
+    # 1. Verify active credential via HTMX POST /web/verify as registrar
     resp_valid = await api_client.post(
         "/web/verify",
         data={"credential_public_id": cred.public_id},
@@ -194,4 +253,5 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     assert "DEAN-REVOKER-99" in html_revoked
     assert "ACADEMIC_MISCONDUCT" in html_revoked
     assert "N/A" not in html_revoked
+
 

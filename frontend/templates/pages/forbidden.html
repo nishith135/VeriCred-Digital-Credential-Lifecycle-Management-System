@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}403 Access Restricted // VeriCred{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-16">
+  <div class="veri-card p-8 bg-card border-rose-500/30 text-center space-y-5">
+    <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+      <span class="material-symbols-outlined text-[32px]">lock</span>
+    </div>
+    <div>
+      <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40">
+        HTTP 403 Forbidden
+      </span>
+      <h1 class="text-2xl font-extrabold text-white mt-3">Access Restricted for Current Persona</h1>
+      <p class="text-xs text-text-muted mt-2 leading-relaxed">
+        Your active persona (<strong class="text-white font-mono">{{ current_role.name }}</strong>) does not have permission to access this view.
+        Required role(s): <strong class="text-indigo-300 font-mono">{{ required_roles | join(", ") }}</strong>.
+      </p>
+    </div>
+    <div class="pt-3 flex items-center justify-center gap-3">
+      <a href="/login" class="px-5 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-bold transition-all shadow-md">
+        Switch Persona on Login Page
+      </a>
+      <a href="/verify" class="px-4 py-2.5 rounded-lg bg-surface hover:bg-elevated text-text-muted hover:text-white border border-border text-xs font-semibold transition-colors">
+        Return to Public Verification
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

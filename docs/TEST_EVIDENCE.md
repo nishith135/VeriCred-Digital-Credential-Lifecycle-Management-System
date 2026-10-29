@@ -309,6 +309,106 @@ This document maintains empirical evidence of all automated tests, manual checks
   - Scale `1.0` generation (`seed=20261022`) emitted `16,300` `audit_events` (`10,000 CREDENTIAL_ISSUED + 1,000 ELIGIBILITY_PASSED + 300 CREDENTIAL_REVOKED + 5,000 VERIFICATION_PERFORMED`), passed all reconciliation checks (`0` unresolved audit targets), and produced byte-identical `manifest.sha256` across two runs.
   - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
 
+### Verification 014: Server-Side RBAC Enforcement, Signed Role Cookies, PII Redaction & Verification Rate Limiting
+- **Date & Time:** 2026-10-29T14:06:00+05:30
+- **Executed Commands:**
+  1. `.\.venv\Scripts\pytest.exe tests/test_rbac_and_redaction.py -v` (73 tests including 22x3=66 permission matrix checks)
+  2. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db` (117 tests across full suite)
+  3. Read-only row-count verification on `credential_db`
+- **Output:**
+  - `pytest -v`: **117 passed in 64.79s** on `credential_test_db` (`0` failures, `0` warnings).
+  - Verified all 22 routes across all 3 roles (`66` combinations) match the server-side permission matrix (`200`/`302` for authorized requests, `403` JSON `{error, required_roles, current_role}` for denied `/api/*` requests, `403` `partials/forbidden_fragment.html` for denied HTMX/web partial requests, `403` `pages/forbidden.html` for denied full pages, and `401` JSON for invalid `Authorization: Bearer` tokens).
+  - Verified HMAC-SHA256 signed `vericred_role` cookies (`HttpOnly`, `SameSite=Lax`), removal of `?role=` query override, and open-redirect rejection on `/role/switch` (`https://evil.example`, `//evil.example`, `\evil` all fall back to `/verify`).
+  - Verified `PublicVerificationResponse` redacts all PII for `verifier` in both JSON (`POST /api/v1/verification/verify`) and HTML (`POST /web/verify`): returns only `{credential_public_id, outcome, issuer_name, course_title, issued_at, holder_masked, factors}` (plus `revoked_at` and `reason_code` when revoked), and contains zero occurrences of learner full name, email, `LRN-*` ID, assessment score, `payload_snapshot`, or actor IDs.
+  - Verified server-side `actor_id` traceability (`REGISTRAR-001`, `AUDITOR-001`, `PUBLIC-VERIFIER`) across issuance, revocation, and verification `AuditEvent`s (ignoring any client-supplied `revoked_by_actor_id`).
+  - Verified sliding-window rate limiter (`30` requests/minute per IP on `POST /web/verify` and `POST /api/v1/verification/verify`) returns `429 Too Many Requests` with `Retry-After` header on the 31st request.
+  - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
+### Verification 015: Seeded Anomaly Injection, Dry-Run Verification, Evaluation Module & Real-Data Anomaly Lab
+- **Date & Time:** 2026-10-29T15:40:00+05:30
+- **Executed Commands:**
+  1. `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (run twice and compared `manifest.sha256`)
+  2. `.\.venv\Scripts\python.exe -m backend.evaluation.run --db test --out ./exports_tmp` against `credential_test_db` loaded with the `scale=1.0` dataset
+  3. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db` (116 tests)
+  4. Read-only row-count verification on `credential_db`
+- **Output:**
+  - Two `scale=1.0` generator runs produced byte-identical `manifest.sha256` across all 15 exported files (including `ground_truth.csv`, `ground_truth.json`, and `credential_import_staging.csv`), with `20` injected rows per anomaly type (`80` total ground-truth rows) and `0` validator errors (`10,000` `CREDENTIAL_ISSUED`, `300` `CREDENTIAL_REVOKED`, `5,000` `VERIFICATION_PERFORMED`, `0` unresolved audit targets).
+  - Full `scale=1.0` evaluation on `credential_test_db` (`10,000` credentials + `20` staging duplicate rows) completed in `13,251.19 ms` (`13.25s`) with `row_count_delta = 0`:
+    - Overall Accuracy: `10020 / 10020` (`100.00%`)
+    - `PREMATURE_ISSUANCE` Detection: `20 / 20` (`100.00%`)
+    - `DUPLICATE_CREDENTIAL_ID` Detection: `20 / 20` (`100.00%`)
+    - `REVOKED_VERIFIES_AS_ACTIVE` Detection: `20 / 20` (`100.00%`)
+    - `ALTERED_PAYLOAD_NOT_DETECTED` Detection: `20 / 20` (`100.00%`, 10 snapshot-only + 10 snapshot+hash)
+    - False Acceptance Rate (`FAR`): `0 / 60` (`0.00%`)
+    - False Rejection Rate (`FRR`): `0 / 9660` (`0.00%`)
+    - Revocation Detection Rate: `300 / 300` (`100.00%`)
+    - Tamper Detection Rate: `20 / 20` (`100.00%`)
+  - `pytest -v`: **116 passed in 65.91s** on `credential_test_db`.
+  - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
+---
+
+### Verification 016: Realistic Synthetic Dataset, Stage DataFrame Functions & Brief Variety
+- **Date:** 2026-10-29T17:41:00+05:30
+- **Commands:**
+  1. `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp --load-db --db test --truncate` (run twice and compared `manifest.sha256`)
+  2. `.\.venv\Scripts\python.exe -m backend.generator.validator --export-dir ./exports_tmp` and `.\.venv\Scripts\python.exe -m backend.generator.validator --export-dir ./exports_tmp --with-ground-truth`
+  3. `.\.venv\Scripts\python.exe -m backend.evaluation.run --db test --out ./exports_tmp`
+  4. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db` (117 tests)
+  5. Read-only row-count verification on `credential_db`
+- **Output:**
+  - Exact counts at `scale=1.0`: `20,000` learners, `1,000` courses, `10,000` credentials, `5,000` verification requests (`12` issuers, `1,000` rules, `35,000` completions, `300` revocations, `16,302` audit events, `20` staging rows, `80` ground-truth rows).
+  - Duplicates & Variety: `704` duplicate learner full-name rows (`691` distinct repeated names), `0` duplicate emails, `0` duplicate course titles, `0` duplicate public IDs across all entities. Completion statuses: `14,476` `FAILED`, `11,404` `COMPLETED`, `9,120` `IN_PROGRESS` (normal score distribution `mean=74.89`, `std=13.52`). `2` retired issuers (`ISS-00003 -> ISS-00011`, `ISS-00007 -> ISS-00012`) with `638` credentials issued by successor issuers after retirement cutoff. Revocation delays: `min=1.83d`, `median=60.33d`, `max=120.83d`.
+  - Both CLI runs produced byte-identical `manifest.sha256`. Validator passed with `0` errors both with and without `--with-ground-truth`.
+  - Evaluation on `credential_test_db`: `10020 / 10020` (`100.00%`) accuracy, `20/20` on all 4 anomaly categories, `FAR = 0/60`, `FRR = 0/9660`, `row_count_delta = 0`.
+  - `pytest -v`: **117 passed in 57.29s** on `credential_test_db`.
+  - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
+---
+
+### Verification 017: Final UI Cleanup, Server-Side Pagination, 75/10/15 Completion Mix, Full 9-Table `seed_data.sql` & `DATA_DICTIONARY.md`
+- **Date:** 2026-10-29T19:03:00+05:30
+- **Commands:**
+  1. Regex grep across `frontend/templates/*.html` and `backend/api/views/web.py` for removed strings (`consortium`, `consensus`, `enclave`, `multi-factor`, `tombstone`, `zero-trust`, `rfc 8032 authentic`, `security invariants`, `canonical hashes`)
+  2. `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp --load-db --db test --truncate` (run twice and compared `manifest.sha256`)
+  3. `GET /web/registry/table?page=1` and `GET /web/registry/table?page=200` against `credential_test_db` (`scale=1.0`)
+  4. `.\.venv\Scripts\python.exe -m backend.generator.validator --export-dir ./exports_tmp` and `--with-ground-truth`
+  5. `.\.venv\Scripts\python.exe -m backend.evaluation.run --db test --out ./exports_tmp`
+  6. `seed_data.sql` `INSERT INTO` row count comparison vs CSV row counts and scratch database execution (`credential_scratch_seed_test`)
+  7. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db` (117 tests)
+  8. Read-only row-count verification on `credential_db`
+- **Output:**
+  - **Check `a` (Removed Strings Grep & `/verify` Test):** `GREP_MATCHES: 0` across all `frontend/templates/*.html` and `backend/api/views/web.py`; `test_web_verify_pages_load` and `test_web_verify_htmx_post` verify `/verify` contains no sample chips or payload-tamper editor and renders friendly `Not found`, `Valid`, `Revoked` (date + reason code), `Tampered`, and `Invalid issuance` states.
+  - **Check `b` (Registry Pagination at `scale=1.0`):**
+    - `GET /web/registry/table?page=1`: `status=200`, `rows_returned=50` (`CRD-2026-009994` .. `CRD-2026-009956`), `total_count=10,000` (`Page 1 of 200`), `latency_ms=218.29 ms`.
+    - `GET /web/registry/table?page=200`: `status=200`, `rows_returned=50` (`CRD-2023-000042` .. `CRD-2023-000001`), `total_count=10,000` (`Page 200 of 200`), `latency_ms=113.72 ms`.
+  - **Check `c` (Completion Status Mix, Table Counts, Validator & Evaluation):**
+    - Completion status mix (`15,300` total): `COMPLETED: 11,370 (74.31%)` (`10,000` issued + `1,370` unissued), `IN_PROGRESS: 2,345 (15.33%)`, `FAILED: 1,585 (10.36%)`.
+    - Validator without `--with-ground-truth`: `is_valid=true`, `errors_count=0`, `warnings_count=20`.
+    - Validator with `--with-ground-truth`: `is_valid=true`, `errors_count=0`, `warnings_count=0`, `total_labelled=80`, `unlabelled_violations=0`.
+    - Evaluation on `credential_test_db` (`13,241.62 ms`, `row_count_delta = 0`): `Overall Accuracy: 10020 / 10020 (100.00%)`, `20/20 (100.00%)` across all 4 anomaly categories, `FAR: 0 / 60 (0.00%)`, `FRR: 0 / 9660 (0.00%)`, `Revocation Detection: 300 / 300 (100.00%)`, `Tamper Detection: 20 / 20 (100.00%)`.
+  - **Check `d` (`seed_data.sql` Completeness & Scratch DB Load):**
+    - `seed_data.sql` `INSERT INTO` counts equal CSV counts across all 9 tables (`issuers: 12`, `courses: 1000`, `credential_rules: 1000`, `learners: 20000`, `completion_records: 15300`, `credentials: 10000`, `revocations: 300`, `verification_requests: 5000`, `audit_events: 16302`) and executed cleanly into empty scratch DB `credential_scratch_seed_test`.
+  - **Check `e` (Determinism):** Two `scale=1.0` generator runs produced byte-identical `manifest.sha256` (`MANIFEST_MATCH: IDENTICAL`).
+  - **Check `f` (Pytest & `credential_db` Integrity):** `pytest -v` passed **117 / 117 tests in 73.19s** on `credential_test_db`; `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
+---
+
+### Verification 018: Final Full-Scale Load of `credential_db`, Constant 2026 IDs, Sequence Continuity, Regex Audits & Test Isolation
+- **Date:** 2026-10-29T19:35:00+05:30
+- **Commands:**
+  1. Updated `backend/services/ids.py` to fix year segment of credentials and verifications to constant `2026` (`CRD-2026-NNNNNN`, `VER-2026-NNNNNN`, `REV-CRD-2026-NNNNNN-01`).
+  2. Dropped and recreated `public` schema in `credential_db` and ran `alembic upgrade head`.
+  3. `python -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports --load-db` (and deleted `./exports_tmp`).
+  4. Verified sequence continuity (`credential_public_seq` last_value=10001, `verification_public_seq` last_value=5001, `audit_event_public_seq` last_value=16303).
+  5. Tested every public ID across all CSV files in `./exports` and all live DB tables against `ID_PATTERNS`: `0` errors.
+  6. `python -m backend.generator.validator --export-dir ./exports --with-ground-truth`: `is_valid: true`, `errors: 0`.
+  7. `python -m backend.generator.validator --db live --with-ground-truth`: `is_valid: true`, `errors: 0`, all 3 audit counts reconciled 1:1, `0` unresolved targets.
+  8. `python -m backend.evaluation.run --db live --out ./exports`: `10020 / 10020` (`100.00%`) in `12.34s`, `row_count_delta = 0`.
+  9. Evaluated live server endpoints: `GET /verify` 200, `GET /registry` 403, `/web/registry/table?page=1` 10,000 count, public verifier active and revoked responses contain zero learner names or scores.
+  10. Re-ran generator to confirm byte-identical `manifest.sha256` across all 15 files.
+  11. `pytest -v`: **117 passed in 61.56s** against `credential_test_db`; `credential_db` row counts remained unchanged (`12 / 1,000 / 1,000 / 20,000 / 15,300 / 10,000 / 300 / 5,000 / 16,302`).
+
 ---
 
 ## 3. Boundary & Assumption Verification

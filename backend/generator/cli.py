@@ -10,7 +10,9 @@ from pathlib import Path
 import sys
 import time
 
-from backend.generator.anomalies import generate_anomaly_fixtures
+from sqlalchemy import create_engine
+
+from backend.core.config import settings
 from backend.generator.db_loader import DatabaseLoader
 from backend.generator.exporter import DatasetExporter
 from backend.generator.generator import DEFAULT_SEED, DataGenerator
@@ -42,7 +44,13 @@ def main():
     parser.add_argument(
         "--load-db",
         action="store_true",
-        help="Bulk insert the generated dataset into the active PostgreSQL database",
+        help="Bulk insert the generated dataset into PostgreSQL",
+    )
+    parser.add_argument(
+        "--db",
+        choices=["test", "live"],
+        default="live",
+        help="Target database when --load-db is set (default: live -> credential_db)",
     )
     parser.add_argument(
         "--truncate",
@@ -69,18 +77,14 @@ def main():
 
     t_start = time.perf_counter()
 
-    # 1. Generate Dataset
-    print("[1/5] Generating topological records in-memory...")
+    # 1. Generate Dataset (includes baseline + seeded anomaly injection)
+    print("[1/4] Generating topological records and injecting seeded anomalies in-memory...")
     generator = DataGenerator(seed=args.seed, scale=args.scale)
     dataset = generator.generate()
 
-    # 2. Generate 4 Mandatory Anomalies & Segregated Ground Truth
-    print("[2/5] Generating 4 controlled anomaly fixtures and segregated ground truth...")
-    fixtures, ground_truth = generate_anomaly_fixtures(seed=args.seed)
-
-    # 3. Validate Referential Integrity & Invariants
+    # 2. Validate Referential Integrity & Invariants
     if not args.no_validate:
-        print("[3/5] Validating database constraints and academic eligibility invariants...")
+        print("[2/4] Validating database constraints, reconciliation, and eligibility invariants...")
         validator = DatasetValidator(dataset)
         report = validator.validate_all()
         if not report.is_valid:
@@ -88,23 +92,32 @@ def main():
             for err in report.errors[:10]:
                 print(f"  - {err}")
             sys.exit(1)
-        print("      Validation PASSED (0 errors, referential integrity intact).")
+        print("      Validation PASSED (0 errors, referential integrity & audit reconciliation intact).")
     else:
-        print("[3/5] Skipping validation as requested.")
+        print("[2/4] Skipping validation as requested.")
 
-    # 4. Optional PostgreSQL Ingestion
+    # 3. Optional PostgreSQL Ingestion
     if args.load_db:
-        print("[4/5] Ingesting dataset into PostgreSQL via SQLAlchemy Core batching...")
-        loader = DatabaseLoader(dataset)
-        load_res = loader.load_all(truncate_first=args.truncate)
+        db_url = (
+            settings.TEST_DATABASE_URL_SYNC
+            if args.db == "test"
+            else settings.SYNC_DATABASE_URL
+        )
+        print(f"[3/4] Ingesting dataset into PostgreSQL ({args.db}) via SQLAlchemy Core batching...")
+        target_engine = create_engine(db_url, echo=False, pool_pre_ping=True)
+        try:
+            loader = DatabaseLoader(dataset, engine=target_engine)
+            load_res = loader.load_all(truncate_first=args.truncate)
+        finally:
+            target_engine.dispose()
         print(f"      Database ingestion complete in {load_res['duration_seconds']}s.")
     else:
-        print("[4/5] Skipping DB load (use --load-db to insert into PostgreSQL).")
+        print("[3/4] Skipping DB load (use --load-db to insert into PostgreSQL).")
 
-    # 5. Export Files & Checksum Manifest
-    print("[5/5] Exporting CSV, JSON, SQL seed files and computing manifest.sha256...")
+    # 4. Export Files & Checksum Manifest
+    print("[4/4] Exporting CSV, JSON, SQL seed files and computing manifest.sha256...")
     exporter = DatasetExporter(dataset, output_path)
-    checksums = exporter.export_all(fixtures, ground_truth)
+    checksums = exporter.export_all(dataset.ground_truth)
     print(f"      Successfully exported {len(checksums)} files to {output_path}.")
 
     total_time = time.perf_counter() - t_start
@@ -118,7 +131,8 @@ def main():
     print(f"  Revocations:    {len(dataset.revocations):,}")
     print(f"  Verifications:  {len(dataset.verifications):,}")
     print(f"  Audit Events:   {len(dataset.audit_events):,}")
-    print(f"  Anomalies:      {len(fixtures)} fixtures (ground_truth.json)")
+    print(f"  Staging Rows:   {len(dataset.credential_import_staging):,} (credential_import_staging.csv)")
+    print(f"  Ground Truth:   {len(dataset.ground_truth):,} (ground_truth.csv / ground_truth.json)")
     print("================================================================================")
 
 

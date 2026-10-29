@@ -146,7 +146,7 @@ This document records the foundational technical and organizational decisions ma
 
 ---
 
-### ADR-008: Verification Relational Cross-Check, Eligibility Re-Evaluation & Atomic Audit Reconciliation
+### ADR-009: Verification Relational Cross-Check, Eligibility Re-Evaluation & Atomic Audit Reconciliation
 - **Date:** 2026-10-29
 - **Status:** Accepted
 - **Context:** Verification previously checked only `compute_payload_hash(payload) == credential.canonical_payload_hash`, Ed25519 signature, and revocation status, without checking whether `CompletionRecord` and `CredentialRule` actually satisfied academic eligibility (`issued_at >= completion_timestamp`, `assessment_score >= rule.min_score`, `status == COMPLETED`) or whether `credential.payload_snapshot` had drifted from the relational rows (`learner`, `course`, `completion`, `issuer`). In addition, `VerificationService` did not log `VERIFICATION_PERFORMED` `AuditEvent`s, and `IssuanceService` did not persist `ELIGIBILITY_CHECK_FAILED` events when rejecting ineligible candidates.
@@ -155,3 +155,60 @@ This document records the foundational technical and organizational decisions ma
   2. When `presented_payload is None`, rebuild the credential payload from the relational rows via `build_credential_payload` and compare `RELATIONAL_CLAIM_KEYS = ("credential_id", "course", "learner", "assessment", "issuer")` against `credential.payload_snapshot` (excluding `issued_at` and `completion_timestamp` from JSON string comparison because `issued_at` is issuance metadata and both timestamps are compared as `datetime` objects in `evaluate_completion_rules`). Any mismatch returns `TAMPERED` (`reason_code="RELATIONAL_PAYLOAD_MISMATCH"`).
   3. Write a `VERIFICATION_PERFORMED` `AuditEvent` in the same transaction as `VerificationRequest` for every verification outcome (including `NOT_FOUND`), emit matching `VERIFICATION_PERFORMED` events in `DataGenerator` (`16,300` total audit events at `scale=1.0`), and log `ELIGIBILITY_CHECK_FAILED` in an independent `db_module.async_session_factory()` transaction when `IssuanceService` rejects an ineligible candidate.
   4. Enforce full audit-event count and target resolution reconciliation in `DatasetValidator` for both exported datasets and live database tables (`DatasetValidator.from_database`).
+
+---
+
+### ADR-010: Server-Side RBAC Enforcement, Signed Role Cookies, Public PII Redaction & Verification Rate Limiting
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** Role selection previously relied on an unsigned `vericred_role` cookie or `?role=` query-parameter override, default unauthenticated persona was `registrar`, several web and REST routes lacked server-side role enforcement, and the public verification response returned the full `payload_snapshot` containing learner PII (full name, email, `LRN-*` ID, assessment score, and internal actor IDs).
+- **Decision:**
+  1. Enforce role identity via a single FastAPI dependency `get_current_actor()` (returning `{role, actor_id}`) and `require_role(*roles)` built on it across every web and API route. Default unauthenticated requests to `verifier` (`PUBLIC-VERIFIER`), sign the `vericred_role` cookie with HMAC-SHA256 (`settings.SESSION_SECRET`, `HttpOnly`, `SameSite=Lax`), support API `Authorization: Bearer <key>` (`REGISTRAR_API_KEY`, `AUDITOR_API_KEY`) via `hmac.compare_digest`, remove `?role=` query overrides, and validate relative redirect paths on `/role/switch`.
+  2. Split verification schemas into `PublicVerificationResponse` (used for `verifier`, exposing only `credential_public_id`, `outcome`, `issuer_name`, `course_title`, `issued_at`, `holder_masked`, `factors`, and when revoked `revoked_at` and `reason_code`) and `StaffVerificationResponse` (used for `registrar` and `auditor`).
+  3. Enforce an in-memory sliding-window rate limiter (`SlidingWindowRateLimiter`, configurable via `VERIFY_RATE_LIMIT_PER_MINUTE=30`) on `POST /web/verify` and `POST /api/v1/verification/verify`, returning HTTP `429` with `Retry-After`.
+
+---
+
+### ADR-011: Seeded Anomaly Injection into Baseline Dataset, Dry-Run Verification & Real-Data Evaluation Module
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** Anomaly scenarios previously relied on synthetic high-range fixture IDs (`CRD-2026-9000xx`) and hardcoded strings in the Anomaly Lab UI (`web.py` and `anomalies.html`), rather than injecting labelled cases into the generated baseline dataset and evaluating every credential through `VerificationService.verify_credential`.
+- **Decision:**
+  1. Inject `n_per_type = max(2, round(len(credentials) * 0.002))` (`20` per type at `scale=1.0`) anomalies into the generated baseline dataset using the seeded RNG (`PREMATURE_ISSUANCE`, `DUPLICATE_CREDENTIAL_ID` in `credential_import_staging.csv`, `REVOKED_VERIFIES_AS_ACTIVE`, and `ALTERED_PAYLOAD_NOT_DETECTED` split evenly between snapshot-only and snapshot+hash), without adding any label column to input tables.
+  2. Consolidate ground truth into `exports/ground_truth.csv` and `exports/ground_truth.json` (`anomaly_id`, `issue_type`, `entity_public_id`, `expected_outcome`, `rule_reference`) and delete `data/ground_truth_anomalies.json`. Enforce a static AST leakage guard ensuring `backend/services`, `backend/api`, and `backend/core` never import ground truth.
+  3. Add `persist: bool = True` to `VerificationService.verify_credential` so dry-run evaluations (`persist=False`) write zero `VerificationRequest` or `AuditEvent` rows and advance zero sequences.
+  4. Create `backend/evaluation/` (`EvaluationRunner` and CLI `python -m backend.evaluation.run --db test|live --out <dir>`) to evaluate all credentials and rolled-back staging duplicates, compute numerator/denominator metrics, and power `/anomalies` with real computed KPIs (`Not run yet` before any run).
+
+---
+
+### ADR-012: Standalone DataFrame Stage Functions, Normal Score Distributions & Issuer Retirement Transitions
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** The synthetic dataset generator needed to expose one standalone function per stage returning a `pandas.DataFrame`, use a single seed (`20261022` from `settings.DEFAULT_SEED`) across `Faker.seed()`, `numpy.random.default_rng()`, and `random.Random()`, generate realistic course titles (`0` duplicates across `1,000` courses with `department` and `level`), draw assessment scores from a normal distribution around `75`, model issuer retirements with successor issuers, and select revocations via the seeded RNG.
+- **Decision:**
+  1. Refactor `backend/generator/` into 10 stage functions (`generate_issuers_df`, `generate_courses_df`, `generate_credential_rules_df`, `generate_learners_df`, `generate_completions_df`, `generate_credentials_df`, `generate_revocations_df`, `generate_verification_requests_df`, `generate_audit_events_df`, `inject_anomalies_df`), each taking explicit inputs and returning a `pandas.DataFrame`.
+  2. Build course titles from a deterministic `10 departments x 12 subjects x 10 level/qualifier phrases` catalog (`1,200` unique combinations) guaranteeing `0` duplicate titles across `1,000` courses, and draw completion scores from `np_rng.normal(75.0, 14.0)` clipped to `[0.0, 100.0]`.
+  3. Retire `ISS-00003` and `ISS-00007` at `REFERENCE_DATETIME - 365 days` with successor issuers `ISS-00011` and `ISS-00012`, routing post-retirement credentials for those courses to the successor issuer and recording `ISSUER_RETIRED` and `CREDENTIAL_ISSUED` (`previous_issuer_id`) audit events.
+
+---
+
+### ADR-013: Server-Side SQL Pagination, 75/10/15 Completion Mix, Full 9-Table `seed_data.sql` & Data Dictionary
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** The public `/verify` page still included sample chips and the tamper editor (already moved to the Anomaly Lab), several templates contained overclaimed terms (`consortium`, `Consensus`, `Enclave`, `Multi-Factor`, `Tombstoned`, `Zero-Trust E-Gate`, `RFC 8032 Authentic`), Registry and Audit Ledger truncated results to `100` rows without server-side pagination, `/web/export/audit` capped CSV export at `5,000` rows, `seed_data.sql` omitted `verification_requests` and `audit_events`, and a formal `docs/DATA_DICTIONARY.md` was required.
+- **Decision:**
+  1. Simplify `/verify` to a single credential ID input and `Verify` button (no sample chips or payload-tamper editor) with clear outcome badges (`Valid`, `Revoked` with date + reason code, `Tampered`, `Invalid issuance`, and a friendly `Not found` empty state), and remove all overclaimed terminology across `frontend/templates` and `backend/api/views/web.py`.
+  2. Implement server-side SQL pagination (`DEFAULT_PAGE_SIZE = 50`, `SELECT COUNT(*)`, SQL search/filters, `Previous`/`Next` HTMX controls, default Registry status `ALL`) and stream all rows in `GET /web/export/audit` via `StreamingResponse`.
+  3. Set `n_completions = 15,300` at `scale=1.0` with a `~75% COMPLETED / ~10% FAILED / ~15% IN_PROGRESS` status mix (`11,370` `COMPLETED` = `10,000` issued + `1,370` unissued, `1,585` `FAILED`, `2,345` `IN_PROGRESS`).
+  4. Emit `CREATE TABLE IF NOT EXISTS` and `INSERT INTO` statements in `seed_data.sql` for all 9 operational tables in FK order (populating `audit_events.created_at` from `occurred_at` for raw SQL compatibility), keeping `credential_import_staging.csv` CSV-only, and document all 9 entities, relationships, and lifecycle states in `docs/DATA_DICTIONARY.md`.
+
+---
+
+### ADR-014: Constant 2026 Year Segment for Credentials & Verifications, Full-Scale Final Load & Evidence Consolidation
+- **Date:** 2026-10-29
+- **Status:** Accepted
+- **Context:** Credential and verification public IDs previously used the year of issuance (`issued_at.year`) and request (`requested_at.year`), causing older credentials to be formatted as `CRD-2023-` through `CRD-2025-` while tests and specifications expected `CRD-2026-NNNNNN`. A final clean reset and load of `credential_db` at `scale=1.0` was required with full live database evidence, deterministic checksums, sequence continuity, and a finalized `README.md`.
+- **Decision:**
+  1. Fix the year segment of credential and verification IDs to the constant `2026` (`CRD-2026-NNNNNN`, `VER-2026-NNNNNN`, `REV-CRD-2026-NNNNNN-01`), maintaining global sequential counters while chronological timestamps (`issued_at`, `requested_at`) remain distributed across actual years.
+  2. Reset `credential_db` (drop and recreate `public` schema + `alembic upgrade head`), generate the baseline dataset at `scale=1.0` into `./exports`, and load `credential_db`, verifying that PostgreSQL sequences continue after loaded values (`credential_public_seq` next value `10001`).
+  3. Consolidate empirical validation evidence into `docs/VALIDATION_SUMMARY.md` and update `README.md` with concise architectural and operational instructions.

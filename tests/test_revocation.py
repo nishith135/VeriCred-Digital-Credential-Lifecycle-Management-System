@@ -163,6 +163,10 @@ async def test_live_revocation_reflection_in_verification_api(
     assert v1_resp.status_code == 200
     assert v1_resp.json()["outcome"] == "VALID"
 
+    from backend.core.config import settings
+
+    registrar_headers = {"Authorization": f"Bearer {settings.REGISTRAR_API_KEY}"}
+
     # 2. Administrative Revocation via REST API
     rev_post = await api_client.post(
         "/api/v1/revocation/revoke",
@@ -172,11 +176,13 @@ async def test_live_revocation_reflection_in_verification_api(
             "reason_code": "ACADEMIC_MISCONDUCT",
             "notes": "Falsification of lab data discovered upon retrospective review.",
         },
+        headers=registrar_headers,
     )
     assert rev_post.status_code == 200
     assert rev_post.json()["status"] == "REVOKED"
+    assert rev_post.json()["revoked_by_actor_id"] == "REGISTRAR-001"
 
-    # 3. Subsequent verification immediately reflects REVOKED
+    # 3. Subsequent verification immediately reflects REVOKED (public verifier response)
     v2_resp = await api_client.post(
         "/api/v1/verification/verify",
         json={"credential_public_id": cred.public_id},
@@ -186,10 +192,13 @@ async def test_live_revocation_reflection_in_verification_api(
     assert v2_data["outcome"] == "REVOKED"
     assert v2_data["reason_code"] == "ACADEMIC_MISCONDUCT"
     assert v2_data["factors"]["is_revoked"] is True
-    assert v2_data["revocation_details"]["reason_code"] == "ACADEMIC_MISCONDUCT"
+    assert v2_data["revoked_at"] is not None
 
     # 4. Audit History API returns full sequential event log
-    audit_resp = await api_client.get(f"/api/v1/revocation/audit/{cred.public_id}")
+    audit_resp = await api_client.get(
+        f"/api/v1/revocation/audit/{cred.public_id}",
+        headers=registrar_headers,
+    )
     assert audit_resp.status_code == 200
     events = audit_resp.json()
     event_types = [e["event_type"] for e in events]

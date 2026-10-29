@@ -1,17 +1,19 @@
 {
   "generated_at": "2026-10-22T12:00:00+00:00",
   "seed": 20261022,
-  "scale": 0.05,
+  "scale": 1.0,
   "reference_time": "2026-10-22T12:00:00+00:00",
   "row_counts": {
-    "issuers": 7,
-    "courses": 50,
-    "credential_rules": 50,
-    "learners": 1000,
-    "completion_records": 700,
-    "credentials": 500,
-    "revocations": 15,
-    "verification_requests": 250,
-    "audit_events": 565
+    "issuers": 12,
+    "courses": 1000,
+    "credential_rules": 1000,
+    "learners": 20000,
+    "completion_records": 15300,
+    "credentials": 10000,
+    "revocations": 300,
+    "verification_requests": 5000,
+    "audit_events": 16302,
+    "credential_import_staging": 20,
+    "ground_truth": 80
   }
 }

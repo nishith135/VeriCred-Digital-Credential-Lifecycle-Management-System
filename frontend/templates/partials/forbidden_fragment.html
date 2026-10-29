@@ -1,0 +1,11 @@
+<div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono flex items-center justify-between gap-4">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-[18px] text-rose-400">lock</span>
+    <span>
+      <strong class="text-rose-400">403 Forbidden:</strong>
+      Role '{{ current_role_id }}' cannot perform this operation (requires: {{ required_roles | join(", ") }}).
+    </span>
+  </div>
+  <a href="/login" class="underline text-white hover:text-brand shrink-0">Switch Persona</a>
+</div>
+

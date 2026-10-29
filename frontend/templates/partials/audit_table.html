@@ -1,6 +1,6 @@
 {% if events %}
   {% for event in events %}
-    <tr class="hover:bg-surface/80 transition-colors group">
+    <tr class="hover:bg-surface/80 transition-colors group" data-audit-row="{{ event.event_id }}">
       <td class="py-3.5 px-4 font-mono whitespace-nowrap">
         <div class="flex items-center gap-2">
           {% if event.event_type == 'CREDENTIAL_ISSUED' %}
@@ -90,3 +90,40 @@
     </td>
   </tr>
 {% endif %}
+<tr class="bg-surface border-t border-border">
+  <td colspan="7" class="py-3 px-4">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-text-muted" id="auditPaginationBar">
+      <div>
+        Page <strong class="text-white">{{ page or 1 }}</strong> of <strong class="text-white">{{ total_pages or 1 }}</strong>
+        <span class="text-text-subtle">• Showing {{ events|length }} of {{ "{:,}".format(total_count or 0) }} total events (page size {{ page_size or 50 }})</span>
+      </div>
+      <div class="flex items-center gap-2">
+        {% if (page or 1) > 1 %}
+        <button
+          type="button"
+          hx-get="/web/audit/table?page={{ (page or 1) - 1 }}"
+          hx-target="#audit-table-body"
+          hx-include="#audit-filter-form"
+          class="px-3 py-1 rounded-lg bg-elevated hover:bg-card text-white border border-border transition-colors cursor-pointer">
+          &larr; Previous
+        </button>
+        {% else %}
+        <span class="px-3 py-1 rounded-lg bg-canvas text-text-subtle border border-border opacity-50 cursor-not-allowed">&larr; Previous</span>
+        {% endif %}
+
+        {% if (page or 1) < (total_pages or 1) %}
+        <button
+          type="button"
+          hx-get="/web/audit/table?page={{ (page or 1) + 1 }}"
+          hx-target="#audit-table-body"
+          hx-include="#audit-filter-form"
+          class="px-3 py-1 rounded-lg bg-elevated hover:bg-card text-white border border-border transition-colors cursor-pointer">
+          Next &rarr;
+        </button>
+        {% else %}
+        <span class="px-3 py-1 rounded-lg bg-canvas text-text-subtle border border-border opacity-50 cursor-not-allowed">Next &rarr;</span>
+        {% endif %}
+      </div>
+    </div>
+  </td>
+</tr>

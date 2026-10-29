@@ -12,7 +12,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -21,6 +21,13 @@ from fastapi.templating import Jinja2Templates
 from backend.core.config import settings
 from backend.core.database import async_engine
 from backend.core.exceptions import DomainException, domain_exception_handler
+from backend.core.rate_limit import RateLimitExceededError
+from backend.core.rbac import (
+    RBACForbiddenError,
+    RBACUnauthorizedError,
+    get_current_actor,
+    get_role_context,
+)
 
 
 from pathlib import Path
@@ -71,6 +78,76 @@ def create_app() -> FastAPI:
     # Domain Exception Handling
     app.add_exception_handler(DomainException, domain_exception_handler)
 
+    @app.exception_handler(RBACUnauthorizedError)
+    async def rbac_unauthorized_handler(request: Request, exc: RBACUnauthorizedError) -> JSONResponse:
+        return JSONResponse(
+            status_code=401,
+            content={
+                "error": "UNAUTHORIZED",
+                "message": exc.message,
+            },
+        )
+
+    @app.exception_handler(RBACForbiddenError)
+    async def rbac_forbidden_handler(request: Request, exc: RBACForbiddenError):
+        if request.url.path.startswith("/api/"):
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "error": "FORBIDDEN",
+                    "required_roles": exc.required_roles,
+                    "current_role": exc.current_role,
+                },
+            )
+        if request.headers.get("HX-Request") == "true" or request.url.path.startswith("/web/"):
+            return templates.TemplateResponse(
+                request=request,
+                name="partials/forbidden_fragment.html",
+                context={
+                    "current_role_id": exc.current_role,
+                    "required_roles": exc.required_roles,
+                },
+                status_code=403,
+            )
+        ctx = get_role_context(request)
+        ctx.update(
+            {
+                "active_page": "forbidden",
+                "required_roles": exc.required_roles,
+                "current_role_id": exc.current_role,
+            }
+        )
+        return templates.TemplateResponse(
+            request=request,
+            name="pages/forbidden.html",
+            context=ctx,
+            status_code=403,
+        )
+
+    @app.exception_handler(RateLimitExceededError)
+    async def rate_limit_handler(request: Request, exc: RateLimitExceededError):
+        headers = {"Retry-After": str(exc.retry_after)}
+        if request.url.path.startswith("/api/"):
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "error": "RATE_LIMIT_EXCEEDED",
+                    "message": str(exc),
+                    "retry_after": exc.retry_after,
+                },
+                headers=headers,
+            )
+        return HTMLResponse(
+            status_code=429,
+            content=(
+                '<div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 '
+                'text-amber-300 text-xs font-mono">'
+                f"<strong>429 Rate Limit Exceeded:</strong> {exc}"
+                "</div>"
+            ),
+            headers=headers,
+        )
+
     # API Routers
     from backend.api.v1.audit import router as audit_router
     from backend.api.v1.issuance import router as issuance_router
@@ -85,7 +162,9 @@ def create_app() -> FastAPI:
     app.include_router(audit_router)
 
     @app.get("/health", tags=["System"])
-    async def health_check() -> dict[str, str]:
+    async def health_check(
+        _actor: dict[str, str] = Depends(get_current_actor),
+    ) -> dict[str, str]:
         """System health and environment probe."""
         return {
             "status": "healthy",

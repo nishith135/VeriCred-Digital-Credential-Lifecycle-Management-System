@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db_session
 from backend.core.exceptions import DomainException
+from backend.core.rbac import require_role
 from backend.schemas.credential import (
     CredentialIssuanceRequest,
     CredentialResponse,
@@ -26,6 +27,7 @@ router = APIRouter(prefix="/api/v1/issuance", tags=["Issuance"])
 )
 async def evaluate_eligibility(
     request: EligibilityEvaluationRequest,
+    _actor: dict[str, str] = Depends(require_role("registrar")),
     db: AsyncSession = Depends(get_db_session),
 ) -> EligibilityEvaluationResult:
     """Evaluate completion record for credential eligibility."""
@@ -45,6 +47,7 @@ async def issue_credential(
         None,
         description="PEM-encoded Ed25519 private key used to sign the credential hash.",
     ),
+    actor: dict[str, str] = Depends(require_role("registrar")),
     db: AsyncSession = Depends(get_db_session),
 ) -> CredentialResponse:
     """Atomically issue authentic credential."""
@@ -60,5 +63,5 @@ async def issue_credential(
         completion_id=request.completion_id,
         issuer_public_id=request.issuer_public_id,
         issuer_private_key_pem=x_issuer_private_key,
-        actor_id=request.actor_id,
+        actor_id=actor["actor_id"],
     )

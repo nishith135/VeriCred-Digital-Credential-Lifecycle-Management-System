@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db_session
+from backend.core.rbac import require_role
 from backend.schemas.audit import AuditEventResponse, AuditLogListResponse
 from backend.services.audit import AuditService
 
@@ -27,6 +28,7 @@ async def query_audit_events(
     to_date: Optional[datetime] = Query(None, description="Filter events on or before this timestamp"),
     limit: int = Query(default=100, ge=1, le=1000, description="Page size limit"),
     offset: int = Query(default=0, ge=0, description="Offset for pagination"),
+    _actor: dict[str, str] = Depends(require_role("registrar", "auditor")),
     db: AsyncSession = Depends(get_db_session),
 ) -> AuditLogListResponse:
     """Retrieve filtered audit events."""

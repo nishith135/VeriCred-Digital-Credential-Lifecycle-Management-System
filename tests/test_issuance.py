@@ -191,10 +191,15 @@ async def test_issuance_rest_api_endpoints(
     await db_session.commit()
     await db_session.refresh(completion)
 
+    from backend.core.config import settings
+
+    registrar_headers = {"Authorization": f"Bearer {settings.REGISTRAR_API_KEY}"}
+
     # 1. Test POST /api/v1/issuance/evaluate
     eval_resp = await api_client.post(
         "/api/v1/issuance/evaluate",
         json={"completion_id": completion.id},
+        headers=registrar_headers,
     )
     assert eval_resp.status_code == 200
     eval_data = eval_resp.json()
@@ -209,7 +214,7 @@ async def test_issuance_rest_api_endpoints(
             "issuer_public_id": issuer.public_id,
             "actor_id": "API-ADMIN-01",
         },
-        headers={"X-Issuer-Private-Key": issuer_priv_pem},
+        headers={**registrar_headers, "X-Issuer-Private-Key": issuer_priv_pem},
     )
     assert issue_resp.status_code == 201
     cred_data = issue_resp.json()
@@ -224,7 +229,7 @@ async def test_issuance_rest_api_endpoints(
             "issuer_public_id": issuer.public_id,
             "actor_id": "API-ADMIN-01",
         },
-        headers={"X-Issuer-Private-Key": issuer_priv_pem},
+        headers={**registrar_headers, "X-Issuer-Private-Key": issuer_priv_pem},
     )
     assert dup_resp.status_code == 409
     assert dup_resp.json()["error"] == "DUPLICATE_ISSUANCE_REJECTED"

@@ -20,7 +20,7 @@ from typing import Any, Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload
 
 from backend.core.security import compute_payload_hash, verify_signature
 from backend.models.audit import AuditEvent
@@ -28,6 +28,9 @@ from backend.models.completion import CompletionRecord
 from backend.models.credential import Credential
 from backend.models.verification import VerificationRequest
 from backend.schemas.verification import (
+    AnyVerificationResponse,
+    PublicVerificationResponse,
+    StaffVerificationResponse,
     VerificationFactorResult,
     VerificationResponse,
 )
@@ -47,6 +50,16 @@ RELATIONAL_CLAIM_KEYS = ("credential_id", "course", "learner", "assessment", "is
 class VerificationService:
     """Verifies academic credentials with multi-factor integrity and eligibility checks."""
 
+    @staticmethod
+    def select_response_for_role(
+        response: StaffVerificationResponse,
+        role: str,
+    ) -> AnyVerificationResponse:
+        """Return PublicVerificationResponse for `verifier` and StaffVerificationResponse for staff roles."""
+        if role in ("registrar", "auditor"):
+            return response
+        return response.to_public_response()
+
     @classmethod
     async def verify_credential(
         cls,
@@ -54,23 +67,29 @@ class VerificationService:
         credential_public_id: str,
         presented_payload: Optional[dict[str, Any]] = None,
         requester_ip: Optional[str] = None,
-    ) -> VerificationResponse:
-        """Perform multi-factor verification and atomically log VerificationRequest + AuditEvent."""
+        actor_id: Optional[str] = None,
+        persist: bool = True,
+    ) -> StaffVerificationResponse:
+        """Perform multi-factor verification and (when persist=True) atomically log VerificationRequest + AuditEvent."""
         now = datetime.now(timezone.utc)
-        verification_number = await next_sequence_value(db, VERIFICATION_SEQUENCE)
-        verification_id = format_verification_id(verification_number, now)
-        event_id = await AuditService.generate_event_id(db)
-        actor = requester_ip or "PUBLIC_VERIFIER"
+        if persist:
+            verification_number = await next_sequence_value(db, VERIFICATION_SEQUENCE)
+            verification_id = format_verification_id(verification_number, now)
+            event_id = await AuditService.generate_event_id(db)
+        else:
+            verification_id = format_verification_id(0, now)
+            event_id = ""
+        actor = actor_id or "PUBLIC-VERIFIER"
 
-        # 1. Existence Check (eagerly loading issuer, revocation, completion, learner, course, rule)
+        # 1. Existence Check (eagerly loading issuer, revocation, completion, learner, course, rule in one JOIN)
         stmt = (
             select(Credential)
             .options(
-                selectinload(Credential.issuer),
-                selectinload(Credential.revocation),
-                selectinload(Credential.completion).selectinload(CompletionRecord.learner),
-                selectinload(Credential.completion).selectinload(CompletionRecord.course),
-                selectinload(Credential.completion).selectinload(CompletionRecord.rule),
+                joinedload(Credential.issuer),
+                joinedload(Credential.revocation),
+                joinedload(Credential.completion).joinedload(CompletionRecord.learner),
+                joinedload(Credential.completion).joinedload(CompletionRecord.course),
+                joinedload(Credential.completion).joinedload(CompletionRecord.rule),
             )
             .where(Credential.public_id == credential_public_id)
         )
@@ -78,36 +97,37 @@ class VerificationService:
         credential = result.scalar_one_or_none()
 
         if not credential:
-            verif_log = VerificationRequest(
-                public_id=verification_id,
-                credential_id=None,
-                requested_identifier=credential_public_id,
-                verification_timestamp=now,
-                outcome="NOT_FOUND",
-                reason_code="CREDENTIAL_NOT_FOUND",
-                integrity_check_passed=False,
-                issuer_authenticated=False,
-                requester_ip=requester_ip,
-            )
-            audit_event = AuditEvent(
-                event_id=event_id,
-                event_type="VERIFICATION_PERFORMED",
-                actor_id=actor,
-                target_entity_type="VerificationRequest",
-                target_entity_id=verification_id,
-                occurred_at=now,
-                details={
-                    "requested_identifier": credential_public_id,
-                    "credential_public_id": None,
-                    "outcome": "NOT_FOUND",
-                    "reason_code": "CREDENTIAL_NOT_FOUND",
-                },
-            )
-            db.add(verif_log)
-            db.add(audit_event)
-            await db.commit()
+            if persist:
+                verif_log = VerificationRequest(
+                    public_id=verification_id,
+                    credential_id=None,
+                    requested_identifier=credential_public_id,
+                    verification_timestamp=now,
+                    outcome="NOT_FOUND",
+                    reason_code="CREDENTIAL_NOT_FOUND",
+                    integrity_check_passed=False,
+                    issuer_authenticated=False,
+                    requester_ip=requester_ip,
+                )
+                audit_event = AuditEvent(
+                    event_id=event_id,
+                    event_type="VERIFICATION_PERFORMED",
+                    actor_id=actor,
+                    target_entity_type="VerificationRequest",
+                    target_entity_id=verification_id,
+                    occurred_at=now,
+                    details={
+                        "requested_identifier": credential_public_id,
+                        "credential_public_id": None,
+                        "outcome": "NOT_FOUND",
+                        "reason_code": "CREDENTIAL_NOT_FOUND",
+                    },
+                )
+                db.add(verif_log)
+                db.add(audit_event)
+                await db.commit()
 
-            return VerificationResponse(
+            return StaffVerificationResponse(
                 verification_id=verification_id,
                 credential_public_id=credential_public_id,
                 outcome="NOT_FOUND",
@@ -116,7 +136,7 @@ class VerificationService:
                 timestamp=now,
                 factors=VerificationFactorResult(
                     record_found=False,
-                    payload_integrity_valid=False,
+                    payload_hash_matches=False,
                     issuer_authenticated=False,
                     eligibility_valid=False,
                     revocation_checked=False,
@@ -160,7 +180,7 @@ class VerificationService:
             if not relational_matches:
                 failed_subchecks.append("RELATIONAL_PAYLOAD_MISMATCH")
 
-        payload_integrity_valid = hash_matches and relational_matches
+        payload_hash_matches = hash_matches and relational_matches
 
         # 3. Factor: Issuer Authenticity (Ed25519 Asymmetric Signature)
         issuer_authenticated = verify_signature(
@@ -189,7 +209,7 @@ class VerificationService:
         is_revoked = (credential.status == "REVOKED") or (credential.revocation is not None)
 
         # Determine Outcome (Precedence: NOT_FOUND -> TAMPERED -> INVALID_ISSUANCE -> REVOKED -> VALID)
-        if not payload_integrity_valid:
+        if not payload_hash_matches:
             outcome = "TAMPERED"
             reason_code = (
                 "PAYLOAD_DIGEST_MISMATCH" if not hash_matches else "RELATIONAL_PAYLOAD_MISMATCH"
@@ -221,36 +241,37 @@ class VerificationService:
             reason_code = "VERIFICATION_SUCCESSFUL"
             message = "Credential is authentic, unmodified, and currently active."
 
-        # Atomically persist VerificationRequest and VERIFICATION_PERFORMED AuditEvent
-        verif_log = VerificationRequest(
-            public_id=verification_id,
-            credential_id=credential.id,
-            requested_identifier=credential_public_id,
-            verification_timestamp=now,
-            outcome=outcome,
-            reason_code=reason_code,
-            integrity_check_passed=payload_integrity_valid,
-            issuer_authenticated=issuer_authenticated,
-            requester_ip=requester_ip,
-        )
-        audit_event = AuditEvent(
-            event_id=event_id,
-            event_type="VERIFICATION_PERFORMED",
-            actor_id=actor,
-            target_entity_type="VerificationRequest",
-            target_entity_id=verification_id,
-            occurred_at=now,
-            details={
-                "requested_identifier": credential_public_id,
-                "credential_public_id": credential.public_id,
-                "outcome": outcome,
-                "reason_code": reason_code,
-                "failed_subchecks": failed_subchecks,
-            },
-        )
-        db.add(verif_log)
-        db.add(audit_event)
-        await db.commit()
+        # Atomically persist VerificationRequest and VERIFICATION_PERFORMED AuditEvent when persist=True
+        if persist:
+            verif_log = VerificationRequest(
+                public_id=verification_id,
+                credential_id=credential.id,
+                requested_identifier=credential_public_id,
+                verification_timestamp=now,
+                outcome=outcome,
+                reason_code=reason_code,
+                integrity_check_passed=payload_hash_matches,
+                issuer_authenticated=issuer_authenticated,
+                requester_ip=requester_ip,
+            )
+            audit_event = AuditEvent(
+                event_id=event_id,
+                event_type="VERIFICATION_PERFORMED",
+                actor_id=actor,
+                target_entity_type="VerificationRequest",
+                target_entity_id=verification_id,
+                occurred_at=now,
+                details={
+                    "requested_identifier": credential_public_id,
+                    "credential_public_id": credential.public_id,
+                    "outcome": outcome,
+                    "reason_code": reason_code,
+                    "failed_subchecks": failed_subchecks,
+                },
+            )
+            db.add(verif_log)
+            db.add(audit_event)
+            await db.commit()
 
         cred_details = {
             "public_id": credential.public_id,
@@ -271,7 +292,7 @@ class VerificationService:
                 "notes": credential.revocation.notes,
             }
 
-        return VerificationResponse(
+        return StaffVerificationResponse(
             verification_id=verification_id,
             credential_public_id=credential_public_id,
             outcome=outcome,
@@ -280,7 +301,7 @@ class VerificationService:
             timestamp=now,
             factors=VerificationFactorResult(
                 record_found=True,
-                payload_integrity_valid=payload_integrity_valid,
+                payload_hash_matches=payload_hash_matches,
                 issuer_authenticated=issuer_authenticated,
                 eligibility_valid=eligibility_valid,
                 revocation_checked=True,

@@ -1,51 +1,1001 @@
-id,public_id,title,version,status,created_at
-1,CRS-00001,DevSecOps Automation & Infrastructure as Code (301),1.0,ACTIVE,2025-03-05T12:00:00+00:00
-2,CRS-00002,"Autonomous Robotics, SLAM & Computer Vision (201)",1.0,ACTIVE,2025-12-02T12:00:00+00:00
-3,CRS-00003,Deep Learning & Transformer Architectures (201),1.0,ACTIVE,2025-08-28T12:00:00+00:00
-4,CRS-00004,Advanced Cryptography & Zero-Knowledge Proofs (501),1.0,ACTIVE,2025-10-20T12:00:00+00:00
-5,CRS-00005,Distributed Cloud Architecture & High Availability (201),1.0,ACTIVE,2025-09-18T12:00:00+00:00
-6,CRS-00006,"Autonomous Robotics, SLAM & Computer Vision (501)",1.0,ACTIVE,2025-11-02T12:00:00+00:00
-7,CRS-00007,Graph Algorithms & Social Network Analysis (201),1.0,ACTIVE,2025-10-11T12:00:00+00:00
-8,CRS-00008,Network Security & Secure Protocols Design (101),1.0,ACTIVE,2025-09-07T12:00:00+00:00
-9,CRS-00009,Applied AI in Healthcare & Bioinformatics (401),1.0,ACTIVE,2025-12-24T12:00:00+00:00
-10,CRS-00010,Applied AI in Healthcare & Bioinformatics (101),1.0,ACTIVE,2025-06-21T12:00:00+00:00
-11,CRS-00011,Offensive Cybersecurity & Penetration Testing (501),1.0,ACTIVE,2025-07-01T12:00:00+00:00
-12,CRS-00012,Natural Language Processing & Large Language Models (101),1.0,ACTIVE,2025-11-25T12:00:00+00:00
-13,CRS-00013,Offensive Cybersecurity & Penetration Testing (201),1.0,ACTIVE,2025-05-06T12:00:00+00:00
-14,CRS-00014,Full-Stack Machine Learning Engineering (101),1.0,ACTIVE,2025-03-13T12:00:00+00:00
-15,CRS-00015,Deep Learning & Transformer Architectures (501),1.0,ACTIVE,2025-04-08T12:00:00+00:00
-16,CRS-00016,Digital Forensics & Incident Response (101),1.0,ACTIVE,2025-09-27T12:00:00+00:00
-17,CRS-00017,Mobile Computing & Cross-Platform Architecture (501),1.0,ACTIVE,2025-05-27T12:00:00+00:00
-18,CRS-00018,Full-Stack Machine Learning Engineering (401),1.0,ACTIVE,2025-05-07T12:00:00+00:00
-19,CRS-00019,Applied Data Science with Python & R (101),1.0,ACTIVE,2025-10-23T12:00:00+00:00
-20,CRS-00020,Software Verification & Formal Methods (501),1.0,ACTIVE,2025-09-11T12:00:00+00:00
-21,CRS-00021,Computer Graphics & Interactive Rendering (101),1.0,ACTIVE,2025-11-20T12:00:00+00:00
-22,CRS-00022,High-Frequency Quantitative Systems (101),1.0,ACTIVE,2025-07-27T12:00:00+00:00
-23,CRS-00023,Network Security & Secure Protocols Design (201),1.0,ACTIVE,2025-12-24T12:00:00+00:00
-24,CRS-00024,Scalable Data Pipelines & Stream Processing (101),1.0,ACTIVE,2025-06-10T12:00:00+00:00
-25,CRS-00025,Deep Learning & Transformer Architectures (501),1.0,ACTIVE,2025-04-21T12:00:00+00:00
-26,CRS-00026,Natural Language Processing & Large Language Models (101),1.0,ACTIVE,2025-03-29T12:00:00+00:00
-27,CRS-00027,Computer Graphics & Interactive Rendering (101),1.0,ACTIVE,2025-06-22T12:00:00+00:00
-28,CRS-00028,Distributed Cloud Architecture & High Availability (501),1.0,ACTIVE,2025-06-16T12:00:00+00:00
-29,CRS-00029,Advanced Cryptography & Zero-Knowledge Proofs (401),1.0,ACTIVE,2025-12-08T12:00:00+00:00
-30,CRS-00030,Deep Learning & Transformer Architectures (101),1.0,ACTIVE,2025-10-05T12:00:00+00:00
-31,CRS-00031,"Autonomous Robotics, SLAM & Computer Vision (501)",1.0,ACTIVE,2025-04-13T12:00:00+00:00
-32,CRS-00032,Graph Algorithms & Social Network Analysis (501),1.0,ACTIVE,2025-06-20T12:00:00+00:00
-33,CRS-00033,Graph Algorithms & Social Network Analysis (101),1.0,ACTIVE,2025-07-22T12:00:00+00:00
-34,CRS-00034,Embedded Real-Time Operating Systems (RTOS) (101),1.0,ACTIVE,2025-10-26T12:00:00+00:00
-35,CRS-00035,Advanced Cryptography & Zero-Knowledge Proofs (301),1.0,ACTIVE,2025-03-04T12:00:00+00:00
-36,CRS-00036,Applied AI in Healthcare & Bioinformatics (101),1.0,ACTIVE,2025-12-04T12:00:00+00:00
-37,CRS-00037,Graph Algorithms & Social Network Analysis (501),1.0,ACTIVE,2025-12-19T12:00:00+00:00
-38,CRS-00038,Software Verification & Formal Methods (501),1.0,ACTIVE,2025-08-05T12:00:00+00:00
-39,CRS-00039,Mobile Computing & Cross-Platform Architecture (101),1.0,ACTIVE,2025-05-05T12:00:00+00:00
-40,CRS-00040,Graph Algorithms & Social Network Analysis (301),1.0,ACTIVE,2025-09-15T12:00:00+00:00
-41,CRS-00041,Applied Data Science with Python & R (301),1.0,ACTIVE,2025-03-16T12:00:00+00:00
-42,CRS-00042,Applied Data Science with Python & R (501),1.0,ACTIVE,2025-03-31T12:00:00+00:00
-43,CRS-00043,Natural Language Processing & Large Language Models (301),1.0,ACTIVE,2025-08-17T12:00:00+00:00
-44,CRS-00044,Digital Forensics & Incident Response (501),1.0,ACTIVE,2025-06-06T12:00:00+00:00
-45,CRS-00045,Decentralized Systems & Smart Contract Auditing (501),1.0,ACTIVE,2025-06-28T12:00:00+00:00
-46,CRS-00046,Applied Data Science with Python & R (301),1.0,ACTIVE,2025-09-26T12:00:00+00:00
-47,CRS-00047,Offensive Cybersecurity & Penetration Testing (501),1.0,ACTIVE,2025-10-10T12:00:00+00:00
-48,CRS-00048,Embedded Real-Time Operating Systems (RTOS) (501),1.0,ACTIVE,2025-07-30T12:00:00+00:00
-49,CRS-00049,Embedded Real-Time Operating Systems (RTOS) (201),1.0,ACTIVE,2025-12-22T12:00:00+00:00
-50,CRS-00050,Distributed Cloud Architecture & High Availability (401),1.0,ACTIVE,2025-03-03T12:00:00+00:00
+id,public_id,title,department,level,version,status,created_at
+1,CRS-000001,Experimental & Laboratory Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-04-30T12:00:00+00:00
+2,CRS-000002,Experimental & Laboratory Environmental Geochemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-07-09T12:00:00+00:00
+3,CRS-000003,Applied Digital Forensics,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2022-12-16T12:00:00+00:00
+4,CRS-000004,Experimental & Laboratory Autonomous Navigation Systems,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-08-19T12:00:00+00:00
+5,CRS-000005,Foundations of Wireless Communication Systems,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-08-06T12:00:00+00:00
+6,CRS-000006,Intermediate Secure Multiparty Computation,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+7,CRS-000007,Experimental & Laboratory Genomic Sequence Analysis,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-05-29T12:00:00+00:00
+8,CRS-000008,Applied Derivatives Pricing,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-08-03T12:00:00+00:00
+9,CRS-000009,Principles of Monte Carlo Simulation,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2023-06-17T12:00:00+00:00
+10,CRS-000010,Intermediate Combinatorial Optimization,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-05-25T12:00:00+00:00
+11,CRS-000011,Graduate Seminar in Reverse Engineering,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+12,CRS-000012,Computational Methods in Condensed Matter Physics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+13,CRS-000013,Applied Linear Algebra,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-04-27T12:00:00+00:00
+14,CRS-000014,Advanced Fluid Turbulence Mechanics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+15,CRS-000015,Special Topics in Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-01-01T12:00:00+00:00
+16,CRS-000016,Graduate Seminar in Binary Exploitation Analysis,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+17,CRS-000017,Introduction to Bioprocess Fermentation,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-01-20T12:00:00+00:00
+18,CRS-000018,Experimental & Laboratory Computational Fluid Dynamics,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-01-13T12:00:00+00:00
+19,CRS-000019,Intermediate Power Electronics,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-05-11T12:00:00+00:00
+20,CRS-000020,Introduction to Particle & Nuclear Physics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-06-05T12:00:00+00:00
+21,CRS-000021,Graduate Seminar in Immunoinformatics,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-06-04T12:00:00+00:00
+22,CRS-000022,Graduate Seminar in Orbital Mechanics,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+23,CRS-000023,Principles of Robotics & Kinematics,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2022-12-31T12:00:00+00:00
+24,CRS-000024,Introduction to Monte Carlo Simulation,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-06-02T12:00:00+00:00
+25,CRS-000025,Principles of Numerical Linear Algebra,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+26,CRS-000026,Graduate Seminar in Development Economics,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2022-11-05T12:00:00+00:00
+27,CRS-000027,Computational Methods in Natural Language Processing,Computer Science,Upper-Division,1.0,ACTIVE,2023-04-15T12:00:00+00:00
+28,CRS-000028,Graduate Seminar in Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-04-01T12:00:00+00:00
+29,CRS-000029,Applied Immunoinformatics,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-05-20T12:00:00+00:00
+30,CRS-000030,Introduction to Stochastic Processes,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-05-03T12:00:00+00:00
+31,CRS-000031,Applied Computer Vision,Computer Science,Applied,1.0,ACTIVE,2023-04-18T12:00:00+00:00
+32,CRS-000032,Applied Combinatorial Optimization,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-05-31T12:00:00+00:00
+33,CRS-000033,Computational Methods in Automated Software Verification,Computer Science,Upper-Division,1.0,ACTIVE,2023-05-11T12:00:00+00:00
+34,CRS-000034,Graduate Seminar in Experimental Design,Data Science & Statistics,Doctoral,1.0,ACTIVE,2022-12-30T12:00:00+00:00
+35,CRS-000035,Intermediate Microprocessor Architecture,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2022-11-24T12:00:00+00:00
+36,CRS-000036,Intermediate Numerical Linear Algebra,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-03-11T12:00:00+00:00
+37,CRS-000037,Principles of Database Internals,Computer Science,Undergraduate,1.0,ACTIVE,2023-01-03T12:00:00+00:00
+38,CRS-000038,Foundations of Physical Electrochemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-05-28T12:00:00+00:00
+39,CRS-000039,Graduate Seminar in Threat Intelligence Engineering,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+40,CRS-000040,Special Topics in Algebraic Topology,Mathematics & Optimization,Graduate,1.0,ACTIVE,2022-12-15T12:00:00+00:00
+41,CRS-000041,Advanced Quantitative Risk Management,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-08-09T12:00:00+00:00
+42,CRS-000042,Computational Methods in Control Systems Engineering,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-03-24T12:00:00+00:00
+43,CRS-000043,Special Topics in Polymer Materials Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-05-19T12:00:00+00:00
+44,CRS-000044,Advanced Condensed Matter Physics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-03-04T12:00:00+00:00
+45,CRS-000045,Foundations of Secure Multiparty Computation,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2023-08-05T12:00:00+00:00
+46,CRS-000046,Graduate Seminar in High-Dimensional Statistics,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-07-22T12:00:00+00:00
+47,CRS-000047,Graduate Seminar in Polymer Materials Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-03-13T12:00:00+00:00
+48,CRS-000048,Applied RF & Microwave Engineering,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-04-28T12:00:00+00:00
+49,CRS-000049,Applied Multivariate Data Analysis,Data Science & Statistics,Applied,1.0,ACTIVE,2023-01-12T12:00:00+00:00
+50,CRS-000050,Applied Relativistic Astrophysics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-05-22T12:00:00+00:00
+51,CRS-000051,Applied Distributed Systems,Computer Science,Applied,1.0,ACTIVE,2023-05-26T12:00:00+00:00
+52,CRS-000052,Introduction to Post-Quantum Cryptography,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-08-28T12:00:00+00:00
+53,CRS-000053,Intermediate Time Series Econometrics,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-04-26T12:00:00+00:00
+54,CRS-000054,Graduate Seminar in Causal Inference,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-03-21T12:00:00+00:00
+55,CRS-000055,Computational Methods in Environmental Geochemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+56,CRS-000056,Intermediate Nonlinear Optics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-06-03T12:00:00+00:00
+57,CRS-000057,Advanced Clinical Biostatistics,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-07-19T12:00:00+00:00
+58,CRS-000058,Experimental & Laboratory Network Protocol Security,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2022-12-24T12:00:00+00:00
+59,CRS-000059,Graduate Seminar in Molecular Genetics,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-06-14T12:00:00+00:00
+60,CRS-000060,Foundations of Microprocessor Architecture,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-03-20T12:00:00+00:00
+61,CRS-000061,Advanced Bioprocess Fermentation,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-02-22T12:00:00+00:00
+62,CRS-000062,Graduate Seminar in CRISPR Gene Editing,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+63,CRS-000063,Special Topics in Microprocessor Architecture,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-06-22T12:00:00+00:00
+64,CRS-000064,Applied Time Series Econometrics,Data Science & Statistics,Applied,1.0,ACTIVE,2023-04-07T12:00:00+00:00
+65,CRS-000065,Introduction to Analytical Spectroscopy,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-01-05T12:00:00+00:00
+66,CRS-000066,Experimental & Laboratory Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2022-12-06T12:00:00+00:00
+67,CRS-000067,Computational Methods in Causal Inference,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+68,CRS-000068,Applied Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-07-30T12:00:00+00:00
+69,CRS-000069,Experimental & Laboratory Systems Biology,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-05-17T12:00:00+00:00
+70,CRS-000070,Introduction to Portfolio Optimization,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-03-30T12:00:00+00:00
+71,CRS-000071,Applied Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2022-11-12T12:00:00+00:00
+72,CRS-000072,Advanced Time Series Econometrics,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-06-04T12:00:00+00:00
+73,CRS-000073,Experimental & Laboratory Compiler Construction,Computer Science,Laboratory,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+74,CRS-000074,Computational Methods in Microeconomic Theory,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-03-14T12:00:00+00:00
+75,CRS-000075,Advanced Orbital Mechanics,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-05-21T12:00:00+00:00
+76,CRS-000076,Introduction to Fluid Turbulence Mechanics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2022-11-12T12:00:00+00:00
+77,CRS-000077,Introduction to Market Microstructure,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-04-05T12:00:00+00:00
+78,CRS-000078,Introduction to Dynamical Systems,Mathematics & Optimization,Introductory,1.0,ACTIVE,2022-10-25T12:00:00+00:00
+79,CRS-000079,Special Topics in Microeconomic Theory,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-05-07T12:00:00+00:00
+80,CRS-000080,Graduate Seminar in Secure Multiparty Computation,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-08-04T12:00:00+00:00
+81,CRS-000081,Computational Methods in Sensor Array Processing,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-03-13T12:00:00+00:00
+82,CRS-000082,Graduate Seminar in Real & Functional Analysis,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-08-04T12:00:00+00:00
+83,CRS-000083,Foundations of Bayesian Inference,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+84,CRS-000084,Graduate Seminar in Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-02-16T12:00:00+00:00
+85,CRS-000085,Special Topics in Stochastic Calculus for Finance,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+86,CRS-000086,Applied Synthetic Biology Circuits,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2022-12-12T12:00:00+00:00
+87,CRS-000087,Introduction to Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-01-30T12:00:00+00:00
+88,CRS-000088,Computational Methods in Physical Electrochemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-06-04T12:00:00+00:00
+89,CRS-000089,Principles of Survival Analysis,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2022-11-27T12:00:00+00:00
+90,CRS-000090,Introduction to Mechatronic Actuation,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-02-19T12:00:00+00:00
+91,CRS-000091,Special Topics in Photonics & Optical Networks,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-01-28T12:00:00+00:00
+92,CRS-000092,Introduction to High-Dimensional Statistics,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-01-17T12:00:00+00:00
+93,CRS-000093,Special Topics in Quantum Information Processing,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2022-11-03T12:00:00+00:00
+94,CRS-000094,Intermediate Microeconomic Theory,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-04-23T12:00:00+00:00
+95,CRS-000095,Intermediate Organic Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-01-12T12:00:00+00:00
+96,CRS-000096,Special Topics in Time Series Econometrics,Data Science & Statistics,Graduate,1.0,ACTIVE,2022-12-25T12:00:00+00:00
+97,CRS-000097,Foundations of Linear Algebra,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-05-16T12:00:00+00:00
+98,CRS-000098,Applied Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-06-08T12:00:00+00:00
+99,CRS-000099,Advanced Statistical Thermodynamics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-01-21T12:00:00+00:00
+100,CRS-000100,Special Topics in Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-06-04T12:00:00+00:00
+101,CRS-000101,Intermediate Superconducting Qubit Systems,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+102,CRS-000102,Principles of Molecular Genetics,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-03-05T12:00:00+00:00
+103,CRS-000103,Applied Binary Exploitation Analysis,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-01-13T12:00:00+00:00
+104,CRS-000104,Principles of Measure Theory & Integration,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-03-29T12:00:00+00:00
+105,CRS-000105,Special Topics in Physical Electrochemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-03-17T12:00:00+00:00
+106,CRS-000106,Principles of Automated Software Verification,Computer Science,Undergraduate,1.0,ACTIVE,2023-07-09T12:00:00+00:00
+107,CRS-000107,Foundations of Orbital Mechanics,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-01-12T12:00:00+00:00
+108,CRS-000108,Computational Methods in Statistical Learning Theory,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-02-28T12:00:00+00:00
+109,CRS-000109,Intermediate Machine Learning,Computer Science,Intermediate,1.0,ACTIVE,2023-07-05T12:00:00+00:00
+110,CRS-000110,Advanced High-Dimensional Statistics,Data Science & Statistics,Advanced,1.0,ACTIVE,2022-12-21T12:00:00+00:00
+111,CRS-000111,Experimental & Laboratory Supramolecular Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+112,CRS-000112,Graduate Seminar in Measure Theory & Integration,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-02-16T12:00:00+00:00
+113,CRS-000113,Advanced Computational Quantum Chemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+114,CRS-000114,Advanced Sensor Array Processing,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-01-31T12:00:00+00:00
+115,CRS-000115,Special Topics in Machine Learning,Computer Science,Graduate,1.0,ACTIVE,2023-05-16T12:00:00+00:00
+116,CRS-000116,Foundations of Cloud Computing Architecture,Computer Science,Foundational,1.0,ACTIVE,2022-11-20T12:00:00+00:00
+117,CRS-000117,Computational Methods in Structural Bioinformatics,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-06-24T12:00:00+00:00
+118,CRS-000118,Foundations of Game Theory in Auctions,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+119,CRS-000119,Computational Methods in Finite Element Analysis,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-04-01T12:00:00+00:00
+120,CRS-000120,Foundations of Supramolecular Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+121,CRS-000121,Advanced Algebraic Topology,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-04-21T12:00:00+00:00
+122,CRS-000122,Advanced Abstract Algebra,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-02-21T12:00:00+00:00
+123,CRS-000123,Experimental & Laboratory Molecular Genetics,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-03-22T12:00:00+00:00
+124,CRS-000124,Foundations of Algebraic Topology,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-02-16T12:00:00+00:00
+125,CRS-000125,Experimental & Laboratory Real & Functional Analysis,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+126,CRS-000126,Computational Methods in Market Microstructure,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-01-30T12:00:00+00:00
+127,CRS-000127,Foundations of Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+128,CRS-000128,Applied Polymer Materials Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-03-18T12:00:00+00:00
+129,CRS-000129,Experimental & Laboratory Dynamical Systems,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+130,CRS-000130,Applied Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2023-06-22T12:00:00+00:00
+131,CRS-000131,Advanced Database Internals,Computer Science,Advanced,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+132,CRS-000132,Special Topics in Relativistic Astrophysics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-05-18T12:00:00+00:00
+133,CRS-000133,Experimental & Laboratory Polymer Materials Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-03-25T12:00:00+00:00
+134,CRS-000134,Experimental & Laboratory Turbomachinery Design,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-05-27T12:00:00+00:00
+135,CRS-000135,Foundations of Abstract Algebra,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-06-11T12:00:00+00:00
+136,CRS-000136,Introduction to Environmental Geochemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-05-16T12:00:00+00:00
+137,CRS-000137,Advanced Analytical Spectroscopy,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2022-10-23T12:00:00+00:00
+138,CRS-000138,Advanced Autonomous Navigation Systems,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-03-23T12:00:00+00:00
+139,CRS-000139,Experimental & Laboratory Distributed Systems,Computer Science,Laboratory,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+140,CRS-000140,Foundations of Nonparametric Statistics,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-05-20T12:00:00+00:00
+141,CRS-000141,Special Topics in Nonlinear Optics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-01-05T12:00:00+00:00
+142,CRS-000142,Special Topics in Environmental Geochemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+143,CRS-000143,Intermediate Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+144,CRS-000144,Intermediate Cloud Computing Architecture,Computer Science,Intermediate,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+145,CRS-000145,Special Topics in Organometallic Synthesis,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2022-11-29T12:00:00+00:00
+146,CRS-000146,Experimental & Laboratory Digital Forensics,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-01-02T12:00:00+00:00
+147,CRS-000147,Applied Macroeconomic Policy Modeling,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+148,CRS-000148,Introduction to Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-02-18T12:00:00+00:00
+149,CRS-000149,Applied Spatial Data Modeling,Data Science & Statistics,Applied,1.0,ACTIVE,2023-05-24T12:00:00+00:00
+150,CRS-000150,Graduate Seminar in Dynamical Systems,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+151,CRS-000151,Experimental & Laboratory Industrial Organization,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2022-12-29T12:00:00+00:00
+152,CRS-000152,Principles of Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-03-13T12:00:00+00:00
+153,CRS-000153,Intermediate Portfolio Optimization,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+154,CRS-000154,Computational Methods in Combinatorial Optimization,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-06-15T12:00:00+00:00
+155,CRS-000155,Introduction to VLSI Circuit Design,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-04-12T12:00:00+00:00
+156,CRS-000156,Foundations of Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2022-12-02T12:00:00+00:00
+157,CRS-000157,Introduction to Wireless Communication Systems,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+158,CRS-000158,Special Topics in Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+159,CRS-000159,Computational Methods in Photonics & Optical Networks,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-02-04T12:00:00+00:00
+160,CRS-000160,Experimental & Laboratory Spatial Data Modeling,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-07-21T12:00:00+00:00
+161,CRS-000161,Advanced Compiler Construction,Computer Science,Advanced,1.0,ACTIVE,2023-08-28T12:00:00+00:00
+162,CRS-000162,Applied Market Microstructure,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-05-05T12:00:00+00:00
+163,CRS-000163,Advanced Hardware Security Modules,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+164,CRS-000164,Intermediate Linear Algebra,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+165,CRS-000165,Special Topics in Embedded Real-Time Systems,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2022-10-27T12:00:00+00:00
+166,CRS-000166,Intermediate Turbomachinery Design,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+167,CRS-000167,Graduate Seminar in Additive Manufacturing Processes,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-03-23T12:00:00+00:00
+168,CRS-000168,Computational Methods in RF & Microwave Engineering,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-05-11T12:00:00+00:00
+169,CRS-000169,Introduction to Computational Fluid Dynamics,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-06-23T12:00:00+00:00
+170,CRS-000170,Principles of Computational Quantum Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+171,CRS-000171,Advanced Measure Theory & Integration,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-06-23T12:00:00+00:00
+172,CRS-000172,Experimental & Laboratory Identity & Access Governance,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2022-12-26T12:00:00+00:00
+173,CRS-000173,Computational Methods in Synthetic Biology Circuits,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-08-17T12:00:00+00:00
+174,CRS-000174,Introduction to Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+175,CRS-000175,Special Topics in Survival Analysis,Data Science & Statistics,Graduate,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+176,CRS-000176,Graduate Seminar in Digital Forensics,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-03-07T12:00:00+00:00
+177,CRS-000177,Advanced Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-06-26T12:00:00+00:00
+178,CRS-000178,Principles of Market Microstructure,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+179,CRS-000179,Intermediate Analytical Spectroscopy,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-06-16T12:00:00+00:00
+180,CRS-000180,Principles of Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-08-16T12:00:00+00:00
+181,CRS-000181,Computational Methods in Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-08-12T12:00:00+00:00
+182,CRS-000182,Principles of Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-06-02T12:00:00+00:00
+183,CRS-000183,Graduate Seminar in Microprocessor Architecture,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-05-25T12:00:00+00:00
+184,CRS-000184,Special Topics in Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-01-27T12:00:00+00:00
+185,CRS-000185,Foundations of Development Economics,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2022-12-11T12:00:00+00:00
+186,CRS-000186,Graduate Seminar in Nonlinear Optics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-06-25T12:00:00+00:00
+187,CRS-000187,Principles of Bayesian Inference,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2023-06-02T12:00:00+00:00
+188,CRS-000188,Foundations of Parallel Programming,Computer Science,Foundational,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+189,CRS-000189,Computational Methods in Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-03-01T12:00:00+00:00
+190,CRS-000190,Principles of Nonparametric Statistics,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+191,CRS-000191,Advanced Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-07-29T12:00:00+00:00
+192,CRS-000192,Intermediate Market Microstructure,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2022-11-20T12:00:00+00:00
+193,CRS-000193,Applied Abstract Algebra,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+194,CRS-000194,Advanced Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2022-11-02T12:00:00+00:00
+195,CRS-000195,Graduate Seminar in Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-02-09T12:00:00+00:00
+196,CRS-000196,Advanced Development Economics,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-06-15T12:00:00+00:00
+197,CRS-000197,Experimental & Laboratory Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-05-05T12:00:00+00:00
+198,CRS-000198,Introduction to Differential Geometry,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+199,CRS-000199,Graduate Seminar in Biophysics & Soft Matter,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-07-23T12:00:00+00:00
+200,CRS-000200,Introduction to Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+201,CRS-000201,Computational Methods in Analytical Spectroscopy,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-05-06T12:00:00+00:00
+202,CRS-000202,Foundations of Nonlinear Optics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-02-09T12:00:00+00:00
+203,CRS-000203,Applied Survival Analysis,Data Science & Statistics,Applied,1.0,ACTIVE,2023-03-17T12:00:00+00:00
+204,CRS-000204,Special Topics in Electrodynamics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+205,CRS-000205,Applied Molecular Genetics,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2022-10-31T12:00:00+00:00
+206,CRS-000206,Special Topics in Autonomous Navigation Systems,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-05-01T12:00:00+00:00
+207,CRS-000207,Computational Methods in Digital Forensics,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-05-28T12:00:00+00:00
+208,CRS-000208,Advanced Post-Quantum Cryptography,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2023-08-11T12:00:00+00:00
+209,CRS-000209,Computational Methods in Number Theory,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+210,CRS-000210,Experimental & Laboratory VLSI Circuit Design,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2022-12-05T12:00:00+00:00
+211,CRS-000211,Applied Microeconomic Theory,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2022-12-01T12:00:00+00:00
+212,CRS-000212,Intermediate Industrial Organization,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2022-12-31T12:00:00+00:00
+213,CRS-000213,Introduction to Algebraic Topology,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-08-10T12:00:00+00:00
+214,CRS-000214,Principles of Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-07-14T12:00:00+00:00
+215,CRS-000215,Principles of CRISPR Gene Editing,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-04-05T12:00:00+00:00
+216,CRS-000216,Principles of Macroeconomic Policy Modeling,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-02-02T12:00:00+00:00
+217,CRS-000217,Foundations of Dynamical Systems,Mathematics & Optimization,Foundational,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+218,CRS-000218,Special Topics in Derivatives Pricing,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+219,CRS-000219,Advanced Threat Intelligence Engineering,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2023-02-18T12:00:00+00:00
+220,CRS-000220,Principles of International Trade Analytics,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+221,CRS-000221,Principles of Photonics & Optical Networks,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-07-22T12:00:00+00:00
+222,CRS-000222,Introduction to Systems Biology,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2022-12-03T12:00:00+00:00
+223,CRS-000223,Intermediate Quantitative Risk Management,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-01-28T12:00:00+00:00
+224,CRS-000224,Computational Methods in Algebraic Topology,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-06-24T12:00:00+00:00
+225,CRS-000225,Introduction to Stochastic Calculus for Finance,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-05-18T12:00:00+00:00
+226,CRS-000226,Advanced Computational Fluid Dynamics,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-01-26T12:00:00+00:00
+227,CRS-000227,Computational Methods in Secure Multiparty Computation,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-07-14T12:00:00+00:00
+228,CRS-000228,Introduction to RF & Microwave Engineering,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-03-31T12:00:00+00:00
+229,CRS-000229,Introduction to Physical Electrochemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-03-01T12:00:00+00:00
+230,CRS-000230,Experimental & Laboratory Mechatronic Actuation,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-07-04T12:00:00+00:00
+231,CRS-000231,Intermediate Behavioral Economics,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-04-26T12:00:00+00:00
+232,CRS-000232,Introduction to Hardware Security Modules,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-01-04T12:00:00+00:00
+233,CRS-000233,Advanced Photonics & Optical Networks,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2022-12-12T12:00:00+00:00
+234,CRS-000234,Graduate Seminar in Partial Differential Equations,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2022-11-24T12:00:00+00:00
+235,CRS-000235,Computational Methods in Mechatronic Actuation,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-04-05T12:00:00+00:00
+236,CRS-000236,Introduction to Microprocessor Architecture,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2022-12-16T12:00:00+00:00
+237,CRS-000237,Graduate Seminar in Digital Signal Processing,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-02-27T12:00:00+00:00
+238,CRS-000238,Computational Methods in Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-07-11T12:00:00+00:00
+239,CRS-000239,Computational Methods in Compiler Construction,Computer Science,Upper-Division,1.0,ACTIVE,2023-07-03T12:00:00+00:00
+240,CRS-000240,Foundations of Genomic Sequence Analysis,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-06-14T12:00:00+00:00
+241,CRS-000241,Computational Methods in Bioprocess Fermentation,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2022-11-24T12:00:00+00:00
+242,CRS-000242,Foundations of Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-07-23T12:00:00+00:00
+243,CRS-000243,Experimental & Laboratory Computer Vision,Computer Science,Laboratory,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+244,CRS-000244,Computational Methods in Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-01-06T12:00:00+00:00
+245,CRS-000245,Introduction to Organometallic Synthesis,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-06-25T12:00:00+00:00
+246,CRS-000246,Computational Methods in Spatial Data Modeling,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+247,CRS-000247,Intermediate Parallel Programming,Computer Science,Intermediate,1.0,ACTIVE,2023-01-18T12:00:00+00:00
+248,CRS-000248,Special Topics in Natural Language Processing,Computer Science,Graduate,1.0,ACTIVE,2023-02-27T12:00:00+00:00
+249,CRS-000249,Foundations of Relativistic Astrophysics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+250,CRS-000250,Introduction to Parallel Programming,Computer Science,Introductory,1.0,ACTIVE,2023-05-20T12:00:00+00:00
+251,CRS-000251,Applied Microprocessor Architecture,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+252,CRS-000252,Special Topics in Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2022-12-24T12:00:00+00:00
+253,CRS-000253,Graduate Seminar in Superconducting Qubit Systems,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-01-30T12:00:00+00:00
+254,CRS-000254,Experimental & Laboratory Immunoinformatics,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-03-29T12:00:00+00:00
+255,CRS-000255,Intermediate Genomic Sequence Analysis,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2022-12-05T12:00:00+00:00
+256,CRS-000256,Graduate Seminar in Cloud Security Posture,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-06-28T12:00:00+00:00
+257,CRS-000257,Graduate Seminar in VLSI Circuit Design,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-03-13T12:00:00+00:00
+258,CRS-000258,Intermediate Clinical Biostatistics,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2023-06-09T12:00:00+00:00
+259,CRS-000259,Special Topics in Computational Quantum Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2022-11-20T12:00:00+00:00
+260,CRS-000260,Experimental & Laboratory Cloud Computing Architecture,Computer Science,Laboratory,1.0,ACTIVE,2023-07-15T12:00:00+00:00
+261,CRS-000261,Computational Methods in Dynamical Systems,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2022-12-26T12:00:00+00:00
+262,CRS-000262,Experimental & Laboratory Portfolio Optimization,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-07-06T12:00:00+00:00
+263,CRS-000263,Principles of Threat Intelligence Engineering,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+264,CRS-000264,Experimental & Laboratory Derivatives Pricing,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2022-11-01T12:00:00+00:00
+265,CRS-000265,Principles of Stochastic Calculus for Finance,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2022-12-07T12:00:00+00:00
+266,CRS-000266,Graduate Seminar in Stochastic Processes,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+267,CRS-000267,Foundations of Causal Inference,Data Science & Statistics,Foundational,1.0,ACTIVE,2022-12-24T12:00:00+00:00
+268,CRS-000268,Computational Methods in Autonomous Navigation Systems,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-03-30T12:00:00+00:00
+269,CRS-000269,Intermediate Robotics & Kinematics,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2022-11-27T12:00:00+00:00
+270,CRS-000270,Introduction to Molecular Genetics,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-08-10T12:00:00+00:00
+271,CRS-000271,Advanced Spatial Data Modeling,Data Science & Statistics,Advanced,1.0,ACTIVE,2022-10-27T12:00:00+00:00
+272,CRS-000272,Principles of Statistical Learning Theory,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2023-03-01T12:00:00+00:00
+273,CRS-000273,Applied Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-01-26T12:00:00+00:00
+274,CRS-000274,Introduction to Identity & Access Governance,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-03-30T12:00:00+00:00
+275,CRS-000275,Special Topics in Computer Vision,Computer Science,Graduate,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+276,CRS-000276,Special Topics in Bayesian Inference,Data Science & Statistics,Graduate,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+277,CRS-000277,Applied Zero-Knowledge Proofs,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-06-01T12:00:00+00:00
+278,CRS-000278,Graduate Seminar in Computational Neuroscience,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2022-11-12T12:00:00+00:00
+279,CRS-000279,Principles of Statistical Thermodynamics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+280,CRS-000280,Graduate Seminar in Algorithmic Game Theory,Computer Science,Doctoral,1.0,ACTIVE,2022-12-17T12:00:00+00:00
+281,CRS-000281,Computational Methods in Machine Learning,Computer Science,Upper-Division,1.0,ACTIVE,2023-05-27T12:00:00+00:00
+282,CRS-000282,Experimental & Laboratory Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+283,CRS-000283,Applied Quantum Mechanics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-05-26T12:00:00+00:00
+284,CRS-000284,Computational Methods in Microprocessor Architecture,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-05-05T12:00:00+00:00
+285,CRS-000285,Intermediate Wireless Communication Systems,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2022-11-06T12:00:00+00:00
+286,CRS-000286,Intermediate Particle & Nuclear Physics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-07-22T12:00:00+00:00
+287,CRS-000287,Experimental & Laboratory Computational Quantum Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2022-11-24T12:00:00+00:00
+288,CRS-000288,Foundations of Photonics & Optical Networks,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+289,CRS-000289,Foundations of Numerical Linear Algebra,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-03-14T12:00:00+00:00
+290,CRS-000290,Graduate Seminar in Supramolecular Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-03-26T12:00:00+00:00
+291,CRS-000291,Special Topics in Macroeconomic Policy Modeling,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-06-19T12:00:00+00:00
+292,CRS-000292,Principles of Game Theory in Auctions,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-04-24T12:00:00+00:00
+293,CRS-000293,Introduction to Numerical Linear Algebra,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-04-02T12:00:00+00:00
+294,CRS-000294,Experimental & Laboratory Nonparametric Statistics,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-08-23T12:00:00+00:00
+295,CRS-000295,Computational Methods in Electrodynamics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-04-18T12:00:00+00:00
+296,CRS-000296,Advanced Survival Analysis,Data Science & Statistics,Advanced,1.0,ACTIVE,2022-11-28T12:00:00+00:00
+297,CRS-000297,Applied Finite Element Analysis,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2022-11-29T12:00:00+00:00
+298,CRS-000298,Introduction to Time Series Econometrics,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-01-13T12:00:00+00:00
+299,CRS-000299,Advanced Combinatorial Optimization,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-04-30T12:00:00+00:00
+300,CRS-000300,Foundations of Post-Quantum Cryptography,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2022-11-28T12:00:00+00:00
+301,CRS-000301,Principles of Differential Geometry,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-07-24T12:00:00+00:00
+302,CRS-000302,Principles of Machine Learning,Computer Science,Undergraduate,1.0,ACTIVE,2022-11-02T12:00:00+00:00
+303,CRS-000303,Special Topics in Spatial Data Modeling,Data Science & Statistics,Graduate,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+304,CRS-000304,Introduction to Turbomachinery Design,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-07-16T12:00:00+00:00
+305,CRS-000305,Graduate Seminar in Survival Analysis,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-08-16T12:00:00+00:00
+306,CRS-000306,Graduate Seminar in Macroeconomic Policy Modeling,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-06-04T12:00:00+00:00
+307,CRS-000307,Foundations of Monte Carlo Simulation,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-04-02T12:00:00+00:00
+308,CRS-000308,Computational Methods in Power Electronics,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+309,CRS-000309,Intermediate Spatial Data Modeling,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-07-14T12:00:00+00:00
+310,CRS-000310,Introduction to Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-02-21T12:00:00+00:00
+311,CRS-000311,Foundations of Organic Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-04-01T12:00:00+00:00
+312,CRS-000312,Applied Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+313,CRS-000313,Foundations of International Trade Analytics,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-04-17T12:00:00+00:00
+314,CRS-000314,Foundations of Computational Neuroscience,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-06-21T12:00:00+00:00
+315,CRS-000315,Experimental & Laboratory Post-Quantum Cryptography,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-05-04T12:00:00+00:00
+316,CRS-000316,Advanced Superconducting Qubit Systems,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-03-28T12:00:00+00:00
+317,CRS-000317,Principles of Distributed Systems,Computer Science,Undergraduate,1.0,ACTIVE,2023-03-25T12:00:00+00:00
+318,CRS-000318,Special Topics in Dynamical Systems,Mathematics & Optimization,Graduate,1.0,ACTIVE,2022-11-14T12:00:00+00:00
+319,CRS-000319,Intermediate Algorithmic Game Theory,Computer Science,Intermediate,1.0,ACTIVE,2023-06-08T12:00:00+00:00
+320,CRS-000320,Graduate Seminar in Condensed Matter Physics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-06-24T12:00:00+00:00
+321,CRS-000321,Graduate Seminar in Systems Biology,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2022-11-07T12:00:00+00:00
+322,CRS-000322,Special Topics in Additive Manufacturing Processes,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-01-01T12:00:00+00:00
+323,CRS-000323,Special Topics in Superconducting Qubit Systems,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+324,CRS-000324,Intermediate Network Protocol Security,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2023-04-30T12:00:00+00:00
+325,CRS-000325,Introduction to Convex Optimization,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-01-19T12:00:00+00:00
+326,CRS-000326,Applied Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+327,CRS-000327,Experimental & Laboratory Photonics & Optical Networks,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-05-22T12:00:00+00:00
+328,CRS-000328,Principles of Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+329,CRS-000329,Intermediate Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-08-24T12:00:00+00:00
+330,CRS-000330,Introduction to Photonics & Optical Networks,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+331,CRS-000331,Special Topics in CRISPR Gene Editing,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2023-06-15T12:00:00+00:00
+332,CRS-000332,Experimental & Laboratory Particle & Nuclear Physics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2022-12-20T12:00:00+00:00
+333,CRS-000333,Applied Organic Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+334,CRS-000334,Experimental & Laboratory Additive Manufacturing Processes,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-05-22T12:00:00+00:00
+335,CRS-000335,Intermediate Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2022-11-01T12:00:00+00:00
+336,CRS-000336,Intermediate Reverse Engineering,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2023-03-21T12:00:00+00:00
+337,CRS-000337,Introduction to Cloud Computing Architecture,Computer Science,Introductory,1.0,ACTIVE,2023-04-15T12:00:00+00:00
+338,CRS-000338,Introduction to Secure Multiparty Computation,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2022-10-30T12:00:00+00:00
+339,CRS-000339,Advanced International Trade Analytics,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+340,CRS-000340,Principles of Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-06-08T12:00:00+00:00
+341,CRS-000341,Special Topics in Reverse Engineering,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+342,CRS-000342,Foundations of Machine Learning,Computer Science,Foundational,1.0,ACTIVE,2023-06-22T12:00:00+00:00
+343,CRS-000343,Foundations of Computer Vision,Computer Science,Foundational,1.0,ACTIVE,2022-11-18T12:00:00+00:00
+344,CRS-000344,Applied Structural Bioinformatics,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+345,CRS-000345,Applied Hardware Security Modules,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2022-10-29T12:00:00+00:00
+346,CRS-000346,Special Topics in Particle & Nuclear Physics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+347,CRS-000347,Graduate Seminar in Microeconomic Theory,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-03-22T12:00:00+00:00
+348,CRS-000348,Principles of Additive Manufacturing Processes,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-05-17T12:00:00+00:00
+349,CRS-000349,Advanced Particle & Nuclear Physics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-01-03T12:00:00+00:00
+350,CRS-000350,Special Topics in Analytical Spectroscopy,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-06-06T12:00:00+00:00
+351,CRS-000351,Foundations of Mechatronic Actuation,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+352,CRS-000352,Introduction to Computer Vision,Computer Science,Introductory,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+353,CRS-000353,Special Topics in Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-03-09T12:00:00+00:00
+354,CRS-000354,Advanced Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-07-24T12:00:00+00:00
+355,CRS-000355,Computational Methods in Algorithmic Game Theory,Computer Science,Upper-Division,1.0,ACTIVE,2022-11-18T12:00:00+00:00
+356,CRS-000356,Experimental & Laboratory Linear Algebra,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-07-20T12:00:00+00:00
+357,CRS-000357,Advanced Microprocessor Architecture,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-08-26T12:00:00+00:00
+358,CRS-000358,Experimental & Laboratory Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-04-30T12:00:00+00:00
+359,CRS-000359,Introduction to Electrodynamics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+360,CRS-000360,Graduate Seminar in Sensor Array Processing,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2022-11-05T12:00:00+00:00
+361,CRS-000361,Special Topics in Distributed Systems,Computer Science,Graduate,1.0,ACTIVE,2023-01-11T12:00:00+00:00
+362,CRS-000362,Special Topics in Monte Carlo Simulation,Data Science & Statistics,Graduate,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+363,CRS-000363,Introduction to Real & Functional Analysis,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+364,CRS-000364,Introduction to Compiler Construction,Computer Science,Introductory,1.0,ACTIVE,2022-12-06T12:00:00+00:00
+365,CRS-000365,Experimental & Laboratory Stochastic Processes,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-03-08T12:00:00+00:00
+366,CRS-000366,Foundations of Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-08-29T12:00:00+00:00
+367,CRS-000367,Applied Mechatronic Actuation,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2022-12-08T12:00:00+00:00
+368,CRS-000368,Graduate Seminar in Machine Learning,Computer Science,Doctoral,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+369,CRS-000369,Applied Operating Systems Kernel Design,Computer Science,Applied,1.0,ACTIVE,2023-02-12T12:00:00+00:00
+370,CRS-000370,Computational Methods in Portfolio Optimization,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-03-05T12:00:00+00:00
+371,CRS-000371,Computational Methods in Linear Algebra,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2022-12-14T12:00:00+00:00
+372,CRS-000372,Introduction to CRISPR Gene Editing,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-02-10T12:00:00+00:00
+373,CRS-000373,Principles of High-Dimensional Statistics,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2023-03-31T12:00:00+00:00
+374,CRS-000374,Computational Methods in Quantitative Risk Management,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2022-11-23T12:00:00+00:00
+375,CRS-000375,Foundations of Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-07-24T12:00:00+00:00
+376,CRS-000376,Principles of Microeconomic Theory,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-07-22T12:00:00+00:00
+377,CRS-000377,Introduction to Automated Software Verification,Computer Science,Introductory,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+378,CRS-000378,Computational Methods in Superconducting Qubit Systems,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-03-28T12:00:00+00:00
+379,CRS-000379,Computational Methods in Partial Differential Equations,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-07-03T12:00:00+00:00
+380,CRS-000380,Applied Statistical Thermodynamics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+381,CRS-000381,Graduate Seminar in Bioprocess Fermentation,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-04-20T12:00:00+00:00
+382,CRS-000382,Foundations of Time Series Econometrics,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-03-25T12:00:00+00:00
+383,CRS-000383,Introduction to Database Internals,Computer Science,Introductory,1.0,ACTIVE,2023-03-08T12:00:00+00:00
+384,CRS-000384,Experimental & Laboratory Wireless Communication Systems,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-03-21T12:00:00+00:00
+385,CRS-000385,Applied Analytical Spectroscopy,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-02-01T12:00:00+00:00
+386,CRS-000386,Computational Methods in Experimental Design,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-02-21T12:00:00+00:00
+387,CRS-000387,Special Topics in Behavioral Economics,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-06-25T12:00:00+00:00
+388,CRS-000388,Graduate Seminar in Derivatives Pricing,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-05-06T12:00:00+00:00
+389,CRS-000389,Graduate Seminar in Bayesian Inference,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-01-16T12:00:00+00:00
+390,CRS-000390,Computational Methods in Digital Signal Processing,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-02-28T12:00:00+00:00
+391,CRS-000391,Foundations of Embedded Real-Time Systems,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2022-12-21T12:00:00+00:00
+392,CRS-000392,Special Topics in Quantum Mechanics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-06-20T12:00:00+00:00
+393,CRS-000393,Principles of Embedded Real-Time Systems,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-06-09T12:00:00+00:00
+394,CRS-000394,Advanced Cloud Computing Architecture,Computer Science,Advanced,1.0,ACTIVE,2023-04-20T12:00:00+00:00
+395,CRS-000395,Special Topics in Operating Systems Kernel Design,Computer Science,Graduate,1.0,ACTIVE,2023-07-21T12:00:00+00:00
+396,CRS-000396,Graduate Seminar in Operating Systems Kernel Design,Computer Science,Doctoral,1.0,ACTIVE,2023-08-18T12:00:00+00:00
+397,CRS-000397,Experimental & Laboratory Power Electronics,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-02-28T12:00:00+00:00
+398,CRS-000398,Advanced Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-08-03T12:00:00+00:00
+399,CRS-000399,Graduate Seminar in Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2022-11-15T12:00:00+00:00
+400,CRS-000400,Advanced Graph Analytics,Computer Science,Advanced,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+401,CRS-000401,Foundations of Particle & Nuclear Physics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-04-09T12:00:00+00:00
+402,CRS-000402,Computational Methods in Statistical Thermodynamics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-08-22T12:00:00+00:00
+403,CRS-000403,Special Topics in Game Theory in Auctions,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+404,CRS-000404,Applied Computational Neuroscience,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-03-03T12:00:00+00:00
+405,CRS-000405,Intermediate Algebraic Topology,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2022-12-11T12:00:00+00:00
+406,CRS-000406,Graduate Seminar in Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-04-06T12:00:00+00:00
+407,CRS-000407,Introduction to Computational Quantum Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-01-31T12:00:00+00:00
+408,CRS-000408,Advanced Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-06-11T12:00:00+00:00
+409,CRS-000409,Special Topics in Finite Element Analysis,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+410,CRS-000410,Special Topics in Computational Fluid Dynamics,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2022-11-15T12:00:00+00:00
+411,CRS-000411,Special Topics in Abstract Algebra,Mathematics & Optimization,Graduate,1.0,ACTIVE,2023-04-04T12:00:00+00:00
+412,CRS-000412,Intermediate Bayesian Inference,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-01-21T12:00:00+00:00
+413,CRS-000413,Special Topics in Number Theory,Mathematics & Optimization,Graduate,1.0,ACTIVE,2023-08-25T12:00:00+00:00
+414,CRS-000414,Foundations of Compiler Construction,Computer Science,Foundational,1.0,ACTIVE,2023-02-02T12:00:00+00:00
+415,CRS-000415,Intermediate Distributed Systems,Computer Science,Intermediate,1.0,ACTIVE,2023-06-24T12:00:00+00:00
+416,CRS-000416,Special Topics in VLSI Circuit Design,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+417,CRS-000417,Principles of Causal Inference,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2022-11-23T12:00:00+00:00
+418,CRS-000418,Introduction to Applied Cryptography,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-08-28T12:00:00+00:00
+419,CRS-000419,Advanced Physical Electrochemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+420,CRS-000420,Intermediate RF & Microwave Engineering,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-07-28T12:00:00+00:00
+421,CRS-000421,Experimental & Laboratory Measure Theory & Integration,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-05-05T12:00:00+00:00
+422,CRS-000422,Foundations of Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+423,CRS-000423,Applied Behavioral Economics,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-08-10T12:00:00+00:00
+424,CRS-000424,Graduate Seminar in Network Protocol Security,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-05-13T12:00:00+00:00
+425,CRS-000425,Intermediate Finite Element Analysis,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2022-10-29T12:00:00+00:00
+426,CRS-000426,Introduction to Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2022-12-13T12:00:00+00:00
+427,CRS-000427,Principles of Computational Neuroscience,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-05-29T12:00:00+00:00
+428,CRS-000428,Advanced Experimental Design,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-04-21T12:00:00+00:00
+429,CRS-000429,Special Topics in Convex Optimization,Mathematics & Optimization,Graduate,1.0,ACTIVE,2022-12-03T12:00:00+00:00
+430,CRS-000430,Applied Number Theory,Mathematics & Optimization,Applied,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+431,CRS-000431,Advanced Applied Cryptography,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2022-11-28T12:00:00+00:00
+432,CRS-000432,Intermediate Real & Functional Analysis,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-03-22T12:00:00+00:00
+433,CRS-000433,Experimental & Laboratory Quantitative Risk Management,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-01-01T12:00:00+00:00
+434,CRS-000434,Special Topics in Condensed Matter Physics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-02-09T12:00:00+00:00
+435,CRS-000435,Principles of Computational Fluid Dynamics,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-01-28T12:00:00+00:00
+436,CRS-000436,Special Topics in Market Microstructure,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+437,CRS-000437,Principles of Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-06-09T12:00:00+00:00
+438,CRS-000438,Foundations of Differential Geometry,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-01-17T12:00:00+00:00
+439,CRS-000439,Intermediate Condensed Matter Physics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2022-12-08T12:00:00+00:00
+440,CRS-000440,Graduate Seminar in Parallel Programming,Computer Science,Doctoral,1.0,ACTIVE,2023-05-25T12:00:00+00:00
+441,CRS-000441,Experimental & Laboratory Algorithmic Game Theory,Computer Science,Laboratory,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+442,CRS-000442,Introduction to Behavioral Economics,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-02-22T12:00:00+00:00
+443,CRS-000443,Introduction to Quantum Information Processing,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+444,CRS-000444,Graduate Seminar in Mechatronic Actuation,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-06-02T12:00:00+00:00
+445,CRS-000445,Introduction to Macroeconomic Policy Modeling,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2022-11-13T12:00:00+00:00
+446,CRS-000446,Advanced Zero-Knowledge Proofs,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+447,CRS-000447,Foundations of Operating Systems Kernel Design,Computer Science,Foundational,1.0,ACTIVE,2023-01-04T12:00:00+00:00
+448,CRS-000448,Intermediate Cloud Security Posture,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+449,CRS-000449,Principles of Organometallic Synthesis,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-06-29T12:00:00+00:00
+450,CRS-000450,Computational Methods in Biophysics & Soft Matter,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-04-08T12:00:00+00:00
+451,CRS-000451,Principles of Combinatorial Optimization,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+452,CRS-000452,Graduate Seminar in Statistical Thermodynamics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-07-16T12:00:00+00:00
+453,CRS-000453,Principles of Supramolecular Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-05-04T12:00:00+00:00
+454,CRS-000454,Introduction to Sensor Array Processing,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-03-10T12:00:00+00:00
+455,CRS-000455,Foundations of Portfolio Optimization,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-03-19T12:00:00+00:00
+456,CRS-000456,Intermediate Biophysics & Soft Matter,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-07-04T12:00:00+00:00
+457,CRS-000457,Applied Superconducting Qubit Systems,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-05-23T12:00:00+00:00
+458,CRS-000458,Foundations of Multivariate Data Analysis,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-04-25T12:00:00+00:00
+459,CRS-000459,Advanced Nonlinear Optics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+460,CRS-000460,Advanced Structural Bioinformatics,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-04-27T12:00:00+00:00
+461,CRS-000461,Computational Methods in Nonparametric Statistics,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2022-12-01T12:00:00+00:00
+462,CRS-000462,Advanced Polymer Materials Chemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+463,CRS-000463,Introduction to Finite Element Analysis,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-07-04T12:00:00+00:00
+464,CRS-000464,Applied Embedded Real-Time Systems,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-01-23T12:00:00+00:00
+465,CRS-000465,Experimental & Laboratory Operating Systems Kernel Design,Computer Science,Laboratory,1.0,ACTIVE,2023-04-05T12:00:00+00:00
+466,CRS-000466,Introduction to Partial Differential Equations,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+467,CRS-000467,Graduate Seminar in Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+468,CRS-000468,Intermediate Stochastic Calculus for Finance,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2022-12-16T12:00:00+00:00
+469,CRS-000469,Introduction to Microeconomic Theory,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-06-03T12:00:00+00:00
+470,CRS-000470,Advanced Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-05-07T12:00:00+00:00
+471,CRS-000471,Introduction to Zero-Knowledge Proofs,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-04-23T12:00:00+00:00
+472,CRS-000472,Computational Methods in Computational Fluid Dynamics,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-01-18T12:00:00+00:00
+473,CRS-000473,Graduate Seminar in Distributed Systems,Computer Science,Doctoral,1.0,ACTIVE,2023-03-12T12:00:00+00:00
+474,CRS-000474,Experimental & Laboratory International Trade Analytics,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+475,CRS-000475,Graduate Seminar in RF & Microwave Engineering,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-02-13T12:00:00+00:00
+476,CRS-000476,Applied Quantitative Risk Management,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-04-10T12:00:00+00:00
+477,CRS-000477,Principles of Bioprocess Fermentation,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-08-05T12:00:00+00:00
+478,CRS-000478,Special Topics in Control Systems Engineering,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-01-20T12:00:00+00:00
+479,CRS-000479,Introduction to Linear Algebra,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-03-06T12:00:00+00:00
+480,CRS-000480,Advanced Natural Language Processing,Computer Science,Advanced,1.0,ACTIVE,2023-08-10T12:00:00+00:00
+481,CRS-000481,Special Topics in Computational Neuroscience,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+482,CRS-000482,Special Topics in Statistical Thermodynamics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-03-12T12:00:00+00:00
+483,CRS-000483,Special Topics in Systems Biology,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2023-06-15T12:00:00+00:00
+484,CRS-000484,Special Topics in Cloud Security Posture,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2022-10-30T12:00:00+00:00
+485,CRS-000485,Graduate Seminar in Linear Algebra,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+486,CRS-000486,Advanced Differential Geometry,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-01-23T12:00:00+00:00
+487,CRS-000487,Foundations of Molecular Genetics,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-05-01T12:00:00+00:00
+488,CRS-000488,Computational Methods in Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-02-02T12:00:00+00:00
+489,CRS-000489,Experimental & Laboratory Finite Element Analysis,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-04-20T12:00:00+00:00
+490,CRS-000490,Foundations of Automated Software Verification,Computer Science,Foundational,1.0,ACTIVE,2022-11-27T12:00:00+00:00
+491,CRS-000491,Graduate Seminar in Spatial Data Modeling,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-07-25T12:00:00+00:00
+492,CRS-000492,Foundations of RF & Microwave Engineering,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2022-11-03T12:00:00+00:00
+493,CRS-000493,Principles of Partial Differential Equations,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-04-17T12:00:00+00:00
+494,CRS-000494,Experimental & Laboratory Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-06-20T12:00:00+00:00
+495,CRS-000495,Intermediate Statistical Thermodynamics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2022-12-01T12:00:00+00:00
+496,CRS-000496,Advanced Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2022-12-05T12:00:00+00:00
+497,CRS-000497,Applied Bioprocess Fermentation,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+498,CRS-000498,Experimental & Laboratory Nonlinear Optics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2022-12-20T12:00:00+00:00
+499,CRS-000499,Experimental & Laboratory Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-05-24T12:00:00+00:00
+500,CRS-000500,Graduate Seminar in Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-02-07T12:00:00+00:00
+501,CRS-000501,Graduate Seminar in Synthetic Biology Circuits,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-07-13T12:00:00+00:00
+502,CRS-000502,Experimental & Laboratory Relativistic Astrophysics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+503,CRS-000503,Advanced Industrial Organization,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+504,CRS-000504,Advanced Molecular Genetics,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2022-11-29T12:00:00+00:00
+505,CRS-000505,Advanced Monte Carlo Simulation,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-07-19T12:00:00+00:00
+506,CRS-000506,Introduction to Experimental Design,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+507,CRS-000507,Special Topics in Organic Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-04-16T12:00:00+00:00
+508,CRS-000508,Introduction to Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2022-11-24T12:00:00+00:00
+509,CRS-000509,Advanced Digital Signal Processing,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-02-18T12:00:00+00:00
+510,CRS-000510,Experimental & Laboratory Robotics & Kinematics,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-06-23T12:00:00+00:00
+511,CRS-000511,Computational Methods in Turbomachinery Design,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-02-27T12:00:00+00:00
+512,CRS-000512,Experimental & Laboratory Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2023-02-05T12:00:00+00:00
+513,CRS-000513,Computational Methods in Numerical Linear Algebra,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-01-26T12:00:00+00:00
+514,CRS-000514,Foundations of Cloud Security Posture,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2022-11-14T12:00:00+00:00
+515,CRS-000515,Special Topics in Threat Intelligence Engineering,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-08-27T12:00:00+00:00
+516,CRS-000516,Experimental & Laboratory Market Microstructure,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-01-11T12:00:00+00:00
+517,CRS-000517,Principles of Polymer Materials Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-01-30T12:00:00+00:00
+518,CRS-000518,Foundations of Environmental Geochemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2022-11-20T12:00:00+00:00
+519,CRS-000519,Special Topics in Statistical Learning Theory,Data Science & Statistics,Graduate,1.0,ACTIVE,2022-11-15T12:00:00+00:00
+520,CRS-000520,Special Topics in Orbital Mechanics,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+521,CRS-000521,Advanced VLSI Circuit Design,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-06-20T12:00:00+00:00
+522,CRS-000522,Advanced Operating Systems Kernel Design,Computer Science,Advanced,1.0,ACTIVE,2023-06-03T12:00:00+00:00
+523,CRS-000523,Advanced Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-08-07T12:00:00+00:00
+524,CRS-000524,Principles of Cloud Computing Architecture,Computer Science,Undergraduate,1.0,ACTIVE,2022-12-26T12:00:00+00:00
+525,CRS-000525,Special Topics in Multivariate Data Analysis,Data Science & Statistics,Graduate,1.0,ACTIVE,2023-08-04T12:00:00+00:00
+526,CRS-000526,Introduction to Digital Forensics,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-05-30T12:00:00+00:00
+527,CRS-000527,Graduate Seminar in Physical Electrochemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-06-09T12:00:00+00:00
+528,CRS-000528,Special Topics in Graph Analytics,Computer Science,Graduate,1.0,ACTIVE,2023-02-17T12:00:00+00:00
+529,CRS-000529,Special Topics in Automated Software Verification,Computer Science,Graduate,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+530,CRS-000530,Computational Methods in Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-01-21T12:00:00+00:00
+531,CRS-000531,Experimental & Laboratory Binary Exploitation Analysis,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+532,CRS-000532,Foundations of Finite Element Analysis,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-05-22T12:00:00+00:00
+533,CRS-000533,Computational Methods in Development Economics,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-01-25T12:00:00+00:00
+534,CRS-000534,Applied Applied Cryptography,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-08-21T12:00:00+00:00
+535,CRS-000535,Foundations of Systems Biology,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-02-14T12:00:00+00:00
+536,CRS-000536,Computational Methods in Differential Geometry,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2022-12-18T12:00:00+00:00
+537,CRS-000537,Advanced Quantum Mechanics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2022-12-20T12:00:00+00:00
+538,CRS-000538,Computational Methods in Robotics & Kinematics,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+539,CRS-000539,Applied Network Protocol Security,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-05-07T12:00:00+00:00
+540,CRS-000540,Graduate Seminar in Genomic Sequence Analysis,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+541,CRS-000541,Computational Methods in Hardware Security Modules,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-06-22T12:00:00+00:00
+542,CRS-000542,Special Topics in Binary Exploitation Analysis,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-05-13T12:00:00+00:00
+543,CRS-000543,Special Topics in Fluid Turbulence Mechanics,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+544,CRS-000544,Experimental & Laboratory Experimental Design,Data Science & Statistics,Laboratory,1.0,ACTIVE,2022-12-03T12:00:00+00:00
+545,CRS-000545,Computational Methods in Post-Quantum Cryptography,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-03-25T12:00:00+00:00
+546,CRS-000546,Graduate Seminar in Quantum Information Processing,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2022-11-21T12:00:00+00:00
+547,CRS-000547,Principles of Relativistic Astrophysics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-02-05T12:00:00+00:00
+548,CRS-000548,Special Topics in Zero-Knowledge Proofs,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+549,CRS-000549,Experimental & Laboratory Clinical Biostatistics,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+550,CRS-000550,Applied Autonomous Navigation Systems,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-03-19T12:00:00+00:00
+551,CRS-000551,Intermediate Computational Neuroscience,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+552,CRS-000552,Applied Secure Multiparty Computation,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2022-12-24T12:00:00+00:00
+553,CRS-000553,Experimental & Laboratory Quantum Mechanics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2023-06-10T12:00:00+00:00
+554,CRS-000554,Computational Methods in Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-03-14T12:00:00+00:00
+555,CRS-000555,Special Topics in Real & Functional Analysis,Mathematics & Optimization,Graduate,1.0,ACTIVE,2022-12-20T12:00:00+00:00
+556,CRS-000556,Experimental & Laboratory Causal Inference,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-01-16T12:00:00+00:00
+557,CRS-000557,Graduate Seminar in Nonparametric Statistics,Data Science & Statistics,Doctoral,1.0,ACTIVE,2022-12-03T12:00:00+00:00
+558,CRS-000558,Advanced Mechatronic Actuation,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-06-01T12:00:00+00:00
+559,CRS-000559,Foundations of Industrial Organization,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+560,CRS-000560,Advanced Electrodynamics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-02-14T12:00:00+00:00
+561,CRS-000561,Principles of Sensor Array Processing,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-06-22T12:00:00+00:00
+562,CRS-000562,Computational Methods in CRISPR Gene Editing,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-03-11T12:00:00+00:00
+563,CRS-000563,Intermediate Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+564,CRS-000564,Graduate Seminar in Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2022-12-08T12:00:00+00:00
+565,CRS-000565,Intermediate Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-07-11T12:00:00+00:00
+566,CRS-000566,Principles of Algorithmic Game Theory,Computer Science,Undergraduate,1.0,ACTIVE,2022-12-07T12:00:00+00:00
+567,CRS-000567,Applied Dynamical Systems,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-05-10T12:00:00+00:00
+568,CRS-000568,Computational Methods in Immunoinformatics,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-03-07T12:00:00+00:00
+569,CRS-000569,Applied Threat Intelligence Engineering,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-05-02T12:00:00+00:00
+570,CRS-000570,Experimental & Laboratory Natural Language Processing,Computer Science,Laboratory,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+571,CRS-000571,Intermediate Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2022-10-29T12:00:00+00:00
+572,CRS-000572,Principles of Parallel Programming,Computer Science,Undergraduate,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+573,CRS-000573,Principles of Quantum Information Processing,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-07-30T12:00:00+00:00
+574,CRS-000574,Experimental & Laboratory RF & Microwave Engineering,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-01-27T12:00:00+00:00
+575,CRS-000575,Graduate Seminar in Autonomous Navigation Systems,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-03-21T12:00:00+00:00
+576,CRS-000576,Principles of Genomic Sequence Analysis,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+577,CRS-000577,Foundations of Power Electronics,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-06-05T12:00:00+00:00
+578,CRS-000578,Experimental & Laboratory Control Systems Engineering,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+579,CRS-000579,Experimental & Laboratory Analytical Spectroscopy,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+580,CRS-000580,Special Topics in Identity & Access Governance,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-02-01T12:00:00+00:00
+581,CRS-000581,Foundations of Behavioral Economics,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-07-05T12:00:00+00:00
+582,CRS-000582,Advanced Automated Software Verification,Computer Science,Advanced,1.0,ACTIVE,2023-01-20T12:00:00+00:00
+583,CRS-000583,Graduate Seminar in Portfolio Optimization,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-03-11T12:00:00+00:00
+584,CRS-000584,Computational Methods in Fluid Turbulence Mechanics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-01-23T12:00:00+00:00
+585,CRS-000585,Principles of Turbomachinery Design,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-06-15T12:00:00+00:00
+586,CRS-000586,Intermediate Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-03-04T12:00:00+00:00
+587,CRS-000587,Foundations of Quantum Mechanics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2022-12-10T12:00:00+00:00
+588,CRS-000588,Computational Methods in Relativistic Astrophysics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-04-06T12:00:00+00:00
+589,CRS-000589,Applied Stochastic Processes,Data Science & Statistics,Applied,1.0,ACTIVE,2022-12-19T12:00:00+00:00
+590,CRS-000590,Principles of Physical Electrochemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-03-05T12:00:00+00:00
+591,CRS-000591,Applied Computational Fluid Dynamics,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2023-08-11T12:00:00+00:00
+592,CRS-000592,Foundations of Turbomachinery Design,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+593,CRS-000593,Principles of Dynamical Systems,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-01-07T12:00:00+00:00
+594,CRS-000594,Advanced Biophysics & Soft Matter,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-07-13T12:00:00+00:00
+595,CRS-000595,Applied Control Systems Engineering,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-03-16T12:00:00+00:00
+596,CRS-000596,Computational Methods in Autonomous Aerial Vehicles,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2022-11-16T12:00:00+00:00
+597,CRS-000597,Special Topics in High-Dimensional Statistics,Data Science & Statistics,Graduate,1.0,ACTIVE,2022-12-16T12:00:00+00:00
+598,CRS-000598,Intermediate Partial Differential Equations,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2022-12-19T12:00:00+00:00
+599,CRS-000599,Applied Genomic Sequence Analysis,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+600,CRS-000600,Intermediate High-Dimensional Statistics,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+601,CRS-000601,Principles of Zero-Knowledge Proofs,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-06-01T12:00:00+00:00
+602,CRS-000602,Principles of Abstract Algebra,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2022-12-02T12:00:00+00:00
+603,CRS-000603,Principles of Compiler Construction,Computer Science,Undergraduate,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+604,CRS-000604,Intermediate Binary Exploitation Analysis,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2022-12-30T12:00:00+00:00
+605,CRS-000605,Special Topics in Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2022-11-28T12:00:00+00:00
+606,CRS-000606,Applied Development Economics,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2022-11-15T12:00:00+00:00
+607,CRS-000607,Graduate Seminar in Wireless Communication Systems,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-06-16T12:00:00+00:00
+608,CRS-000608,Foundations of Condensed Matter Physics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+609,CRS-000609,Principles of Control Systems Engineering,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-03-08T12:00:00+00:00
+610,CRS-000610,Foundations of Stochastic Processes,Data Science & Statistics,Foundational,1.0,ACTIVE,2022-12-05T12:00:00+00:00
+611,CRS-000611,Advanced Dynamical Systems,Mathematics & Optimization,Advanced,1.0,ACTIVE,2022-12-18T12:00:00+00:00
+612,CRS-000612,Intermediate Causal Inference,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-02-24T12:00:00+00:00
+613,CRS-000613,Special Topics in Industrial Organization,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+614,CRS-000614,Foundations of Number Theory,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-04-10T12:00:00+00:00
+615,CRS-000615,Foundations of Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-08-14T12:00:00+00:00
+616,CRS-000616,Introduction to Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+617,CRS-000617,Applied Fluid Turbulence Mechanics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2022-12-15T12:00:00+00:00
+618,CRS-000618,Computational Methods in Behavioral Economics,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-06-18T12:00:00+00:00
+619,CRS-000619,Applied Parallel Programming,Computer Science,Applied,1.0,ACTIVE,2022-11-08T12:00:00+00:00
+620,CRS-000620,Applied Bayesian Inference,Data Science & Statistics,Applied,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+621,CRS-000621,Computational Methods in Quantum Mechanics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-06-08T12:00:00+00:00
+622,CRS-000622,Applied Partial Differential Equations,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-08-05T12:00:00+00:00
+623,CRS-000623,Principles of Environmental Geochemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2022-11-28T12:00:00+00:00
+624,CRS-000624,Computational Methods in Stochastic Calculus for Finance,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-03-05T12:00:00+00:00
+625,CRS-000625,Introduction to Industrial Organization,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-06-12T12:00:00+00:00
+626,CRS-000626,Computational Methods in Bayesian Inference,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-07-13T12:00:00+00:00
+627,CRS-000627,Principles of Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-05-01T12:00:00+00:00
+628,CRS-000628,Experimental & Laboratory Condensed Matter Physics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+629,CRS-000629,Introduction to Supramolecular Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-04-07T12:00:00+00:00
+630,CRS-000630,Principles of Derivatives Pricing,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-03-23T12:00:00+00:00
+631,CRS-000631,Graduate Seminar in Power Electronics,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-03-12T12:00:00+00:00
+632,CRS-000632,Graduate Seminar in Differential Geometry,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+633,CRS-000633,Principles of Industrial Organization,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-01-26T12:00:00+00:00
+634,CRS-000634,Intermediate Immunoinformatics,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2022-12-08T12:00:00+00:00
+635,CRS-000635,Experimental & Laboratory Convex Optimization,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-04-10T12:00:00+00:00
+636,CRS-000636,Intermediate Game Theory in Auctions,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-02-17T12:00:00+00:00
+637,CRS-000637,Principles of RF & Microwave Engineering,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2022-12-29T12:00:00+00:00
+638,CRS-000638,Experimental & Laboratory Cloud Security Posture,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-06-10T12:00:00+00:00
+639,CRS-000639,Principles of Electrodynamics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-04-04T12:00:00+00:00
+640,CRS-000640,Introduction to Reverse Engineering,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-05-31T12:00:00+00:00
+641,CRS-000641,Intermediate Computational Quantum Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-08-19T12:00:00+00:00
+642,CRS-000642,Foundations of Superconducting Qubit Systems,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2022-11-26T12:00:00+00:00
+643,CRS-000643,Computational Methods in Identity & Access Governance,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-07-20T12:00:00+00:00
+644,CRS-000644,Computational Methods in Real & Functional Analysis,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-01-10T12:00:00+00:00
+645,CRS-000645,Special Topics in Mechatronic Actuation,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-04-17T12:00:00+00:00
+646,CRS-000646,Introduction to Game Theory in Auctions,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+647,CRS-000647,Introduction to Genomic Sequence Analysis,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+648,CRS-000648,Computational Methods in Additive Manufacturing Processes,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2022-12-30T12:00:00+00:00
+649,CRS-000649,Applied Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-07-27T12:00:00+00:00
+650,CRS-000650,Special Topics in Bioprocess Fermentation,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2022-12-18T12:00:00+00:00
+651,CRS-000651,Principles of Digital Signal Processing,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-06-06T12:00:00+00:00
+652,CRS-000652,Intermediate Additive Manufacturing Processes,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-07-21T12:00:00+00:00
+653,CRS-000653,Computational Methods in Systems Biology,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-07-07T12:00:00+00:00
+654,CRS-000654,Graduate Seminar in Structural Bioinformatics,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+655,CRS-000655,Graduate Seminar in Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+656,CRS-000656,Advanced Robotics & Kinematics,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+657,CRS-000657,Experimental & Laboratory Microeconomic Theory,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-04-23T12:00:00+00:00
+658,CRS-000658,Introduction to Network Protocol Security,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+659,CRS-000659,Experimental & Laboratory Behavioral Economics,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2022-12-16T12:00:00+00:00
+660,CRS-000660,Graduate Seminar in Fluid Turbulence Mechanics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2022-10-27T12:00:00+00:00
+661,CRS-000661,Applied Quantum Information Processing,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+662,CRS-000662,Foundations of Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2022-11-30T12:00:00+00:00
+663,CRS-000663,Special Topics in Sensor Array Processing,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2023-01-18T12:00:00+00:00
+664,CRS-000664,Foundations of Analytical Spectroscopy,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+665,CRS-000665,Computational Methods in Nonlinear Optics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2022-11-23T12:00:00+00:00
+666,CRS-000666,Intermediate Environmental Geochemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-05-24T12:00:00+00:00
+667,CRS-000667,Foundations of Polymer Materials Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2022-12-12T12:00:00+00:00
+668,CRS-000668,Foundations of Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-02-07T12:00:00+00:00
+669,CRS-000669,Computational Methods in Time Series Econometrics,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2022-12-06T12:00:00+00:00
+670,CRS-000670,Applied Wireless Communication Systems,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-03-03T12:00:00+00:00
+671,CRS-000671,Introduction to Polymer Materials Chemistry,Chemistry & Molecular Sciences,Introductory,1.0,ACTIVE,2023-01-02T12:00:00+00:00
+672,CRS-000672,Principles of Graph Analytics,Computer Science,Undergraduate,1.0,ACTIVE,2023-05-19T12:00:00+00:00
+673,CRS-000673,Intermediate Dynamical Systems,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-03-26T12:00:00+00:00
+674,CRS-000674,Introduction to Operating Systems Kernel Design,Computer Science,Introductory,1.0,ACTIVE,2023-03-07T12:00:00+00:00
+675,CRS-000675,Applied Supramolecular Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-05-05T12:00:00+00:00
+676,CRS-000676,Principles of Biophysics & Soft Matter,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2022-12-06T12:00:00+00:00
+677,CRS-000677,Computational Methods in Genomic Sequence Analysis,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2023-06-05T12:00:00+00:00
+678,CRS-000678,Applied Portfolio Optimization,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-06-29T12:00:00+00:00
+679,CRS-000679,Applied Monte Carlo Simulation,Data Science & Statistics,Applied,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+680,CRS-000680,Intermediate Quantum Information Processing,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2022-12-23T12:00:00+00:00
+681,CRS-000681,Graduate Seminar in Market Microstructure,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-02-01T12:00:00+00:00
+682,CRS-000682,Applied Sensor Array Processing,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+683,CRS-000683,Introduction to Derivatives Pricing,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-04-26T12:00:00+00:00
+684,CRS-000684,Applied High-Dimensional Statistics,Data Science & Statistics,Applied,1.0,ACTIVE,2023-03-06T12:00:00+00:00
+685,CRS-000685,Advanced RF & Microwave Engineering,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-03-08T12:00:00+00:00
+686,CRS-000686,Principles of Algebraic Topology,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+687,CRS-000687,Advanced Derivatives Pricing,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-01-08T12:00:00+00:00
+688,CRS-000688,Intermediate Differential Geometry,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2022-12-18T12:00:00+00:00
+689,CRS-000689,Introduction to Cloud Security Posture,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2022-11-26T12:00:00+00:00
+690,CRS-000690,Foundations of Network Protocol Security,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2023-08-06T12:00:00+00:00
+691,CRS-000691,Intermediate Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-02-05T12:00:00+00:00
+692,CRS-000692,Advanced Genomic Sequence Analysis,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+693,CRS-000693,Advanced Secure Multiparty Computation,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2023-07-21T12:00:00+00:00
+694,CRS-000694,Graduate Seminar in Clinical Biostatistics,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-05-01T12:00:00+00:00
+695,CRS-000695,Introduction to Bayesian Inference,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-07-02T12:00:00+00:00
+696,CRS-000696,Principles of Cloud Security Posture,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-01-13T12:00:00+00:00
+697,CRS-000697,Principles of Power Electronics,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-02-25T12:00:00+00:00
+698,CRS-000698,Graduate Seminar in Electrodynamics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-08-25T12:00:00+00:00
+699,CRS-000699,Graduate Seminar in Abstract Algebra,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-08-28T12:00:00+00:00
+700,CRS-000700,Foundations of High-Dimensional Statistics,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-03-08T12:00:00+00:00
+701,CRS-000701,Special Topics in Power Electronics,Electrical & Electronics Engineering,Graduate,1.0,ACTIVE,2022-12-13T12:00:00+00:00
+702,CRS-000702,Applied Game Theory in Auctions,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2022-11-25T12:00:00+00:00
+703,CRS-000703,Introduction to Binary Exploitation Analysis,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2022-11-25T12:00:00+00:00
+704,CRS-000704,Intermediate Computer Vision,Computer Science,Intermediate,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+705,CRS-000705,Applied Graph Analytics,Computer Science,Applied,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+706,CRS-000706,Intermediate Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+707,CRS-000707,Graduate Seminar in Number Theory,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-05-11T12:00:00+00:00
+708,CRS-000708,Intermediate Stochastic Processes,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-04-16T12:00:00+00:00
+709,CRS-000709,Special Topics in Structural Bioinformatics,Biotechnology & Bioinformatics,Graduate,1.0,ACTIVE,2023-05-29T12:00:00+00:00
+710,CRS-000710,Graduate Seminar in Natural Language Processing,Computer Science,Doctoral,1.0,ACTIVE,2023-03-06T12:00:00+00:00
+711,CRS-000711,Intermediate Fluid Turbulence Mechanics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-01-15T12:00:00+00:00
+712,CRS-000712,Principles of Binary Exploitation Analysis,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+713,CRS-000713,Introduction to Superconducting Qubit Systems,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-06-01T12:00:00+00:00
+714,CRS-000714,Foundations of Hardware Security Modules,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2023-02-01T12:00:00+00:00
+715,CRS-000715,Applied Statistical Learning Theory,Data Science & Statistics,Applied,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+716,CRS-000716,Graduate Seminar in Computer Vision,Computer Science,Doctoral,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+717,CRS-000717,Foundations of CRISPR Gene Editing,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-03-07T12:00:00+00:00
+718,CRS-000718,Introduction to Proteomics & Mass Spectrometry,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+719,CRS-000719,Principles of Identity & Access Governance,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-04-15T12:00:00+00:00
+720,CRS-000720,Experimental & Laboratory Quantum Information Processing,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2023-08-14T12:00:00+00:00
+721,CRS-000721,Advanced Digital Forensics,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2023-08-17T12:00:00+00:00
+722,CRS-000722,Computational Methods in Derivatives Pricing,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-08-23T12:00:00+00:00
+723,CRS-000723,Principles of Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-06-19T12:00:00+00:00
+724,CRS-000724,Special Topics in Post-Quantum Cryptography,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+725,CRS-000725,Advanced Behavioral Economics,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-05-18T12:00:00+00:00
+726,CRS-000726,Graduate Seminar in Zero-Knowledge Proofs,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2022-12-12T12:00:00+00:00
+727,CRS-000727,Computational Methods in Monte Carlo Simulation,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2022-12-12T12:00:00+00:00
+728,CRS-000728,Experimental & Laboratory Embedded Real-Time Systems,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-07-25T12:00:00+00:00
+729,CRS-000729,Advanced CRISPR Gene Editing,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-05-15T12:00:00+00:00
+730,CRS-000730,Intermediate Sensor Array Processing,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+731,CRS-000731,Computational Methods in Network Protocol Security,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-05-13T12:00:00+00:00
+732,CRS-000732,Principles of Immunoinformatics,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-02-17T12:00:00+00:00
+733,CRS-000733,Advanced Additive Manufacturing Processes,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-04-03T12:00:00+00:00
+734,CRS-000734,Special Topics in Hardware Security Modules,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-07-23T12:00:00+00:00
+735,CRS-000735,Special Topics in Biophysics & Soft Matter,Physics & Quantum Engineering,Graduate,1.0,ACTIVE,2023-02-18T12:00:00+00:00
+736,CRS-000736,Experimental & Laboratory Macroeconomic Policy Modeling,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-04-07T12:00:00+00:00
+737,CRS-000737,Special Topics in Quantitative Risk Management,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-07-08T12:00:00+00:00
+738,CRS-000738,Graduate Seminar in Game Theory in Auctions,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-04-14T12:00:00+00:00
+739,CRS-000739,Introduction to Embedded Real-Time Systems,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-04-05T12:00:00+00:00
+740,CRS-000740,Intermediate Threat Intelligence Engineering,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2023-01-08T12:00:00+00:00
+741,CRS-000741,Graduate Seminar in International Trade Analytics,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2023-05-09T12:00:00+00:00
+742,CRS-000742,Special Topics in Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2022-11-21T12:00:00+00:00
+743,CRS-000743,Experimental & Laboratory Differential Geometry,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-04-04T12:00:00+00:00
+744,CRS-000744,Applied Experimental Design,Data Science & Statistics,Applied,1.0,ACTIVE,2023-07-02T12:00:00+00:00
+745,CRS-000745,Intermediate Abstract Algebra,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-05-29T12:00:00+00:00
+746,CRS-000746,Applied Compiler Construction,Computer Science,Applied,1.0,ACTIVE,2023-08-02T12:00:00+00:00
+747,CRS-000747,Principles of Organic Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2022-10-26T12:00:00+00:00
+748,CRS-000748,Intermediate Natural Language Processing,Computer Science,Intermediate,1.0,ACTIVE,2023-01-08T12:00:00+00:00
+749,CRS-000749,Experimental & Laboratory Database Internals,Computer Science,Laboratory,1.0,ACTIVE,2023-02-03T12:00:00+00:00
+750,CRS-000750,Computational Methods in Orbital Mechanics,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-03-09T12:00:00+00:00
+751,CRS-000751,Foundations of Reverse Engineering,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+752,CRS-000752,Foundations of Spatial Data Modeling,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-08-28T12:00:00+00:00
+753,CRS-000753,Applied Differential Geometry,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-04-25T12:00:00+00:00
+754,CRS-000754,Introduction to Algorithmic Game Theory,Computer Science,Introductory,1.0,ACTIVE,2023-05-22T12:00:00+00:00
+755,CRS-000755,Foundations of Binary Exploitation Analysis,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2023-08-12T12:00:00+00:00
+756,CRS-000756,Introduction to Machine Learning,Computer Science,Introductory,1.0,ACTIVE,2022-12-27T12:00:00+00:00
+757,CRS-000757,Experimental & Laboratory Combinatorial Optimization,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+758,CRS-000758,Introduction to Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-03-13T12:00:00+00:00
+759,CRS-000759,Principles of Natural Language Processing,Computer Science,Undergraduate,1.0,ACTIVE,2022-11-29T12:00:00+00:00
+760,CRS-000760,Principles of Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-03-04T12:00:00+00:00
+761,CRS-000761,Principles of Time Series Econometrics,Data Science & Statistics,Undergraduate,1.0,ACTIVE,2022-12-30T12:00:00+00:00
+762,CRS-000762,Advanced Embedded Real-Time Systems,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-05-21T12:00:00+00:00
+763,CRS-000763,Principles of Hardware Security Modules,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+764,CRS-000764,Graduate Seminar in Computational Fluid Dynamics,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2022-11-12T12:00:00+00:00
+765,CRS-000765,Applied Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-06-26T12:00:00+00:00
+766,CRS-000766,Graduate Seminar in Control Systems Engineering,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-03-09T12:00:00+00:00
+767,CRS-000767,Principles of Portfolio Optimization,Economics & Quantitative Finance,Undergraduate,1.0,ACTIVE,2023-01-10T12:00:00+00:00
+768,CRS-000768,Applied Numerical Linear Algebra,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+769,CRS-000769,Experimental & Laboratory Stochastic Calculus for Finance,Economics & Quantitative Finance,Laboratory,1.0,ACTIVE,2023-02-11T12:00:00+00:00
+770,CRS-000770,Foundations of Derivatives Pricing,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-06-21T12:00:00+00:00
+771,CRS-000771,Principles of Clinical Biostatistics,Biotechnology & Bioinformatics,Undergraduate,1.0,ACTIVE,2023-03-21T12:00:00+00:00
+772,CRS-000772,Advanced Mixed-Signal Integrated Circuits,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-01-27T12:00:00+00:00
+773,CRS-000773,Intermediate Experimental Design,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-02-19T12:00:00+00:00
+774,CRS-000774,Principles of Reverse Engineering,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-04-04T12:00:00+00:00
+775,CRS-000775,Introduction to Quantum Mechanics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+776,CRS-000776,Graduate Seminar in Numerical Linear Algebra,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2023-07-03T12:00:00+00:00
+777,CRS-000777,Intermediate Hardware Security Modules,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2023-02-27T12:00:00+00:00
+778,CRS-000778,Applied Nonlinear Optics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-02-26T12:00:00+00:00
+779,CRS-000779,Applied Additive Manufacturing Processes,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+780,CRS-000780,Introduction to Development Economics,Economics & Quantitative Finance,Introductory,1.0,ACTIVE,2023-06-26T12:00:00+00:00
+781,CRS-000781,Experimental & Laboratory Orbital Mechanics,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-05-18T12:00:00+00:00
+782,CRS-000782,Intermediate Monte Carlo Simulation,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-03-20T12:00:00+00:00
+783,CRS-000783,Intermediate Database Internals,Computer Science,Intermediate,1.0,ACTIVE,2023-03-12T12:00:00+00:00
+784,CRS-000784,Introduction to Nonlinear Optics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-04-20T12:00:00+00:00
+785,CRS-000785,Principles of Nonlinear Optics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-07-07T12:00:00+00:00
+786,CRS-000786,Applied Robotics & Kinematics,Mechanical & Aerospace Systems,Applied,1.0,ACTIVE,2023-01-04T12:00:00+00:00
+787,CRS-000787,Computational Methods in Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Upper-Division,1.0,ACTIVE,2023-06-23T12:00:00+00:00
+788,CRS-000788,Principles of Analytical Spectroscopy,Chemistry & Molecular Sciences,Undergraduate,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+789,CRS-000789,Principles of Orbital Mechanics,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-07-31T12:00:00+00:00
+790,CRS-000790,Computational Methods in Abstract Algebra,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2023-04-14T12:00:00+00:00
+791,CRS-000791,Principles of Microprocessor Architecture,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-03-29T12:00:00+00:00
+792,CRS-000792,Intermediate Autonomous Navigation Systems,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-04-08T12:00:00+00:00
+793,CRS-000793,Applied Systems Biology,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2022-12-10T12:00:00+00:00
+794,CRS-000794,Advanced Machine Learning,Computer Science,Advanced,1.0,ACTIVE,2023-07-06T12:00:00+00:00
+795,CRS-000795,Applied Convex Optimization,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+796,CRS-000796,Special Topics in Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Graduate,1.0,ACTIVE,2023-01-30T12:00:00+00:00
+797,CRS-000797,Advanced Binary Exploitation Analysis,Cybersecurity & Cryptography,Advanced,1.0,ACTIVE,2022-11-08T12:00:00+00:00
+798,CRS-000798,Experimental & Laboratory Number Theory,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-05-01T12:00:00+00:00
+799,CRS-000799,Intermediate Survival Analysis,Data Science & Statistics,Intermediate,1.0,ACTIVE,2023-03-18T12:00:00+00:00
+800,CRS-000800,Graduate Seminar in Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Doctoral,1.0,ACTIVE,2023-04-21T12:00:00+00:00
+801,CRS-000801,Intermediate Mechatronic Actuation,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+802,CRS-000802,Advanced Game Theory in Auctions,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+803,CRS-000803,Applied Identity & Access Governance,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2022-12-26T12:00:00+00:00
+804,CRS-000804,Intermediate Derivatives Pricing,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+805,CRS-000805,Computational Methods in Supramolecular Chemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-01-04T12:00:00+00:00
+806,CRS-000806,Advanced Statistical Learning Theory,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-08-04T12:00:00+00:00
+807,CRS-000807,Advanced Market Microstructure,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2022-12-17T12:00:00+00:00
+808,CRS-000808,Special Topics in Cloud Computing Architecture,Computer Science,Graduate,1.0,ACTIVE,2023-05-04T12:00:00+00:00
+809,CRS-000809,Experimental & Laboratory Secure Multiparty Computation,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2022-12-08T12:00:00+00:00
+810,CRS-000810,Foundations of Robotics & Kinematics,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-01-19T12:00:00+00:00
+811,CRS-000811,Introduction to Number Theory,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-02-02T12:00:00+00:00
+812,CRS-000812,Foundations of Electrodynamics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+813,CRS-000813,Applied Reverse Engineering,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+814,CRS-000814,Advanced Computer Vision,Computer Science,Advanced,1.0,ACTIVE,2023-07-14T12:00:00+00:00
+815,CRS-000815,Introduction to Graph Analytics,Computer Science,Introductory,1.0,ACTIVE,2023-03-29T12:00:00+00:00
+816,CRS-000816,Foundations of Real & Functional Analysis,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-02-12T12:00:00+00:00
+817,CRS-000817,Introduction to Nonparametric Statistics,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-01-28T12:00:00+00:00
+818,CRS-000818,Applied Particle & Nuclear Physics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-07-27T12:00:00+00:00
+819,CRS-000819,Foundations of Immunoinformatics,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-06-27T12:00:00+00:00
+820,CRS-000820,Intermediate Digital Signal Processing,Electrical & Electronics Engineering,Intermediate,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+821,CRS-000821,Foundations of Digital Signal Processing,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+822,CRS-000822,Graduate Seminar in Particle & Nuclear Physics,Physics & Quantum Engineering,Doctoral,1.0,ACTIVE,2023-04-27T12:00:00+00:00
+823,CRS-000823,Computational Methods in Clinical Biostatistics,Biotechnology & Bioinformatics,Upper-Division,1.0,ACTIVE,2022-11-17T12:00:00+00:00
+824,CRS-000824,Foundations of Fluid Turbulence Mechanics,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-04-10T12:00:00+00:00
+825,CRS-000825,Foundations of Digital Forensics,Cybersecurity & Cryptography,Foundational,1.0,ACTIVE,2022-12-30T12:00:00+00:00
+826,CRS-000826,Special Topics in Nonparametric Statistics,Data Science & Statistics,Graduate,1.0,ACTIVE,2022-12-01T12:00:00+00:00
+827,CRS-000827,Introduction to Robotics & Kinematics,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-04-27T12:00:00+00:00
+828,CRS-000828,Foundations of Database Internals,Computer Science,Foundational,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+829,CRS-000829,Applied CRISPR Gene Editing,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2023-01-21T12:00:00+00:00
+830,CRS-000830,Introduction to Digital Signal Processing,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-03-07T12:00:00+00:00
+831,CRS-000831,Advanced Number Theory,Mathematics & Optimization,Advanced,1.0,ACTIVE,2023-03-25T12:00:00+00:00
+832,CRS-000832,Introduction to Survival Analysis,Data Science & Statistics,Introductory,1.0,ACTIVE,2023-07-07T12:00:00+00:00
+833,CRS-000833,Applied Database Internals,Computer Science,Applied,1.0,ACTIVE,2022-11-19T12:00:00+00:00
+834,CRS-000834,Computational Methods in Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-07-07T12:00:00+00:00
+835,CRS-000835,Foundations of Bioprocess Fermentation,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-04-16T12:00:00+00:00
+836,CRS-000836,Introduction to Additive Manufacturing Processes,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2023-08-06T12:00:00+00:00
+837,CRS-000837,Graduate Seminar in Monte Carlo Simulation,Data Science & Statistics,Doctoral,1.0,ACTIVE,2022-12-02T12:00:00+00:00
+838,CRS-000838,Experimental & Laboratory Hardware Security Modules,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-06-29T12:00:00+00:00
+839,CRS-000839,Computational Methods in Multivariate Data Analysis,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-08-26T12:00:00+00:00
+840,CRS-000840,Experimental & Laboratory Sensor Array Processing,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-05-08T12:00:00+00:00
+841,CRS-000841,Special Topics in Linear Algebra,Mathematics & Optimization,Graduate,1.0,ACTIVE,2023-05-13T12:00:00+00:00
+842,CRS-000842,Applied Organometallic Synthesis,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-01-29T12:00:00+00:00
+843,CRS-000843,Foundations of Natural Language Processing,Computer Science,Foundational,1.0,ACTIVE,2023-01-16T12:00:00+00:00
+844,CRS-000844,Principles of VLSI Circuit Design,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-02-28T12:00:00+00:00
+845,CRS-000845,Advanced Finite Element Analysis,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-03-12T12:00:00+00:00
+846,CRS-000846,Graduate Seminar in Automated Software Verification,Computer Science,Doctoral,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+847,CRS-000847,Graduate Seminar in Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-07-03T12:00:00+00:00
+848,CRS-000848,Computational Methods in Distributed Systems,Computer Science,Upper-Division,1.0,ACTIVE,2023-03-09T12:00:00+00:00
+849,CRS-000849,Computational Methods in Convex Optimization,Mathematics & Optimization,Upper-Division,1.0,ACTIVE,2022-12-09T12:00:00+00:00
+850,CRS-000850,Experimental & Laboratory Numerical Linear Algebra,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-01-27T12:00:00+00:00
+851,CRS-000851,Introduction to Metabolic Pathway Engineering,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-08-29T12:00:00+00:00
+852,CRS-000852,Principles of Secure Multiparty Computation,Cybersecurity & Cryptography,Undergraduate,1.0,ACTIVE,2023-01-27T12:00:00+00:00
+853,CRS-000853,Foundations of Organometallic Synthesis,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-03-06T12:00:00+00:00
+854,CRS-000854,Graduate Seminar in Hardware Security Modules,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+855,CRS-000855,Intermediate Quantum Mechanics,Physics & Quantum Engineering,Intermediate,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+856,CRS-000856,Intermediate Macroeconomic Policy Modeling,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-06-01T12:00:00+00:00
+857,CRS-000857,Introduction to Structural Bioinformatics,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-08-20T12:00:00+00:00
+858,CRS-000858,Experimental & Laboratory Abstract Algebra,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2022-11-10T12:00:00+00:00
+859,CRS-000859,Experimental & Laboratory Bioprocess Fermentation,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-02-11T12:00:00+00:00
+860,CRS-000860,Experimental & Laboratory Time Series Econometrics,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+861,CRS-000861,Experimental & Laboratory Automated Software Verification,Computer Science,Laboratory,1.0,ACTIVE,2023-04-27T12:00:00+00:00
+862,CRS-000862,Applied Causal Inference,Data Science & Statistics,Applied,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+863,CRS-000863,Intermediate Measure Theory & Integration,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-05-17T12:00:00+00:00
+864,CRS-000864,Applied Nonparametric Statistics,Data Science & Statistics,Applied,1.0,ACTIVE,2023-07-23T12:00:00+00:00
+865,CRS-000865,Principles of Operating Systems Kernel Design,Computer Science,Undergraduate,1.0,ACTIVE,2023-05-26T12:00:00+00:00
+866,CRS-000866,Special Topics in Partial Differential Equations,Mathematics & Optimization,Graduate,1.0,ACTIVE,2023-03-19T12:00:00+00:00
+867,CRS-000867,Computational Methods in Graph Analytics,Computer Science,Upper-Division,1.0,ACTIVE,2023-01-04T12:00:00+00:00
+868,CRS-000868,Intermediate Thermodynamics & Heat Transfer,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-01-24T12:00:00+00:00
+869,CRS-000869,Computational Methods in Zero-Knowledge Proofs,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+870,CRS-000870,Applied Condensed Matter Physics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-07-13T12:00:00+00:00
+871,CRS-000871,Introduction to Orbital Mechanics,Mechanical & Aerospace Systems,Introductory,1.0,ACTIVE,2022-11-13T12:00:00+00:00
+872,CRS-000872,Advanced Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-02-13T12:00:00+00:00
+873,CRS-000873,Advanced Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-01-11T12:00:00+00:00
+874,CRS-000874,Special Topics in Network Protocol Security,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-03-27T12:00:00+00:00
+875,CRS-000875,Advanced Parallel Programming,Computer Science,Advanced,1.0,ACTIVE,2023-07-08T12:00:00+00:00
+876,CRS-000876,Experimental & Laboratory Multivariate Data Analysis,Data Science & Statistics,Laboratory,1.0,ACTIVE,2022-10-23T12:00:00+00:00
+877,CRS-000877,Applied Clinical Biostatistics,Biotechnology & Bioinformatics,Applied,1.0,ACTIVE,2022-11-09T12:00:00+00:00
+878,CRS-000878,Experimental & Laboratory High-Dimensional Statistics,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-04-18T12:00:00+00:00
+879,CRS-000879,Graduate Seminar in Embedded Real-Time Systems,Electrical & Electronics Engineering,Doctoral,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+880,CRS-000880,Advanced Microeconomic Theory,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-06-24T12:00:00+00:00
+881,CRS-000881,Foundations of Structural Bioinformatics,Biotechnology & Bioinformatics,Foundational,1.0,ACTIVE,2023-07-05T12:00:00+00:00
+882,CRS-000882,Applied Photonics & Optical Networks,Electrical & Electronics Engineering,Applied,1.0,ACTIVE,2023-01-16T12:00:00+00:00
+883,CRS-000883,Applied Machine Learning,Computer Science,Applied,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+884,CRS-000884,Advanced Causal Inference,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-01-03T12:00:00+00:00
+885,CRS-000885,Intermediate Systems Biology,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2022-10-30T12:00:00+00:00
+886,CRS-000886,Foundations of Survival Analysis,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-04-30T12:00:00+00:00
+887,CRS-000887,Foundations of Market Microstructure,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+888,CRS-000888,Graduate Seminar in Industrial Organization,Economics & Quantitative Finance,Doctoral,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+889,CRS-000889,Special Topics in Numerical Linear Algebra,Mathematics & Optimization,Graduate,1.0,ACTIVE,2022-12-04T12:00:00+00:00
+890,CRS-000890,Special Topics in Experimental Design,Data Science & Statistics,Graduate,1.0,ACTIVE,2022-12-17T12:00:00+00:00
+891,CRS-000891,Advanced Immunoinformatics,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-04-23T12:00:00+00:00
+892,CRS-000892,Experimental & Laboratory Physical Electrochemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-08-11T12:00:00+00:00
+893,CRS-000893,Advanced Turbomachinery Design,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-07-02T12:00:00+00:00
+894,CRS-000894,Applied Physical Electrochemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-02-13T12:00:00+00:00
+895,CRS-000895,Advanced Macroeconomic Policy Modeling,Economics & Quantitative Finance,Advanced,1.0,ACTIVE,2023-08-25T12:00:00+00:00
+896,CRS-000896,Principles of Number Theory,Mathematics & Optimization,Undergraduate,1.0,ACTIVE,2023-08-03T12:00:00+00:00
+897,CRS-000897,Experimental & Laboratory Statistical Thermodynamics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2022-11-26T12:00:00+00:00
+898,CRS-000898,Principles of Superconducting Qubit Systems,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-03-18T12:00:00+00:00
+899,CRS-000899,Intermediate Applied Cryptography,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2022-12-25T12:00:00+00:00
+900,CRS-000900,Experimental & Laboratory Digital Signal Processing,Electrical & Electronics Engineering,Laboratory,1.0,ACTIVE,2023-02-08T12:00:00+00:00
+901,CRS-000901,Graduate Seminar in Algebraic Topology,Mathematics & Optimization,Doctoral,1.0,ACTIVE,2022-10-26T12:00:00+00:00
+902,CRS-000902,Principles of Condensed Matter Physics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-05-23T12:00:00+00:00
+903,CRS-000903,Intermediate Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2022-11-18T12:00:00+00:00
+904,CRS-000904,Experimental & Laboratory Graph Analytics,Computer Science,Laboratory,1.0,ACTIVE,2023-06-12T12:00:00+00:00
+905,CRS-000905,Applied International Trade Analytics,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-06-30T12:00:00+00:00
+906,CRS-000906,Computational Methods in Stochastic Processes,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-02-15T12:00:00+00:00
+907,CRS-000907,Introduction to Threat Intelligence Engineering,Cybersecurity & Cryptography,Introductory,1.0,ACTIVE,2023-07-23T12:00:00+00:00
+908,CRS-000908,Applied Electrodynamics,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-08-16T12:00:00+00:00
+909,CRS-000909,Computational Methods in Survival Analysis,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-08-05T12:00:00+00:00
+910,CRS-000910,Computational Methods in Industrial Organization,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-04-14T12:00:00+00:00
+911,CRS-000911,Intermediate Computational Fluid Dynamics,Mechanical & Aerospace Systems,Intermediate,1.0,ACTIVE,2023-03-30T12:00:00+00:00
+912,CRS-000912,Applied Biophysics & Soft Matter,Physics & Quantum Engineering,Applied,1.0,ACTIVE,2023-02-15T12:00:00+00:00
+913,CRS-000913,Applied Stochastic Calculus for Finance,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2023-03-17T12:00:00+00:00
+914,CRS-000914,Foundations of Inorganic Coordination Chemistry,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-01-08T12:00:00+00:00
+915,CRS-000915,Foundations of VLSI Circuit Design,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+916,CRS-000916,Computational Methods in Embedded Real-Time Systems,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-05-20T12:00:00+00:00
+917,CRS-000917,Computational Methods in International Trade Analytics,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2023-06-21T12:00:00+00:00
+918,CRS-000918,Principles of Quantum Mechanics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2023-07-30T12:00:00+00:00
+919,CRS-000919,Experimental & Laboratory Applied Cryptography,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-08-04T12:00:00+00:00
+920,CRS-000920,Graduate Seminar in Robotics & Kinematics,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+921,CRS-000921,Introduction to Biophysics & Soft Matter,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-08-25T12:00:00+00:00
+922,CRS-000922,Special Topics in Portfolio Optimization,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-01-15T12:00:00+00:00
+923,CRS-000923,Principles of Computer Vision,Computer Science,Undergraduate,1.0,ACTIVE,2023-03-23T12:00:00+00:00
+924,CRS-000924,Advanced Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Advanced,1.0,ACTIVE,2023-01-23T12:00:00+00:00
+925,CRS-000925,Foundations of Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-05-26T12:00:00+00:00
+926,CRS-000926,Intermediate Polymer Materials Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-01-01T12:00:00+00:00
+927,CRS-000927,Foundations of Measure Theory & Integration,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-02-28T12:00:00+00:00
+928,CRS-000928,Experimental & Laboratory Threat Intelligence Engineering,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2023-01-31T12:00:00+00:00
+929,CRS-000929,Advanced Wireless Communication Systems,Electrical & Electronics Engineering,Advanced,1.0,ACTIVE,2023-07-21T12:00:00+00:00
+930,CRS-000930,Experimental & Laboratory Monte Carlo Simulation,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+931,CRS-000931,Experimental & Laboratory Fluid Turbulence Mechanics,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2023-01-07T12:00:00+00:00
+932,CRS-000932,Experimental & Laboratory Fracture & Continuum Mechanics,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+933,CRS-000933,Introduction to Measure Theory & Integration,Mathematics & Optimization,Introductory,1.0,ACTIVE,2023-04-12T12:00:00+00:00
+934,CRS-000934,Foundations of Sensor Array Processing,Electrical & Electronics Engineering,Foundational,1.0,ACTIVE,2022-11-01T12:00:00+00:00
+935,CRS-000935,Experimental & Laboratory Statistical Learning Theory,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-03-14T12:00:00+00:00
+936,CRS-000936,Applied Post-Quantum Cryptography,Cybersecurity & Cryptography,Applied,1.0,ACTIVE,2023-04-15T12:00:00+00:00
+937,CRS-000937,Advanced Organometallic Synthesis,Chemistry & Molecular Sciences,Advanced,1.0,ACTIVE,2023-07-20T12:00:00+00:00
+938,CRS-000938,Intermediate CRISPR Gene Editing,Biotechnology & Bioinformatics,Intermediate,1.0,ACTIVE,2023-05-13T12:00:00+00:00
+939,CRS-000939,Principles of Mechatronic Actuation,Mechanical & Aerospace Systems,Undergraduate,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+940,CRS-000940,Special Topics in Digital Forensics,Cybersecurity & Cryptography,Graduate,1.0,ACTIVE,2023-03-18T12:00:00+00:00
+941,CRS-000941,Introduction to Statistical Thermodynamics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-06-17T12:00:00+00:00
+942,CRS-000942,Experimental & Laboratory Biophysics & Soft Matter,Physics & Quantum Engineering,Laboratory,1.0,ACTIVE,2023-02-23T12:00:00+00:00
+943,CRS-000943,Experimental & Laboratory Zero-Knowledge Proofs,Cybersecurity & Cryptography,Laboratory,1.0,ACTIVE,2022-11-27T12:00:00+00:00
+944,CRS-000944,Experimental & Laboratory Aerospace Propulsion Systems,Mechanical & Aerospace Systems,Laboratory,1.0,ACTIVE,2023-04-17T12:00:00+00:00
+945,CRS-000945,Computational Methods in Operating Systems Kernel Design,Computer Science,Upper-Division,1.0,ACTIVE,2022-12-22T12:00:00+00:00
+946,CRS-000946,Principles of Particle & Nuclear Physics,Physics & Quantum Engineering,Undergraduate,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+947,CRS-000947,Special Topics in Development Economics,Economics & Quantitative Finance,Graduate,1.0,ACTIVE,2023-06-13T12:00:00+00:00
+948,CRS-000948,Computational Methods in VLSI Circuit Design,Electrical & Electronics Engineering,Upper-Division,1.0,ACTIVE,2023-05-06T12:00:00+00:00
+949,CRS-000949,Foundations of Experimental Design,Data Science & Statistics,Foundational,1.0,ACTIVE,2023-04-11T12:00:00+00:00
+950,CRS-000950,Computational Methods in Macroeconomic Policy Modeling,Economics & Quantitative Finance,Upper-Division,1.0,ACTIVE,2022-12-20T12:00:00+00:00
+951,CRS-000951,Experimental & Laboratory Computational Neuroscience,Biotechnology & Bioinformatics,Laboratory,1.0,ACTIVE,2023-04-22T12:00:00+00:00
+952,CRS-000952,Advanced Bayesian Inference,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-07-28T12:00:00+00:00
+953,CRS-000953,Computational Methods in High-Dimensional Statistics,Data Science & Statistics,Upper-Division,1.0,ACTIVE,2023-01-02T12:00:00+00:00
+954,CRS-000954,Experimental & Laboratory Medicinal & Pharmaceutical Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-01-22T12:00:00+00:00
+955,CRS-000955,Applied Computational Quantum Chemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-06-17T12:00:00+00:00
+956,CRS-000956,Computational Methods in Database Internals,Computer Science,Upper-Division,1.0,ACTIVE,2023-05-25T12:00:00+00:00
+957,CRS-000957,Advanced Systems Biology,Biotechnology & Bioinformatics,Advanced,1.0,ACTIVE,2023-06-20T12:00:00+00:00
+958,CRS-000958,Foundations of Partial Differential Equations,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-08-19T12:00:00+00:00
+959,CRS-000959,Advanced Nonparametric Statistics,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-05-14T12:00:00+00:00
+960,CRS-000960,Applied Environmental Geochemistry,Chemistry & Molecular Sciences,Applied,1.0,ACTIVE,2023-04-15T12:00:00+00:00
+961,CRS-000961,Introduction to Plasma Magnetohydrodynamics,Physics & Quantum Engineering,Introductory,1.0,ACTIVE,2023-04-14T12:00:00+00:00
+962,CRS-000962,Introduction to Causal Inference,Data Science & Statistics,Introductory,1.0,ACTIVE,2022-10-30T12:00:00+00:00
+963,CRS-000963,Foundations of Catalysis & Reaction Kinetics,Chemistry & Molecular Sciences,Foundational,1.0,ACTIVE,2023-07-12T12:00:00+00:00
+964,CRS-000964,Intermediate Post-Quantum Cryptography,Cybersecurity & Cryptography,Intermediate,1.0,ACTIVE,2022-10-26T12:00:00+00:00
+965,CRS-000965,Foundations of Computational Fluid Dynamics,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+966,CRS-000966,Advanced Stochastic Processes,Data Science & Statistics,Advanced,1.0,ACTIVE,2023-01-05T12:00:00+00:00
+967,CRS-000967,Experimental & Laboratory Survival Analysis,Data Science & Statistics,Laboratory,1.0,ACTIVE,2023-08-19T12:00:00+00:00
+968,CRS-000968,Computational Methods in Organometallic Synthesis,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-03-23T12:00:00+00:00
+969,CRS-000969,Computational Methods in Binary Exploitation Analysis,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2022-11-01T12:00:00+00:00
+970,CRS-000970,Graduate Seminar in Statistical Learning Theory,Data Science & Statistics,Doctoral,1.0,ACTIVE,2023-03-20T12:00:00+00:00
+971,CRS-000971,Foundations of Biophysics & Soft Matter,Physics & Quantum Engineering,Foundational,1.0,ACTIVE,2023-06-06T12:00:00+00:00
+972,CRS-000972,Computational Methods in Computational Quantum Chemistry,Chemistry & Molecular Sciences,Upper-Division,1.0,ACTIVE,2023-08-14T12:00:00+00:00
+973,CRS-000973,Computational Methods in Particle & Nuclear Physics,Physics & Quantum Engineering,Upper-Division,1.0,ACTIVE,2023-04-21T12:00:00+00:00
+974,CRS-000974,Introduction to Immunoinformatics,Biotechnology & Bioinformatics,Introductory,1.0,ACTIVE,2023-08-01T12:00:00+00:00
+975,CRS-000975,Computational Methods in Reverse Engineering,Cybersecurity & Cryptography,Upper-Division,1.0,ACTIVE,2023-05-28T12:00:00+00:00
+976,CRS-000976,Applied Algebraic Topology,Mathematics & Optimization,Applied,1.0,ACTIVE,2023-06-05T12:00:00+00:00
+977,CRS-000977,Foundations of Convex Optimization,Mathematics & Optimization,Foundational,1.0,ACTIVE,2023-08-12T12:00:00+00:00
+978,CRS-000978,Foundations of Quantitative Risk Management,Economics & Quantitative Finance,Foundational,1.0,ACTIVE,2023-02-20T12:00:00+00:00
+979,CRS-000979,Principles of Autonomous Navigation Systems,Electrical & Electronics Engineering,Undergraduate,1.0,ACTIVE,2023-08-16T12:00:00+00:00
+980,CRS-000980,Graduate Seminar in Vibrations & Structural Dynamics,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2022-11-07T12:00:00+00:00
+981,CRS-000981,Special Topics in Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2022-11-06T12:00:00+00:00
+982,CRS-000982,Advanced Relativistic Astrophysics,Physics & Quantum Engineering,Advanced,1.0,ACTIVE,2023-04-14T12:00:00+00:00
+983,CRS-000983,Intermediate Development Economics,Economics & Quantitative Finance,Intermediate,1.0,ACTIVE,2023-01-14T12:00:00+00:00
+984,CRS-000984,Advanced Algorithmic Game Theory,Computer Science,Advanced,1.0,ACTIVE,2023-01-09T12:00:00+00:00
+985,CRS-000985,Applied Industrial Organization,Economics & Quantitative Finance,Applied,1.0,ACTIVE,2022-11-26T12:00:00+00:00
+986,CRS-000986,Graduate Seminar in Finite Element Analysis,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-08-13T12:00:00+00:00
+987,CRS-000987,Graduate Seminar in Post-Quantum Cryptography,Cybersecurity & Cryptography,Doctoral,1.0,ACTIVE,2022-12-28T12:00:00+00:00
+988,CRS-000988,Graduate Seminar in Turbomachinery Design,Mechanical & Aerospace Systems,Doctoral,1.0,ACTIVE,2023-08-08T12:00:00+00:00
+989,CRS-000989,Graduate Seminar in Cloud Computing Architecture,Computer Science,Doctoral,1.0,ACTIVE,2023-04-29T12:00:00+00:00
+990,CRS-000990,Foundations of Additive Manufacturing Processes,Mechanical & Aerospace Systems,Foundational,1.0,ACTIVE,2023-04-18T12:00:00+00:00
+991,CRS-000991,Special Topics in Supramolecular Chemistry,Chemistry & Molecular Sciences,Graduate,1.0,ACTIVE,2023-07-17T12:00:00+00:00
+992,CRS-000992,Experimental & Laboratory Solid-State Surface Chemistry,Chemistry & Molecular Sciences,Laboratory,1.0,ACTIVE,2023-07-04T12:00:00+00:00
+993,CRS-000993,Intermediate Convex Optimization,Mathematics & Optimization,Intermediate,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+994,CRS-000994,Graduate Seminar in Analytical Spectroscopy,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2022-11-22T12:00:00+00:00
+995,CRS-000995,Introduction to Control Systems Engineering,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-05-20T12:00:00+00:00
+996,CRS-000996,Foundations of Algorithmic Game Theory,Computer Science,Foundational,1.0,ACTIVE,2023-06-09T12:00:00+00:00
+997,CRS-000997,Experimental & Laboratory Algebraic Topology,Mathematics & Optimization,Laboratory,1.0,ACTIVE,2023-03-15T12:00:00+00:00
+998,CRS-000998,Introduction to Autonomous Navigation Systems,Electrical & Electronics Engineering,Introductory,1.0,ACTIVE,2023-04-19T12:00:00+00:00
+999,CRS-000999,Graduate Seminar in Computational Quantum Chemistry,Chemistry & Molecular Sciences,Doctoral,1.0,ACTIVE,2023-07-30T12:00:00+00:00
+1000,CRS-001000,Intermediate Supramolecular Chemistry,Chemistry & Molecular Sciences,Intermediate,1.0,ACTIVE,2023-05-27T12:00:00+00:00

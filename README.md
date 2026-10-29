@@ -1,272 +1,244 @@
 # VeriCred — Digital Credential Lifecycle Management System
 
-**Tamper-Evident Academic Credential Lifecycle, Multi-Factor Verification, and Reproducible Synthetic Evaluation Platform.**
+VeriCred is a production-grade digital credential platform built with **Python 3.13**, **FastAPI**, **PostgreSQL 17**, **SQLAlchemy 2.0**, and **HTMX**. It manages the complete lifecycle of academic credentials: eligibility evaluation, atomic cryptographic issuance (canonical SHA-256 digests and RFC 8032 Ed25519 signatures), tamper-evident multi-factor verification, authorized revocation with append-only audit preservation, role-based access control with PII redaction, and reproducible synthetic evaluation against segregated ground truth.
 
-Developed for the **YottaFlex AI Candidate Evaluation Hackathon** within the official 72-hour submission window.
-
----
-
-## 1. Executive Summary & Problem Solved
-
-Traditional academic credentials suffer from critical vulnerability windows: transcript fraud, diploma mills, forgeable digital badges, and delayed or uncoordinated revocation notices.
-
-**VeriCred** provides an end-to-end, zero-trust digital credential platform built on top of **PostgreSQL 17** and **FastAPI**:
-- **Atomic Pre-Issuance Enforcement:** Academic eligibility rules (course completion, minimum 80.0% score, date window compliance) are enforced atomically at the database level. Ineligible or premature issuance is structurally blocked.
-- **Multi-Factor Cryptographic Verification:** Independent 4-factor consensus (Existence, Canonical SHA-256 Digest Integrity, Ed25519 Asymmetric Issuer Signature, and Live Database Revocation Tombstone).
-- **Tamper-Precedence Security Invariant:** A cryptographically altered credential payload is strictly identified and flagged as `TAMPERED`, taking precedence over revocation or active status.
-- **Append-Only Immutability:** Revocation never erases historical evidence. Every lifecycle transition, verification attempt, and administrative sanction creates an append-only audit event.
-- **Reproducible Synthetic Benchmark:** High-performance data generator producing 20,000 learners, 1,000 courses, 10,000 credentials, 300 revocations, and 5,000 verifications in **< 1.7 seconds** with 4 controlled failure vectors evaluated against segregated ground truth.
+Developed for the **YottaFlex AI Candidate Evaluation Hackathon** within the official 72-hour window.
 
 ---
 
-## 2. System Architecture & Tech Stack
+## 1. Architecture Layers
 
-```text
-                               +------------------------------------------+
-                               |        VeriCred Client Browser           |
-                               | (HTML5 + Tailwind + HTMX 2.0 + Material) |
-                               +--------------------+---------------------+
-                                                    |
-                                         HTTP / JSON / HTML Partial
-                                                    |
-                                                    v
-+---------------------------------------------------------------------------------------------------+
-| FastAPI Unified Server (backend.main:app)                                                         |
-|                                                                                                   |
-|  +--------------------+  +--------------------+  +--------------------+  +--------------------+   |
-|  |   Verify Portal    |  | Credential Registry|  |    Audit Ledger    |  |    Anomaly Lab     |   |
-|  |     (/verify)      |  |     (/registry)    |  |      (/audit)      |  |    (/anomalies)    |   |
-|  +---------+----------+  +---------+----------+  +---------+----------+  +---------+----------+   |
-|            |                       |                       |                       |              |
-|  +---------v-----------------------v-----------------------v-----------------------v----------+   |
-|  | Domain Services: EligibilityService | IssuanceService | VerificationService | Revocation    |   |
-|  +--------------------------------------------------------------------------------------------+   |
-|                                                    |                                              |
-|                                  SQLAlchemy AsyncSession + asyncpg                                |
-+----------------------------------------------------+----------------------------------------------+
-                                                     |
-                                                     v
-                                +-----------------------------------------+
-                                |  PostgreSQL 17.2 Database               |
-                                |  - B-Tree Unique Public Identifiers     |
-                                |  - Append-Only Audit Event Ledger       |
-                                |  - Referential Integrity (RESTRICT FKs) |
-                                +-----------------------------------------+
-```
-
-### Technology Highlights
-- **Backend:** Python 3.13, FastAPI, Pydantic v2, Uvicorn
-- **Persistence:** PostgreSQL 17, SQLAlchemy 2.0 (AsyncIO), Alembic
-- **Cryptography:** Ed25519 asymmetric signatures (RFC 8032), canonical SHA-256 hashing
-- **Frontend:** Jinja2 server-rendered templates, HTMX 2.0, Tailwind CSS runtime, Material Symbols, Geist & JetBrains Mono typography (zero Node.js/npm dependencies)
-- **Testing:** Pytest, pytest-asyncio, HTTPX
+- **Presentation Layer (Jinja2 + HTMX):** Server-rendered templates served directly by FastAPI without Node.js or a JavaScript build step. Interactive UI flows (credential verification, registry browsing, audit ledger searching, and real-time anomaly evaluation) are powered by HTMX partial requests with server-side SQL pagination (`50` rows per page).
+- **Application & Routing Layer (FastAPI):** Centralized HTTP endpoints exposing both HTML web routes and versioned JSON REST APIs (`/api/v1/`). It implements server-side role-based access control (RBAC), signed HMAC session cookies, Bearer API key authentication, sliding-window rate limiting on verification endpoints, and public verifier PII redaction.
+- **Domain Services Layer (Python):** Encapsulates core business workflows: `EligibilityService` evaluates completion scores and date windows; `IssuanceService` executes atomic credential creation with Ed25519 signing; `VerificationService` runs 4-factor cryptographic verification with tamper-precedence; `RevocationService` handles idempotent revocations; and `AuditService` logs every lifecycle mutation to an append-only ledger.
+- **Data & Cryptographic Layer (SQLAlchemy 2.0 & PostgreSQL):** Relational persistence over PostgreSQL 17 using B-Tree indexed unique public IDs, foreign keys with `ON DELETE RESTRICT` policies, check constraints on enum fields, and PostgreSQL sequences. Cryptographic operations utilize `cryptography.hazmat` for canonical RFC 8785 JSON hashing and Ed25519 digital signatures.
 
 ---
 
-## 3. Symmetrical Directory Structure
+## 2. Quickstart & How to Run
 
-The repository enforces strict separation between backend business logic and presentation assets:
+### Prerequisites
+- Python 3.13+ (or 3.11+)
+- PostgreSQL 17 (or 15+) running locally on port 5432
+- Database created: `credential_db` (live) and `credential_test_db` (automated tests)
 
-```text
-digital_credential_lifecycle_management_system/
-├── backend/                      # Python application package (formerly src/)
-│   ├── api/
-│   │   ├── v1/                   # RESTful API endpoints (issuance, verification, revocation, audit)
-│   │   └── views/web.py          # HTML view router & HTMX partial handlers
-│   ├── core/                     # App settings, DB engine pools, security primitives & exceptions
-│   ├── generator/                # Seed-deterministic generator, db_loader, exporter, anomalies
-│   ├── models/                   # SQLAlchemy ORM entities (Credential, Completion, Issuer, Audit...)
-│   ├── schemas/                  # Pydantic request/response schemas
-│   ├── services/                 # Atomic domain workflows (Issuance, Verification, Revocation...)
-│   └── main.py                   # FastAPI application factory and server entrypoint
-│
-├── frontend/                     # All presentation assets consolidated
-│   ├── templates/                # Jinja2 HTML templates
-│   │   ├── base.html             # Master shell with sidebar navigation & live telemetry
-│   │   ├── pages/                # verify.html, registry.html, audit.html, anomalies.html
-│   │   └── partials/             # Reusable HTMX fragments (badges, tables, anomaly cards)
-│   ├── static/                   # Static CSS and JS assets
-│   └── ui/                       # Original Google Stitch UI reference designs
-│
-├── tests/                        # 36 automated test cases (100% passing)
-├── alembic/                      # Database schema migration scripts
-├── scripts/                      # CLI synthetic generation and database seeding scripts
-└── docs/                         # Compliance logs, ADRs, test evidence, milestone status
-```
-
----
-
-## 4. Quickstart: Running the Unified Server
-
-Because VeriCred uses FastAPI with server-side Jinja2 + HTMX, **a single command boots the entire stack** (no separate frontend build, webpack, or npm server required).
-
-### Step 1: Clone & Setup Virtual Environment
-```powershell
+### Step 1: Clone and Install Dependencies
+```bash
 git clone https://github.com/nishith135/digital_credential_lifecycle_management_system.git
 cd digital_credential_lifecycle_management_system
 
 python -m venv .venv
+# Windows PowerShell
 .\.venv\Scripts\Activate.ps1
+# Linux / macOS
+source .venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
 ### Step 2: Environment Configuration
-Create `.env` in the project root:
+Copy the template configuration:
+```bash
+cp .env.example .env
+```
+Ensure `.env` contains valid database credentials and secrets:
 ```ini
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/credential_db
 SYNC_DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/credential_db
 TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/credential_test_db
 TEST_DATABASE_URL_SYNC=postgresql+psycopg2://postgres:postgres@localhost:5432/credential_test_db
-APP_ENV=development
-SECRET_KEY=yottaflex_secure_production_secret_key_2026
-DEBUG=True
+SESSION_SECRET=dev-session-secret-change-in-production-min32chars
+REGISTRAR_API_KEY=reg_live_7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c
+AUDITOR_API_KEY=aud_live_1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
+DEMO_MODE=true
 ```
 
 ### Step 3: Run Database Migrations
-```powershell
+Apply Alembic migrations to create the schema and PostgreSQL sequences:
+```bash
 alembic upgrade head
 ```
 
-### Step 4: Seed the Database with Synthetic Data
-```powershell
+### Step 4: Generate Synthetic Dataset and Load Database
+Generate the full baseline dataset (`scale=1.0`, `seed=20261022`) into `./exports` and load it into PostgreSQL (`credential_db`):
+```bash
 python -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports --load-db
 ```
 
-### Step 5: Start the Application
-```powershell
-uvicorn backend.main:app --reload --port 8000
+### Step 5: Start the Web Application
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-
 Open your browser to:
-- **Public Verification Portal:** [http://localhost:8000/verify](http://localhost:8000/verify)
-- **Credential Registry:** [http://localhost:8000/registry](http://localhost:8000/registry)
-- **Immutable Audit Ledger:** [http://localhost:8000/audit](http://localhost:8000/audit)
-- **Anomaly Stress-Test Lab:** [http://localhost:8000/anomalies](http://localhost:8000/anomalies)
-- **Interactive Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Public Verification:** [http://localhost:8000/verify](http://localhost:8000/verify)
+- **Credential Registry:** [http://localhost:8000/registry](http://localhost:8000/registry) *(requires Registrar or Auditor)*
+- **Audit Ledger:** [http://localhost:8000/audit](http://localhost:8000/audit) *(requires Registrar or Auditor)*
+- **Anomaly Lab:** [http://localhost:8000/anomalies](http://localhost:8000/anomalies) *(requires Registrar or Auditor)*
+- **Persona Switcher:** [http://localhost:8000/login](http://localhost:8000/login) *(demo convenience)*
+- **System Health:** [http://localhost:8000/health](http://localhost:8000/health)
 
----
-
-## 5. Web Interface Walkthrough
-
-All 4 demonstration interfaces are adapted from the official Google Stitch prototypes with 100% interactive backend functionality:
-
-### Screen 1: Public Verification Portal (`/` & `/verify`)
-- **Real-Time Verification:** Enter any public credential ID (e.g. `CRD-2026-000001`) to trigger a sub-100ms multi-factor check via HTMX without full-page reload.
-- **Quick-Fill Pills:** Click sample pills to immediately test authentic, revoked, or non-existent identifiers.
-- **Tamper Simulation Accordion:** Expand the payload JSON editor, alter a single byte (e.g., degree title or GPA), and observe the system immediately reject the credential with `TAMPERED` status and SHA-256 digest mismatch.
-
-### Screen 2: Credential Registry (`/registry`)
-- **Live Database Metrics:** Real-time KPI counts queried directly from PostgreSQL (`total_issued`, `active_count`, `revoked_count`, `unique_learners`, `verifications_count`).
-- **Dynamic Filtering:** Search by student name, credential ID, course title, or status.
-- **Pre-Issuance Deck:** Drawer showing verified course completion records awaiting credential minting.
-- **Administrative Revocation Modal:** Click "Revoke" on any active credential, select a sanction reason (`ACADEMIC_MISCONDUCT`, `ADMINISTRATIVE_ERROR`, `RESCINDED`), enter explanatory notes, and submit. The record transitions to `REVOKED` and creates an audit tombstone.
-
-### Screen 3: Immutable Audit Ledger (`/audit`)
-- **Forensic Journal:** Append-only timeline of all issuance, revocation, and verification actions.
-- **Multi-Criteria Filter Toolbar:** Filter by event type, actor, or target entity ID.
-- **Inline Payload Inspector:** Click "Payload" on any row to expand and view the canonical JSON diff and cryptographic attestation block.
-- **Direct Exports:** Click "Export CSV" or "Export JSON" to immediately download the full audit journal directly from the browser.
-
-### Screen 4: Cryptographic Anomaly Stress-Test Lab (`/anomalies`)
-- **Live Fire Simulation Bench:** Demonstrates the 4 mandatory failure vectors against backend services:
-  1. *Premature Issuance:* Score 68.5% < 80.0% rejected by Policy Assertion Engine (`INVALID_ISSUANCE`).
-  2. *Duplicate ID Prevention:* Unique collision rejected by PostgreSQL idempotency guard (`REJECTED_DUPLICATE`).
-  3. *Revoked Credential in Stale Cache:* Database tombstone check overrides stale edge cache (`REVOKED`).
-  4. *Altered Payload Hash Mismatch:* Modified JSON payload detected by canonical SHA-256 digest (`TAMPERED`).
-- **One-Click Batch Execution:** Click "Run All Scenarios" to run the entire battery simultaneously with pass/fail deltas and live streaming console telemetry.
-
----
-
-## 6. Synthetic Data Generator & Anomaly Benchmark
-
-The generator in `backend/generator/` provides bit-for-bit reproducible synthetic data using canonical PRNG seeds:
-
-```powershell
-# Generate full baseline (20k learners, 1k courses, 10k credentials, 300 revocations, 5k verifications)
-python -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports
-
-# Validate referential integrity and topological consistency
-python -m backend.generator.validator --export-dir ./exports
-```
-
-### Benchmark Metrics (Scale 1.0)
-| Metric | Specification Target | Observed Performance | Status |
-| :--- | :--- | :--- | :--- |
-| **Generation Runtime** | < 60 seconds | **1.67 seconds** | **35x faster than target** |
-| **Seed Determinism** | Exact bit-for-bit repeatability | Verified (`manifest.sha256`) | **100% Deterministic** |
-| **Referential Integrity** | 0 orphan FKs | 0 errors across 47,600 rows | **Pass** |
-| **Anomaly Recall** | 100% detection against ground truth | 4 / 4 anomalies detected | **100% Recall** |
-
----
-
-## 7. Automated Testing Evidence
-
-The test suite runs strictly against an isolated test database (`credential_test_db`) configured via `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC`:
-- **Automatic Provisioning & Migration:** On startup, `tests/conftest.py` automatically creates `credential_test_db` if it does not exist and runs `alembic upgrade head` once per test session.
-- **Per-Test Isolation:** All 9 tables in `credential_test_db` are truncated (`TRUNCATE ... RESTART IDENTITY CASCADE`) before and after every test so tests are completely independent.
-- **Live Database Safety Guard:** A startup guard in `tests/conftest.py` verifies that the resolved database name ends with `_test` (e.g., `credential_test_db`) and immediately aborts via `pytest.exit(...)` if pointed at `credential_db` or any non-test database.
-
-Run the automated test suite across all 10 test modules (37 tests):
-
-```powershell
+### Step 6: Run Automated Tests
+All unit, integration, and security tests execute against `credential_test_db`, leaving `credential_db` completely untouched:
+```bash
 pytest -v
 ```
 
-### Test Suite Execution Output
-```text
-tests/test_anomalies.py::test_anomaly_1_premature_issuance_detected PASSED          [  2%]
-tests/test_anomalies.py::test_anomaly_2_duplicate_credential_id_detected PASSED    [  5%]
-tests/test_anomalies.py::test_anomaly_3_revoked_verifies_as_active_in_stale_cache PASSED [  8%]
-tests/test_anomalies.py::test_anomaly_4_altered_payload_detected_by_canonical_sha256 PASSED [ 11%]
-tests/test_audit.py::test_audit_event_logging_and_multi_criteria_filtering PASSED  [ 13%]
-tests/test_audit.py::test_audit_rest_api_endpoint_pagination_and_query PASSED     [ 16%]
-tests/test_eligibility.py::test_eligibility_passing_boundary_80_percent PASSED     [ 19%]
-tests/test_eligibility.py::test_eligibility_failing_boundary_79_99_percent PASSED  [ 22%]
-tests/test_eligibility.py::test_eligibility_rejected_if_status_not_completed PASSED [ 25%]
-tests/test_eligibility.py::test_eligibility_rejected_if_outside_rule_date_window PASSED [ 27%]
-tests/test_generator_determinism.py::test_generator_seed_determinism_in_memory PASSED [ 30%]
-tests/test_generator_determinism.py::test_export_manifest_sha256_repeatability PASSED [ 33%]
-tests/test_generator_determinism.py::test_validator_detects_clean_generated_dataset PASSED [ 36%]
-tests/test_health.py::test_health_check_endpoint PASSED                            [ 38%]
-tests/test_issuance.py::test_atomic_issuance_success_and_cryptographic_verification PASSED [ 41%]
-tests/test_issuance.py::test_duplicate_issuance_strictly_prevented PASSED         [ 44%]
-tests/test_issuance.py::test_ineligible_issuance_raises_error PASSED               [ 47%]
-tests/test_issuance.py::test_issuance_rest_api_endpoints PASSED                    [ 50%]
-tests/test_revocation.py::test_authorized_revocation_success_and_audit PASSED    [ 52%]
-tests/test_revocation.py::test_double_revocation_raises_error PASSED               [ 55%]
-tests/test_revocation.py::test_revoking_nonexistent_credential_raises_error PASSED [ 58%]
-tests/test_revocation.py::test_live_revocation_reflection_in_verification_api PASSED [ 61%]
-tests/test_security.py::test_canonical_json_deterministic_ordering PASSED         [ 63%]
-tests/test_security.py::test_payload_hash_tamper_detection PASSED                  [ 66%]
-tests/test_security.py::test_ed25519_keypair_generation_and_verification PASSED   [ 69%]
-tests/test_verification.py::test_verification_valid_active_credential PASSED     [ 72%]
-tests/test_verification.py::test_verification_not_found_credential PASSED        [ 75%]
-tests/test_verification.py::test_verification_detects_tampered_payload PASSED     [ 77%]
-tests/test_verification.py::test_tampering_strictly_overrides_revocation PASSED   [ 80%]
-tests/test_verification.py::test_verification_detects_invalid_issuer_signature PASSED [ 83%]
-tests/test_verification.py::test_public_verification_rest_endpoint PASSED        [ 86%]
-tests/test_web.py::test_web_verify_pages_load PASSED                               [ 88%]
-tests/test_web.py::test_web_verify_htmx_post PASSED                                [ 91%]
-tests/test_web.py::test_web_registry_pages_load PASSED                             [ 94%]
-tests/test_web.py::test_web_audit_pages_load PASSED                                [ 97%]
-tests/test_web.py::test_web_anomalies_lab PASSED                                   [100%]
+### Step 7: Run Evaluation Module
+Evaluate all 10,000 credentials and 20 staging duplicates through the real verification engine:
+```bash
+python -m backend.evaluation.run --db live --out ./exports
+```
 
-============================= 36 passed in 5.66s ==============================
+### Step 8: Run Dataset Validator
+Validate referential integrity, canonical ID regexes, and audit reconciliation:
+```bash
+# Validate exported CSV/JSON files
+python -m backend.generator.validator --export-dir ./exports --with-ground-truth
+
+# Validate live database tables directly
+python -m backend.generator.validator --db live --with-ground-truth
 ```
 
 ---
 
-## 8. Governance, AI Disclosure & Compliance
+## 3. Public Identifiers & Deterministic Seed
 
-- **[MASTER_SPEC.md](MASTER_SPEC.md):** Formal project requirements and business rules.
-- **[AGENTS.md](AGENTS.md):** Workspace operating manual enforcing mandatory prompt logging and test verification.
-- **[docs/AI_PROMPT_LOG.md](docs/AI_PROMPT_LOG.md):** Verbatim AI prompt history, models used, changed files, and validation results across all 19 prompt entries.
-- **[docs/DECISIONS.md](docs/DECISIONS.md):** Complete record of Architecture Decision Records (ADR-001 through ADR-006).
-- **[docs/TEST_EVIDENCE.md](docs/TEST_EVIDENCE.md):** Full empirical test evidence, benchmarks, and invariant verifications.
-- **[docs/STATUS.md](docs/STATUS.md):** Milestone tracker and final submission certification.
+All public identifiers use immutable, zero-padded, human-readable formats generated from global sequential counters. The year segment for credentials and verification requests is fixed to the constant `2026`, while chronological issuance and verification timestamps remain distributed across actual years.
+
+| Entity | ID Format | Example | Sequence / Generation Rule |
+|---|---|---|---|
+| **Issuer** | `ISS-NNNNN` | `ISS-00001` | Sequential 5-digit zero-padded index |
+| **Course** | `CRS-NNNNNN` | `CRS-000001` | Sequential 6-digit zero-padded index |
+| **Learner** | `LRN-NNNNNN` | `LRN-000001` | Sequential 6-digit zero-padded index |
+| **Completion** | `CMP-<learner>-<course>` | `CMP-LRN-000001-CRS-000484` | Natural compound key enforcing at most 1 record per (learner, course) |
+| **Credential** | `CRD-2026-NNNNNN` | `CRD-2026-000001` | Global sequential counter via `credential_public_seq` |
+| **Revocation** | `REV-<credential>-01` | `REV-CRD-2026-000012-01` | Bound 1:1 to target credential identifier |
+| **Verification** | `VER-2026-NNNNNN` | `VER-2026-000001` | Global sequential counter via `verification_public_seq` |
+| **AuditEvent** | `EVT-NNNNNNNN` | `EVT-00000001` | Global sequential counter via `audit_event_public_seq` |
+
+### Deterministic Seed: `20261022`
+The synthetic data generator relies on a single constant seed (`20261022`) used across Python's `random.Random`, `numpy.random.default_rng`, and `Faker.seed`. Running the generator with this seed produces byte-identical exports and checksums in `exports/manifest.sha256`.
 
 ---
 
-## 9. License
+## 4. Entity Model & Relationship Cardinality
 
-MIT License. Designed and developed for the YottaFlex AI Submission.
+Comprehensive field specifications, data types, allowed values, validation rules, and lifecycle transitions are documented in [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md).
+
+```
++-----------+          +--------------------+          +-------------+
+|  learners | 1      N | completion_records | N      1 |   courses   |
++-----------+----------+--------------------+----------+-------------+
+                             | 1            1 |               | 1
+                             | (UNIQUE)       |               |
+                             v                v               v N
+                       +-------------+  +-------------------------------+
+                       | credentials |  |        credential_rules       |
+                       +-------------+  +-------------------------------+
+                         | 1       | 1                ^
+                         |         |                  |
+           1:0..1 (UNIQUE)         v 1:N              |
+                         |     +-----------------------+
+                         v     | verification_requests |
+                   +-------------+---------------------+
+                   | revocations |
+                   +-------------+
+                         |
+                         +-----------------------------+
+                                                       |
+                                                       v
+                                            +--------------------+
+                                            |    audit_events    |
+                                            | (Polymorphic Ledger|
+                                            +--------------------+
+```
+
+### Entity Relationships Summary
+
+| Parent Entity | Child Entity | Cardinality | Child FK Nullable? | Foreign Key Constraint & `ON DELETE` Policy |
+| :--- | :--- | :---: | :---: | :--- |
+| `courses` (`id`) | `credential_rules` (`course_id`) | `1 : N` (`1:1` baseline) | No (`NOT NULL`) | `FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE RESTRICT` |
+| `learners` (`id`) | `completion_records` (`learner_id`) | `1 : N` | No (`NOT NULL`) | `FOREIGN KEY (learner_id) REFERENCES learners(id) ON DELETE RESTRICT` |
+| `courses` (`id`) | `completion_records` (`course_id`) | `1 : N` | No (`NOT NULL`) | `FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE RESTRICT` |
+| `credential_rules` (`id`) | `completion_records` (`rule_id`) | `1 : N` | No (`NOT NULL`) | `FOREIGN KEY (rule_id) REFERENCES credential_rules(id) ON DELETE RESTRICT` |
+| `completion_records` (`id`) | `credentials` (`completion_id`) | `1 : 0..1` (`UNIQUE`) | No (`NOT NULL`) | `FOREIGN KEY (completion_id) REFERENCES completion_records(id) ON DELETE RESTRICT` |
+| `issuers` (`id`) | `credentials` (`issuer_id`) | `1 : N` | No (`NOT NULL`) | `FOREIGN KEY (issuer_id) REFERENCES issuers(id) ON DELETE RESTRICT` |
+| `credentials` (`id`) | `revocations` (`credential_id`) | `1 : 0..1` (`UNIQUE`) | No (`NOT NULL`) | `FOREIGN KEY (credential_id) REFERENCES credentials(id) ON DELETE RESTRICT` |
+| `credentials` (`id`) | `verification_requests` (`credential_id`) | `1 : N` | Yes (`NULL` if `NOT_FOUND`) | `FOREIGN KEY (credential_id) REFERENCES credentials(id) ON DELETE SET NULL` |
+| Any Entity (`id` / `public_id`) | `audit_events` (`target_entity_id`) | `1 : N` (Polymorphic) | No (`NOT NULL`) | Reconciled 1:1 via `DatasetValidator._validate_audit_reconciliation` |
+
+---
+
+## 5. The Four Edge Cases & Ground-Truth Segregation
+
+The dataset injects 4 controlled anomaly scenarios (`20` cases each at `scale=1.0`, `80` total) to evaluate the system's verification and integrity safeguards:
+
+1. **`PREMATURE_ISSUANCE` (20 cases):** Credentials whose `issued_at` timestamp is earlier than the learner's `completion_timestamp`, despite having valid SHA-256 hashes and valid Ed25519 signatures.
+   - *Expected Outcome:* `INVALID_ISSUANCE` (`reason_code: PREMATURE_ISSUANCE_TIMESTAMP`).
+2. **`DUPLICATE_CREDENTIAL_ID` (20 cases):** Written exclusively to `exports/credential_import_staging.csv` with `public_id`s that duplicate existing credentials. These rows are **never** loaded into the database, preserving PostgreSQL unique constraints.
+   - *Expected Outcome:* Rejected during import validation or staging evaluation (`reason_code: DUPLICATE_CREDENTIAL_PUBLIC_ID`).
+3. **`REVOKED_VERIFIES_AS_ACTIVE` (20 cases):** A valid `Revocation` record exists in the `revocations` table, but the parent row in `credentials.status` was deliberately kept as `ACTIVE`.
+   - *Expected Outcome:* `REVOKED` (`reason_code: REVOCATION_RECORD_FOUND`). `VerificationService` performs a live relational join against `revocations`, ensuring un-updated status flags cannot mask a revocation.
+4. **`ALTERED_PAYLOAD_NOT_DETECTED` (20 cases):** 10 credentials with tampered `payload_snapshot` JSON (digest mismatch), and 10 credentials with tampered `payload_snapshot` and a matched tampered `canonical_payload_hash` (signature mismatch + relational claim mismatch).
+   - *Expected Outcome:* `TAMPERED` (`reason_code: PAYLOAD_DIGEST_MISMATCH` or `RELATIONAL_PAYLOAD_MISMATCH`).
+
+### Ground-Truth Segregation
+Ground-truth anomaly labels are isolated entirely in `exports/ground_truth.csv` and `exports/ground_truth.json`.
+- **No Database Contamination:** Operational database tables contain zero `is_anomaly`, `label`, or `expected_outcome` columns.
+- **AST Static Leakage Guard:** Automated test `tests/test_anomalies.py::test_static_ground_truth_leakage_guard` parses the Python AST of all files in `backend/services/`, `backend/api/`, and `backend/core/` to guarantee no runtime service imports or reads ground truth.
+- **Independent Evaluation:** `backend/evaluation/` evaluates credentials blindly through the standard `VerificationService.verify_credential` method (running with `persist=False` so no evaluation events pollute the database) and only afterward compares outcomes against the segregated ground-truth file to compute metrics.
+
+---
+
+## 6. Roles & Server-Side Permission Matrix
+
+VeriCred defines three distinct personas:
+- **`verifier` (Public Verifier):** Default unauthenticated role. Can query `/verify`, submit credentials for verification, and inspect redacted results. Prohibited from viewing the credential registry, audit ledgers, or anomaly labs.
+- **`registrar` (Academic Registrar):** Authorized staff role. Can issue credentials, trigger revocations, view the full registry and audit events, and run the Anomaly Lab.
+- **`auditor` (Compliance Officer):** Read-only audit role. Can inspect the registry, export audit logs, and run evaluation benchmarks, but cannot issue or revoke credentials.
+
+### Authentication & Security Boundary
+> [!IMPORTANT]
+> **Demo Convenience vs. Real Security Boundary:**
+> The top-right persona dropdown and `/login` persona switcher (`/role/switch`) are provided **strictly for demonstration convenience** during evaluation walkthroughs. In production (`DEMO_MODE=false`), `/role/switch` is disabled for privileged roles.
+> 
+> The **real security boundaries** are:
+> 1. **Server-Side RBAC Enforcement:** Every route is guarded on the server by FastAPI dependencies (`require_role("registrar")`, etc.). No route trusts client-provided assertions.
+> 2. **Cryptographically Signed Cookies:** In browser sessions, the `vericred_role` cookie is signed with HMAC-SHA256 (`itsdangerous.TimestampSigner`) using `SESSION_SECRET`. Unsigned, invalid, or tampered cookies automatically fall back to `verifier`.
+> 3. **API Bearer Keys:** External API clients authenticate via `Authorization: Bearer <key>` using timing-safe comparisons (`hmac.compare_digest`) against `REGISTRAR_API_KEY` and `AUDITOR_API_KEY` configured in `.env`.
+> 4. **Public PII Redaction:** The public verification response schema (`PublicVerificationResponse`) never exposes learner full names, email addresses, learner IDs (`LRN-*`), assessment scores, or internal database keys.
+
+### Server-Side Route Access Matrix
+
+| Route | Method | Public Verifier | Registrar | Auditor |
+| :--- | :---: | :---: | :---: | :---: |
+| `/` & `/verify` | `GET` | 200 OK | 200 OK | 200 OK |
+| `/web/verify` & `/api/v1/verification/verify` | `POST` | 200 OK *(Redacted PII)* | 200 OK *(Full)* | 200 OK *(Full)* |
+| `/registry` & `/web/registry/table` | `GET` | **403 Forbidden** | 200 OK | 200 OK *(No Revoke button)* |
+| `/audit` & `/web/audit/table` | `GET` | **403 Forbidden** | 200 OK | 200 OK |
+| `/web/export/audit` | `GET` | **403 Forbidden** | 200 OK | 200 OK |
+| `/anomalies` & `/web/anomalies/run*` | `GET`/`POST` | **403 Forbidden** | 200 OK | 200 OK |
+| `/web/revocation/revoke` | `POST` | **403 Forbidden** | 200 OK | **403 Forbidden** |
+| `/api/v1/issuance/*` | `POST` | **403 Forbidden** | 200 OK | **403 Forbidden** |
+| `/api/v1/revocation/revoke` | `POST` | **403 Forbidden** | 200 OK | **403 Forbidden** |
+| `/role/switch` | `POST` | 303 Redirect | 303 Redirect | 303 Redirect |
+
+---
+
+## 7. Known Limitations
+
+- **Single Active Key per Issuer:** Key rotation with historical key archives is modeled via issuer retirement (`RETIRED` status with `successor_issuer_id`), rather than multiple active keys per individual issuer record.
+- **In-Memory Rate Limiting:** The sliding-window verification rate limiter stores request timestamps in application process memory (`SlidingWindowRateLimiter`). In a multi-worker production cluster, this would be backed by Redis.
+- **Single-Node Database Transactions:** Concurrency controls rely on PostgreSQL transaction isolation (`SERIALIZABLE` / row locking via `with_for_update`). Distributed multi-region consensus is outside the scope of this implementation.
+- **Browser Persona Switcher:** The demo persona switcher sets a signed role cookie. In a live enterprise deployment, authentication would integrate with an external SAML 2.0 / OIDC Identity Provider (e.g., Okta, Keycloak).
+
+---
+
+## 8. Verification & Test Evidence
+
+Comprehensive test logs, ADRs, and verification transcripts are tracked in:
+- [docs/VALIDATION_SUMMARY.md](docs/VALIDATION_SUMMARY.md): Final full-scale database and export validation metrics.
+- [docs/TEST_EVIDENCE.md](docs/TEST_EVIDENCE.md): Detailed verification runs across all milestones.
+- [docs/DECISIONS.md](docs/DECISIONS.md): Architectural Decision Records (ADR-001 through ADR-013).
+- [docs/AI_PROMPT_LOG.md](docs/AI_PROMPT_LOG.md): Full AI prompt history and disclosure log.
+- [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md): Complete data dictionary for all 9 entities.

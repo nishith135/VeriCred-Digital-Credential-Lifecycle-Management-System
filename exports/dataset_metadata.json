@@ -1,18 +1,18 @@
 {
   "seed": 20261022,
-  "scale": 0.05,
+  "scale": 1.0,
   "reference_time": "2026-10-22T12:00:00+00:00",
   "counts": {
-    "issuers": 7,
-    "courses": 50,
-    "rules": 50,
-    "learners": 1000,
-    "completions": 700,
-    "credentials": 500,
-    "revocations": 15,
-    "verifications": 250,
-    "audit_events": 565,
-    "anomaly_fixtures": 4,
-    "ground_truth_records": 4
+    "issuers": 12,
+    "courses": 1000,
+    "rules": 1000,
+    "learners": 20000,
+    "completions": 15300,
+    "credentials": 10000,
+    "revocations": 300,
+    "verifications": 5000,
+    "audit_events": 16302,
+    "credential_import_staging": 20,
+    "ground_truth_records": 80
   }
 }

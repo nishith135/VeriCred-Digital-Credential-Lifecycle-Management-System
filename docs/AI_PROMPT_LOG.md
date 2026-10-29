@@ -1687,6 +1687,344 @@ Follow-up: proceed but before that commit the chnages done previously
 
 ---
 
+### Entry 026: Server-Side RBAC Enforcement, Signed Role Cookies, Public Verification Redaction & Rate Limiting
+- **Entry ID:** `PROMPT-026`
+- **Date & Time:** 2026-10-29T14:06:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Claude Opus 5.5 Medium / Gemini 4 Argon Medium)
+- **Purpose:** Report on Step 3 follow-ups (`0.a–c`), enforce server-side RBAC on every route via `get_current_actor()` and `require_role(*roles)` with `verifier` as default, sign `vericred_role` cookies with HMAC-SHA256 (`SESSION_SECRET`), support Bearer API keys (`REGISTRAR_API_KEY`, `AUDITOR_API_KEY`), redact PII from public verification responses (`PublicVerificationResponse` vs `StaffVerificationResponse`), enforce server-side `actor_id` traceability, update role-conditional navigation, add sliding-window rate limiting on verification endpoints, and run acceptance checks `a–i` on `credential_test_db` without touching `credential_db`.
+- **Exact Prompt:**
+```text
+TASK: Enforce roles on the server for every route, default to Public
+Verifier, and redact PII from the public verification response. Use
+credential_test_db only. Do not touch credential_db. Do not restyle the UI.
+
+0. QUICK FOLLOW-UPS FROM STEP 3 (report on these first)
+   a. Show the test that proves ELIGIBILITY_CHECK_FAILED is written (and
+      committed) when IssuanceService rejects a candidate. If none exists,
+      add it.
+   b. List the payload fields that the relational cross-check compares and
+      any it deliberately excludes, with the reason.
+   c. Rename the key payload_hash_Matches to payload_hash_matches everywhere
+      (service, schema, templates, tests).
+
+1. ROLE IDENTITY
+   - Roles: registrar, verifier, auditor. DEFAULT with no credentials = verifier.
+   - Browser: the vericred_role cookie must be SIGNED (HMAC via itsdangerous or
+     equivalent, secret from .env SESSION_SECRET). Unsigned or tampered
+     cookies resolve to verifier. Cookie is HttpOnly, SameSite=Lax.
+   - Remove the ?role= query-parameter override entirely.
+   - /role/switch: keep it as the demo persona switcher used by the top-right
+     dropdown and /login. It sets the signed cookie. Remove the Referer
+     fallback; accept only a validated same-site relative redirect path.
+   - API clients: accept `Authorization: Bearer <key>` where per-role keys
+     come from .env (REGISTRAR_API_KEY, AUDITOR_API_KEY). No key means
+     verifier. Compare with hmac.compare_digest.
+   - Provide ONE FastAPI dependency, get_current_actor(), returning
+     {role, actor_id} (for example REGISTRAR-001 / AUDITOR-001 /
+     PUBLIC-VERIFIER), and require_role(*roles) built on it. All routes use
+     these. No route reads cookies or headers directly.
+
+2. PERMISSION MATRIX (enforce server-side)
+...
+3. PUBLIC VERIFICATION REDACTION
+...
+4. ACTOR TRACEABILITY
+...
+5. NAVIGATION BY ROLE
+...
+6. RATE LIMIT
+...
+ACCEPTANCE CHECKS (run and report)
+a–i
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `.env` (added `SESSION_SECRET`, `REGISTRAR_API_KEY`, `AUDITOR_API_KEY`, `VERIFY_RATE_LIMIT_PER_MINUTE`; values redacted in logs)
+  - `.env.example` (added template variables for `SESSION_SECRET`, `REGISTRAR_API_KEY`, `AUDITOR_API_KEY`, `VERIFY_RATE_LIMIT_PER_MINUTE`)
+  - `backend/core/config.py` (added `SESSION_SECRET`, `REGISTRAR_API_KEY`, `AUDITOR_API_KEY`, `VERIFY_RATE_LIMIT_PER_MINUTE`)
+  - `backend/core/rbac.py` (implemented `sign_role_cookie`, `verify_role_cookie`, `validate_relative_redirect`, `get_current_actor`, `require_role`, `RBACUnauthorizedError`, `RBACForbiddenError`, and removed ad-hoc permission booleans)
+  - `backend/core/rate_limit.py` (created `SlidingWindowRateLimiter` and `verify_rate_limiter` dependency)
+  - `backend/main.py` (added `RBACUnauthorizedError`, `RBACForbiddenError`, and `RateLimitExceededError` exception handlers and `Depends(get_current_actor)` on `/health`)
+  - `backend/schemas/verification.py` (renamed `payload_integrity_valid` to `payload_hash_matches`, added `mask_holder_name`, `PublicVerificationResponse`, `StaffVerificationResponse`, and `AnyVerificationResponse`)
+  - `backend/services/verification.py` (renamed `payload_integrity_valid` to `payload_hash_matches`, accepted `actor_id`, added `select_response_for_role`)
+  - `backend/api/v1/verification.py`, `backend/api/v1/issuance.py`, `backend/api/v1/revocation.py`, `backend/api/v1/audit.py`, `backend/api/views/web.py`
+  - `frontend/templates/pages/forbidden.html` (created), `frontend/templates/partials/forbidden_fragment.html` (created)
+  - `frontend/templates/base.html`, `frontend/templates/pages/login.html`, `frontend/templates/pages/registry.html`, `frontend/templates/partials/registry_table.html`, `frontend/templates/partials/verification_badge.html`
+  - `tests/test_rbac_and_redaction.py` (created 73 tests covering the 22x3 permission matrix, cookie tampering, open redirect, PII redaction, actor traceability, and rate limiting)
+  - `tests/conftest.py`, `tests/test_anomalies.py`, `tests/test_audit.py`, `tests/test_issuance.py`, `tests/test_revocation.py`, `tests/test_verification.py`, `tests/test_web.py`
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Reported on Step 3 follow-ups `0.a–c`, implemented full server-side RBAC, signed cookies, Bearer API key auth, public verification PII redaction, actor traceability, role-filtered navigation, and verification rate limiting, and verified all acceptance checks `a–i` (117/117 tests passing).
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\pytest.exe -v`: 117 passed in 64.79s against `credential_test_db`.
+  - `credential_db` row count check: 514 credentials, 261 verification_requests, 585 audit_events (untouched).
+
+---
+
+### Entry 027: Seeded Anomaly Injection, Dry-Run Verification, Evaluation Module & Real-Data Anomaly Lab
+- **Entry ID:** `PROMPT-027`
+- **Date & Time:** 2026-10-29T15:40:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Claude Opus 5.5 Medium / Gemini 4 Argon Medium)
+- **Purpose:** Inject the 4 mandatory anomaly scenarios into the generated baseline dataset (`n_per_type = max(2, round(credentials * 0.002))`), replace `CRD-2026-9000xx` fixtures with unified `exports/ground_truth.csv`/`.json` and `credential_import_staging.csv` (deleting `data/ground_truth_anomalies.json`), add `persist: bool = True` to `VerificationService.verify_credential`, create `backend/evaluation/` (`EvaluationRunner` + CLI `python -m backend.evaluation.run`), rebuild the Anomaly Lab UI on real computed evaluation results, and execute acceptance checks `a–f` on `credential_test_db` and `./exports_tmp` without touching `credential_db`.
+- **Exact Prompt:**
+```text
+TASK: Inject the four labelled edge cases into the generated dataset, compute
+evaluation metrics, and make the Anomaly Lab show real results. Use
+credential_test_db and ./exports_tmp only. Do NOT touch credential_db. Add
+nothing beyond what is listed here.
+...
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `data/ground_truth_anomalies.json` *(deleted)*
+  - `backend/generator/anomalies.py` (implemented `inject_anomalies` and `load_ground_truth`)
+  - `backend/generator/generator.py` (added `credential_import_staging` and `ground_truth` to `SyntheticDataset` and invoked `inject_anomalies`)
+  - `backend/generator/exporter.py` (exported `credential_import_staging.csv`, `ground_truth.csv`, and `ground_truth.json` in `manifest.sha256`)
+  - `backend/generator/validator.py` (reconciled labelled `PREMATURE_ISSUANCE` rows in `_validate_date_ordering` while keeping `errors == 0` and audit reconciliation intact)
+  - `backend/generator/db_loader.py` (bound `DatabaseLoader` to `db_module.sync_engine` / explicit `engine`)
+  - `backend/generator/cli.py` (updated CLI workflow for injected anomalies and ground truth)
+  - `backend/services/verification.py` (added `persist: bool = True` and `joinedload` eager loading)
+  - `backend/evaluation/__init__.py` *(new)*, `backend/evaluation/evaluator.py` *(new)*, `backend/evaluation/run.py` *(new)*
+  - `backend/api/views/web.py` (removed `_evaluate_single_anomaly` and `anomalies` import, delegated `/anomalies` and `/web/anomalies/run*` to `EvaluationRunner`)
+  - `frontend/templates/pages/anomalies.html`, `frontend/templates/partials/anomaly_result.html`, `frontend/templates/base.html`, `frontend/templates/pages/login.html`
+  - `tests/conftest.py`, `tests/test_anomalies.py`, `tests/test_generator_determinism.py`, `tests/test_web.py`
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Injected all 4 anomaly types into real baseline rows (`20` per type at `scale=1.0`), verified identical `manifest.sha256` across two runs, verified `0` validator errors, ran full evaluation over `10,000` credentials + `20` staging rows in `13.25s` (`10020/10020` accuracy, `row_count_delta = 0`), rebuilt the Anomaly Lab without hardcoded strings, and verified `116/116` tests pass with `credential_db` untouched.
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (run twice): identical `manifest.sha256`.
+  - `.\.venv\Scripts\python.exe -m backend.evaluation.run --db test --out ./exports_tmp`: `10020 / 10020` (`100.00%`) in `13251.19 ms`, `row_count_delta = 0`.
+  - `.\.venv\Scripts\pytest.exe -v`: 116 passed in 65.91s against `credential_test_db`.
+  - `credential_db` row count check: 514 credentials, 261 verification_requests, 585 audit_events (untouched).
+
+---
+
+### Entry 028: Realistic Synthetic Data, Stage DataFrame Functions & Brief Variety
+- **Entry ID:** `PROMPT-028`
+- **Date & Time:** 2026-10-29T17:41:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Claude Opus 5.5 Medium / Gemini 4 Argon Medium)
+- **Purpose:** Refactor the synthetic data generator into 10 standalone `pandas.DataFrame` stage functions seeded with `20261022` (`Faker.seed()`, `numpy.random.default_rng()`, `random.Random()`), produce realistic values and brief variety (`Faker('en_IN')` natural duplicate learner names with unique emails, `0` duplicate course titles with `department` and `level`, normal scores around `75`, incomplete `IN_PROGRESS`/`FAILED` completions, issuer retirement with successor transitions, RNG-sampled revocations), support `--with-ground-truth` in `backend.generator.validator`, and verify all acceptance checks `a–h` on `credential_test_db` and `./exports_tmp`.
+- **Exact Prompt:**
+```text
+TASK: Make the generated data realistic and cover the brief's variety. Use
+credential_test_db and ./exports_tmp only. Do NOT touch credential_db. Do NOT
+create any notebook. Add nothing beyond this list.
+...
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `requirements.txt` (added `numpy>=1.26.0`, `pandas>=2.2.0`)
+  - `backend/generator/generator.py` (implemented 9 standalone DataFrame stage functions and orchestrated all 10 stages in `DataGenerator`)
+  - `backend/generator/anomalies.py` (added `inject_anomalies_df` stage function returning `ground_truth` `pd.DataFrame`)
+  - `backend/generator/exporter.py` (included `department`, `level` in `courses.csv` and `retired_at`, `successor_issuer_id` in `issuers.csv`)
+  - `backend/generator/db_loader.py` (filtered row dicts to SQLAlchemy table columns in `_insert_batches`)
+  - `backend/generator/validator.py` (added `from_export_dir`, `--with-ground-truth` reconciliation, and CLI entrypoint)
+  - `backend/generator/cli.py` (added `--db test|live` defaulting to `test`)
+  - `tests/test_generator_determinism.py` (added `test_standalone_stage_functions_return_dataframes_and_realistic_variety`)
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Implemented all 10 DataFrame stage functions and realistic dataset variety, verified identical `manifest.sha256` across two `scale=1.0` runs, validated exports with and without `--with-ground-truth` (`0` errors), evaluated `credential_test_db` (`10020/10020` accuracy, `row_count_delta = 0`), and verified `117/117` pytest tests pass with `credential_db` untouched.
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (run twice): identical `manifest.sha256`.
+  - `.\.venv\Scripts\python.exe -m backend.generator.validator --export-dir ./exports_tmp` & `--with-ground-truth`: `is_valid=true`, `errors_count=0`.
+  - `.\.venv\Scripts\python.exe -m backend.evaluation.run --db test --out ./exports_tmp`: `10020 / 10020` (`100.00%`), `row_count_delta = 0`.
+  - `.\.venv\Scripts\pytest.exe -v`: 117 passed in 57.29s against `credential_test_db`.
+  - `credential_db` row count check: 514 credentials, 261 verification_requests, 585 audit_events (untouched).
+
+---
+
+### Entry 029: Final Cleanup, Public `/verify` Simplification, Server-Side Pagination, 75/10/15 Completion Mix, 9-Table `seed_data.sql` & `DATA_DICTIONARY.md`
+- **Entry ID:** `PROMPT-029`
+- **Date & Time:** 2026-10-29T19:03:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Claude Opus 5.5 Medium / Gemini 4 Argon Medium)
+- **Purpose:** Remove sample chips and payload-tamper editor from public `/verify`, remove all false/hardcoded UI strings (`consortium`, `Consensus`, `Enclave`, `Multi-Factor`, `Tombstoned`, `Zero-Trust E-Gate`, `RFC 8032 Authentic`, sidebar `Security Invariants / Canonical Hashes` box), implement server-side SQL pagination (`page_size=50`) on Registry and Audit Ledger and remove the 5000-row limit on `/web/export/audit`, update completion status mix to `~75% COMPLETED / ~10% FAILED / ~15% IN_PROGRESS` (`15,300` total completions at `scale=1.0`), emit `INSERT`s for all 9 tables in FK order in `seed_data.sql`, create `docs/DATA_DICTIONARY.md`, and verify acceptance checks `a–g` using `credential_test_db` and `./exports_tmp` without touching `credential_db`.
+- **Exact Prompt:**
+```text
+TASK: Final cleanup and the remaining deliverables. Use credential_test_db and
+./exports_tmp only. Do NOT touch credential_db. Do NOT create any notebook.
+Add nothing beyond this list.
+
+1. PUBLIC /verify PAGE
+   - Remove the Quick Sample chips and the payload-tamper editor (they live in
+     the Anomaly Lab). The page is one input and one Verify button.
+   - Result states with clear wording: Valid, Revoked (date + reason code),
+     Tampered, Invalid issuance, Not found (friendly empty state).
+
+2. REMOVE FALSE OR HARDCODED UI TEXT (grep templates and web.py; fix only
+   what is still present)
+   - "consortium", "Consensus", "Enclave", "Multi-Factor" (use "4 verification
+     checks"), "Irreversible tombstone"/"Tombstoned" (use "Revoked"),
+     "Zero-Trust E-Gate", the static "RFC 8032 Authentic" tag.
+   - Sidebar footer box "Security Invariants / Canonical Hashes" and the
+     sidebar "Persona" link: remove.
+   - Persona cards: Public Verifier must not mention anomaly fixtures;
+     Auditor says read-only. Fix the clipped /login heading.
+
+3. PAGINATION (server-side)
+   - Registry and Audit Ledger: page size 50, page and total count from the
+     DB, filters and search applied in SQL, next/previous controls.
+   - Registry status filter default must match the initial query (the
+     dropdown says ACTIVE but the first load shows all).
+   - /web/export/audit: remove the 5000-row limit; stream all rows.
+
+4. COMPLETION STATUS MIX (realism)
+   - Currently failed + in_progress outnumber completed (~67%). Change the
+     generator so the mix is roughly 75% COMPLETED / 10% FAILED / 15%
+     IN_PROGRESS, with 10,000 issued credentials from COMPLETED records and
+     ~1,500 COMPLETED records left unissued.
+
+5. EXPORTS AND DOCS
+   - seed_data.sql must contain INSERTs for all 9 tables in FK order (the
+     staging file stays CSV-only).
+   - Create docs/DATA_DICTIONARY.md: all 9 entities with field, type,
+     required/optional, allowed values, units, uniqueness, validation rule;
+     plus a relationships table (cardinality, optional, FK) and lifecycle
+     states.
+
+6. ACCEPTANCE CHECKS (paste output)
+   a. Grep proving none of the removed strings remain in frontend/templates or
+      backend/api/views/web.py, and a test that /verify contains no sample
+      chips or tamper editor.
+   b. With credential_test_db loaded from scale=1.0: registry page 1 and
+      page 200 return 50 rows, the correct total count (10,000), and response
+      time in ms.
+   c. New completion status mix with counts and percentages, plus row counts
+      for every table and the validator and evaluation metrics table on the
+      new dataset.
+   d. Row counts per table in seed_data.sql equal CSV row counts. Load
+      seed_data.sql into an empty scratch database and show it succeeds.
+   e. Two generator runs at scale=1.0 give identical manifest.sha256.
+   f. Full pytest summary, then credential_db counts (must still be
+      514 / 261 / 585).
+   g. List every file changed.
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `backend/api/views/web.py`
+  - `backend/generator/generator.py`
+  - `backend/generator/exporter.py`
+  - `frontend/templates/base.html`
+  - `frontend/templates/pages/verify.html`
+  - `frontend/templates/partials/verification_badge.html`
+  - `frontend/templates/pages/login.html`
+  - `frontend/templates/pages/anomalies.html`
+  - `frontend/templates/pages/registry.html`
+  - `frontend/templates/partials/registry_table.html`
+  - `frontend/templates/pages/audit.html`
+  - `frontend/templates/partials/audit_table.html`
+  - `docs/DATA_DICTIONARY.md` *(created)*
+  - `tests/test_web.py`
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Simplified `/verify` to one input and one Verify button, removed all prohibited UI strings (`0` grep matches), added server-side pagination (`page_size=50`) and streaming audit export, updated completion status mix to `74.31% COMPLETED / 10.36% FAILED / 15.33% IN_PROGRESS` (`15,300` completions), exported all 9 tables in `seed_data.sql` and verified loading into an empty scratch database, created `docs/DATA_DICTIONARY.md`, and verified all acceptance checks `a–g` (`117/117` pytest passed; `credential_db` untouched at `514 / 261 / 585`).
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - Grep across `frontend/templates` and `backend/api/views/web.py`: `0` matches.
+  - `GET /web/registry/table?page=1` & `page=200` on `credential_test_db` (`scale=1.0`): `50` rows each, `total_count=10,000`, `218.29 ms` and `113.72 ms`.
+  - `seed_data.sql` scratch DB load (`credential_scratch_seed_test`): all 9 tables matched CSV counts (`12, 1000, 1000, 20000, 15300, 10000, 300, 5000, 16302`).
+  - Two `scale=1.0` generator runs: identical `manifest.sha256`.
+  - `.\.venv\Scripts\pytest.exe -v`: 117 passed in 73.19s against `credential_test_db`.
+  - `credential_db` row count check: 514 credentials, 261 verification_requests, 585 audit_events (untouched).
+
+---
+
+### Entry 030: Final Full-Scale Load of `credential_db`, Constant 2026 Year Segment, Final Evidence & README
+- **Entry ID:** `PROMPT-030`
+- **Date & Time:** 2026-10-29T19:35:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Fix credential and verification public ID year segments to constant `2026` (`CRD-2026-NNNNNN`, `VER-2026-NNNNNN`, `REV-CRD-2026-NNNNNN-01`), drop and recreate `public` schema in `credential_db`, run Alembic migrations, generate full baseline dataset (`scale=1.0`, `seed=20261022`) into `./exports` and load into `credential_db`, verify sequence alignment, delete `./exports_tmp`, produce `docs/VALIDATION_SUMMARY.md`, update `README.md`, and execute acceptance checks `a` through `h`.
+- **Exact Prompt:**
+```text
+TASK: Final load of credential_db at full scale, final evidence, and README.
+Add nothing beyond this list. Do NOT create any notebook.
+
+0. ID YEAR FIX (do this first)
+   The year segment of credential and verification IDs must be the constant
+   2026 (CRD-2026-NNNNNN, VER-2026-NNNNNN, REV-CRD-2026-NNNNNN-01), with the
+   counter staying global and sequential, regardless of issued_at /
+   requested_at. issued_at and requested_at stay spread across years. Update
+   the generator, runtime services, validator regexes, ground truth, tests,
+   and README text. Re-run the generator checks.
+
+1. RESET AND LOAD credential_db (this wipes the old data; that is intended)
+   - Drop and recreate the public schema of credential_db
+     (DROP SCHEMA public CASCADE; CREATE SCHEMA public;), then
+     alembic upgrade head.
+   - Generate into ./exports (replacing the old files) with
+     python -m backend.generator.cli --seed 20261022 --scale 1.0
+     --output-dir ./exports --load-db
+   - Confirm the load sets the sequences so the next issued credential
+     continues after the last loaded one.
+   - Delete ./exports_tmp when done.
+
+2. EVIDENCE (write into docs/VALIDATION_SUMMARY.md, short, with real output)
+   - Generator command and seed, row counts per table.
+   - Validator run on the exports and on the live database
+     (reconciliation: issued events == credentials, revoked events ==
+     revocations, verification events == verification requests).
+   - Evaluation report from python -m backend.evaluation.run --db live
+     (metrics table with numerators and denominators).
+   - Reproducibility: two runs, same seed, identical manifest.sha256.
+   - Source manifest: state that all data is synthetic (Faker, numpy, pandas),
+     no external data, no personal data.
+
+3. README (update, keep it concise)
+   Sections: overview and what the system does; architecture layers (one
+   short paragraph each); how to run (install, migrate, generate and load,
+   start the app, run tests, run evaluation, run validator); IDs and seed;
+   entity list with link to docs/DATA_DICTIONARY.md and the relationship and
+   cardinality table; the four edge cases and how ground truth is kept out of
+   issuance and verification; roles and the permission matrix, with a clear
+   note that the persona switcher is a demo convenience and not a security
+   boundary (API keys are the real boundary); known limitations. Remove any
+   claim not backed by the code.
+
+ACCEPTANCE CHECKS (run and report the output)
+a. Row counts per table in credential_db after the load (expected:
+   issuers 12, courses 1,000, credential_rules 1,000, learners 20,000,
+   completion_records ~15,300, credentials 10,000, revocations 300,
+   verification_requests 5,000, audit_events ~16,302), plus the first and
+   last credential and verification IDs.
+b. Regex check on every ID in the exports and the live DB: all pass.
+c. Validator on the live DB: errors 0 and reconciliation output.
+d. Evaluation on the live DB: metrics table, row-count delta 0.
+e. Start the app, then with curl or the test client: GET /verify as
+   verifier returns 200 and /registry returns 403; as registrar
+   /web/registry/table?page=1 shows total_count 10,000; verify one active and
+   one revoked credential as verifier and show the response contains no
+   learner name or score.
+f. Two generator runs give identical manifest.sha256 (after the ID change).
+g. Full pytest summary, then credential_db row counts again; they must equal
+   the counts in (a), proving tests no longer touch it.
+h. List every file changed.
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `backend/services/ids.py`
+  - `backend/services/issuance.py`
+  - `backend/generator/cli.py`
+  - `backend/generator/validator.py`
+  - `docs/VALIDATION_SUMMARY.md` *(created)*
+  - `README.md` *(updated)*
+  - `docs/TEST_EVIDENCE.md`
+  - `docs/DECISIONS.md`
+  - `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Updated ID format to constant `2026` across all services and validator regexes.
+  - Reset `credential_db`, upgraded Alembic head, loaded the full-scale dataset into `credential_db` and `./exports` in 7.82s, aligned sequences, deleted `./exports_tmp`.
+  - Created `docs/VALIDATION_SUMMARY.md` capturing all empirical validation results.
+  - Rewrote `README.md` to be concise, honest, and accurately aligned with code.
+  - Executed and passed all acceptance checks `a` through `h` (117/117 tests passing; `credential_db` confirmed completely untouched by test suite).
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `credential_db` table row counts: `12 / 1,000 / 1,000 / 20,000 / 15,300 / 10,000 / 300 / 5,000 / 16,302`.
+  - Regex check across all export files and live DB tables: `0` errors.
+  - Validator on `./exports` and `credential_db`: `is_valid: true`, `errors: 0`.
+  - Evaluation on `credential_db`: `10020 / 10020` (`100.00%`) in `12.34s`, `row_count_delta = 0`.
+  - Live app verification check: `/verify` 200, `/registry` 403, `/web/registry/table?page=1` 10,000 count, public verification responses completely redacted of learner PII.
+  - Two generator runs: identical `manifest.sha256`.
+  - Pytest: 117 passed in 61.56s; `credential_db` counts unchanged.
+
+---
+
 
 
 ## C. AI Contribution Summary

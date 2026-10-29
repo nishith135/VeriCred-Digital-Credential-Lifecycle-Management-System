@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Anomaly Stress-Test Lab // VeriCred{% endblock %}
+{% block title %}Anomaly Evaluation Lab // VeriCred{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
@@ -9,11 +9,11 @@
     <div>
       <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
         <span class="material-symbols-outlined text-[14px]">biotech</span>
-        <span>Adversarial Cryptographic Stress Tests</span>
+        <span>Live Evaluation &amp; Edge-Case Verification</span>
       </div>
-      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Anomaly Stress-Test Lab</h1>
+      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Anomaly Evaluation Lab</h1>
       <p class="text-text-muted text-sm mt-1 max-w-2xl">
-        Verify system resilience against edge cases: revoked credentials, SHA-256 payload tampering, unauthorized key spoofing, and duplicate issuance collisions.
+        Execute dry-run verification against injected ground-truth anomalies and inspect live detection rates, expected vs. actual outcomes, and table row-count invariants.
       </p>
     </div>
 
@@ -31,60 +31,155 @@
     </div>
   </div>
 
-  <!-- Key Test Summary Metrics Bar -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <!-- Computed KPI Cards Bar -->
+  <div id="anomaly-kpi-bar" class="grid grid-cols-2 md:grid-cols-4 gap-4">
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Test Scenarios</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Scenarios Run</span>
         <span class="material-symbols-outlined text-brand text-[20px]">science</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-white">4</span>
-        <span class="text-[11px] font-mono text-text-muted uppercase">Vectors</span>
+        {% if report %}
+          <span class="text-2xl font-extrabold text-white">{{ report.scenarios_run }}</span>
+          <span class="text-[11px] font-mono text-text-muted uppercase">{{ report.total_cases_evaluated }} cases</span>
+        {% else %}
+          <span class="text-lg font-bold text-text-muted font-mono">Not run yet</span>
+        {% endif %}
       </div>
-      <span class="text-[11px] text-text-subtle">Tamper, Poison, Revocation, Collision</span>
+      <span class="text-[11px] text-text-subtle">Evaluated against database &amp; staging</span>
     </div>
 
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Consensus Pass Rate</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Scenarios Passing</span>
         <span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-emerald-400">100%</span>
-        <span class="text-[11px] font-mono text-emerald-400 uppercase">4 / 4 Passing</span>
+        {% if report %}
+          <span class="text-2xl font-extrabold text-emerald-400">{{ report.scenarios_passing }} / {{ report.scenarios_run }}</span>
+          <span class="text-[11px] font-mono text-emerald-400 uppercase">{{ report.metrics.overall_accuracy.rate_pct }}% accuracy</span>
+        {% else %}
+          <span class="text-lg font-bold text-text-muted font-mono">Not run yet</span>
+        {% endif %}
       </div>
-      <span class="text-[11px] text-text-subtle">Expected matches actual outcome</span>
+      <span class="text-[11px] text-text-subtle">Expected outcome matches actual outcome</span>
     </div>
 
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Suite Latency</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Measured Total Time</span>
         <span class="material-symbols-outlined text-indigo-400 text-[20px]">speed</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-white">&lt; 15</span>
-        <span class="text-[11px] font-mono text-indigo-300 uppercase">ms</span>
+        {% if report %}
+          <span class="text-2xl font-extrabold text-white">{{ report.total_elapsed_ms }}</span>
+          <span class="text-[11px] font-mono text-indigo-300 uppercase">ms</span>
+        {% else %}
+          <span class="text-lg font-bold text-text-muted font-mono">Not run yet</span>
+        {% endif %}
       </div>
-      <span class="text-[11px] text-text-subtle">Sub-millisecond per cryptographic check</span>
+      <span class="text-[11px] text-text-subtle">Wall-clock evaluation duration</span>
     </div>
 
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Test Isolation</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Database Row Delta</span>
         <span class="material-symbols-outlined text-amber-400 text-[20px]">lock</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-white">Sandboxed</span>
-        <span class="text-[11px] font-mono text-amber-400 uppercase">Non-Mutating</span>
+        {% if report %}
+          <span class="text-sm font-extrabold text-white font-mono">Read-only: row counts before/after delta {{ report.row_count_delta }}</span>
+        {% else %}
+          <span class="text-lg font-bold text-text-muted font-mono">Not run yet</span>
+        {% endif %}
       </div>
-      <span class="text-[11px] text-text-subtle">Zero database pollution</span>
+      <span class="text-[11px] text-text-subtle">Counted across all 9 tables before and after run</span>
     </div>
   </div>
 
   <!-- Anomaly Test Cards Grid -->
   <div id="anomaly-cards-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     {% include "partials/anomaly_result.html" %}
+  </div>
+
+  <!-- Interactive Sample & Payload-Tamper Inspector (Staff Tooling) -->
+  <div class="veri-card p-6 md:p-8 bg-card shadow-xl space-y-5">
+    <div class="flex items-center justify-between border-b border-border pb-3">
+      <div>
+        <h2 class="text-lg font-bold text-white">Interactive Credential &amp; Payload-Tamper Inspector</h2>
+        <p class="text-xs text-text-muted">
+          Test individual credentials with Quick Sample chips or modify JSON claims to inspect 4 verification checks and tamper rejection.
+        </p>
+      </div>
+    </div>
+
+    <form hx-post="/web/verify" hx-target="#labVerificationResult" id="labVerifyForm" class="space-y-4">
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-4 text-text-subtle text-[22px]">search</span>
+        <input 
+          type="text" 
+          name="credential_public_id" 
+          id="labCredentialInput" 
+          required
+          class="w-full h-12 pl-12 pr-36 rounded-xl bg-surface border border-border-focus font-mono text-sm text-white placeholder-text-subtle focus:border-brand focus:ring-1 focus:ring-brand transition-all"
+          placeholder="e.g. CRD-2026-000001" 
+          value="{{ sample_valid_id or 'CRD-2026-000001' }}" 
+        />
+        <button 
+          type="submit"
+          class="absolute right-2 h-9 px-5 bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all shadow-md cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">verified</span>
+          <span>Inspect</span>
+        </button>
+      </div>
+
+      <!-- Quick Sample Chips -->
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <span class="text-text-subtle font-mono text-[11px]">Quick Samples:</span>
+        <button 
+          type="button" 
+          onclick="setLabCredential('{{ sample_valid_id or 'CRD-2026-000001' }}', '')"
+          class="px-3 py-1 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Sample Active Valid</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="setLabCredential('{{ sample_revoked_id or 'CRD-2026-000002' }}', '')"
+          class="px-3 py-1 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+          <span>Sample Revoked</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="setLabTamperPayload('{{ sample_valid_id or 'CRD-2026-000001' }}')"
+          class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span>Simulate Tampered Payload</span>
+        </button>
+      </div>
+
+      <!-- Payload-Tamper JSON Editor -->
+      <details class="rounded-xl bg-surface border border-border p-4 text-xs" id="labTamperDetails">
+        <summary class="font-semibold text-text-muted hover:text-white cursor-pointer select-none flex items-center gap-2">
+          <span class="material-symbols-outlined text-brand text-[18px]">edit_note</span>
+          <span>Payload-Tamper JSON Editor</span>
+        </summary>
+        <div class="pt-3 space-y-2">
+          <p class="text-text-subtle font-mono text-[11px]">
+            Provide modified JSON claims below to test canonical SHA-256 digest verification against the stored credential.
+          </p>
+          <textarea 
+            name="tamper_payload" 
+            id="labTamperJson" 
+            rows="5"
+            class="w-full p-3 rounded-lg bg-card font-mono text-xs text-indigo-300 border border-border focus:border-brand focus:outline-none"
+            placeholder='Optional modified JSON payload to test cryptographic tamper detection'></textarea>
+        </div>
+      </details>
+    </form>
+
+    <div id="labVerificationResult" class="space-y-4"></div>
   </div>
 
   <!-- Telemetry Console Card -->
@@ -98,34 +193,52 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-[16px] text-brand">terminal</span>
-          <span class="text-xs font-mono uppercase font-bold text-white tracking-wider">Live Execution Telemetry &amp; Forensic Log</span>
+          <span class="text-xs font-mono uppercase font-bold text-white tracking-wider">Evaluation Execution Log</span>
         </div>
       </div>
       <button 
-        onclick="document.getElementById('console-terminal').innerHTML = '<div class=\'text-text-subtle\'>[CONSOLE] Log cleared. Ready for next test run...</div>';"
+        onclick="document.getElementById('console-terminal').innerHTML = '<div class=\'text-text-subtle\'>[CONSOLE] Log cleared.</div>';"
         class="px-2.5 py-1 rounded bg-elevated hover:bg-elevated/80 text-text-muted hover:text-white font-mono text-[11px] transition-colors cursor-pointer border border-border">
         Clear
       </button>
     </div>
 
-    <!-- Terminal Window -->
     <div id="console-terminal" class="p-5 bg-canvas font-mono text-xs text-text-muted flex flex-col gap-2 max-h-64 overflow-y-auto leading-relaxed select-all">
-      <div class="text-text-subtle">[SYSTEM] VeriCred Sandboxed Anomaly Lab initialized.</div>
-      <div class="text-brand">[SECURITY] Cryptographic trust invariants enforced.</div>
-      <div class="text-emerald-400">[READY] 4 adversarial test vectors loaded into memory sandbox. Click any test to inspect live trace.</div>
+      <div class="text-text-subtle">[SYSTEM] Anomaly Evaluation Lab ready. Click "Run All Scenarios" to execute dry-run evaluation.</div>
     </div>
   </div>
 </div>
 
 <script>
-  function appendConsoleLog(caseId, title, duration, trace) {
+  function appendConsoleLog(scenarioId, title, duration, trace) {
     const term = document.getElementById('console-terminal');
     const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
     const line = document.createElement('div');
     line.className = 'text-white flex items-start gap-2 pt-1 border-t border-border/40';
-    line.innerHTML = `<span class="text-text-subtle">[${now}]</span> <span class="text-brand font-bold">[${caseId}]</span> <span class="text-white font-semibold">${title}</span> <span class="text-emerald-400">(${duration})</span> <span class="text-text-muted">→ ${trace}</span>`;
+    line.innerHTML = `<span class="text-text-subtle">[${now}]</span> <span class="text-brand font-bold">[${scenarioId}]</span> <span class="text-white font-semibold">${title}</span> <span class="text-emerald-400">(${duration})</span> <span class="text-text-muted">→ ${trace}</span>`;
     term.appendChild(line);
     term.scrollTop = term.scrollHeight;
+  }
+
+  function setLabCredential(credId, tamper) {
+    document.getElementById('labCredentialInput').value = credId;
+    document.getElementById('labTamperJson').value = tamper;
+    if (!tamper) {
+      document.getElementById('labTamperDetails').removeAttribute('open');
+    }
+    htmx.trigger(document.getElementById('labVerifyForm'), 'submit');
+  }
+
+  function setLabTamperPayload(credId) {
+    document.getElementById('labCredentialInput').value = credId;
+    const alteredPayload = {
+      "credential_id": credId,
+      "assessment": { "score": 99.99, "status": "COMPLETED" },
+      "course": { "title": "Altered Course Claim" }
+    };
+    document.getElementById('labTamperJson').value = JSON.stringify(alteredPayload, null, 2);
+    document.getElementById('labTamperDetails').setAttribute('open', 'true');
+    htmx.trigger(document.getElementById('labVerifyForm'), 'submit');
   }
 </script>
 {% endblock %}

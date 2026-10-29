@@ -120,10 +120,13 @@ async def test_audit_rest_api_endpoint_pagination_and_query(
         reason_code="ADMINISTRATIVE_ERROR",
     )
 
-    # 3. Query audit events API for this credential
+    # 3. Query audit events API for this credential (as auditor via Bearer API key)
+    from backend.core.config import settings
+
     response = await api_client.get(
         "/api/v1/audit/events",
         params={"target_entity_id": cred.public_id},
+        headers={"Authorization": f"Bearer {settings.AUDITOR_API_KEY}"},
     )
     assert response.status_code == 200
     data = response.json()

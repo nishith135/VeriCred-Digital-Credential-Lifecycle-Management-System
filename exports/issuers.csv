@@ -1,29 +1,49 @@
-id,public_id,name,public_key_pem,status,created_at
-1,ISS-00001,Indian Institute of Technology (IIT) Delhi,"-----BEGIN PUBLIC KEY-----
+id,public_id,name,public_key_pem,status,retired_at,successor_issuer_id,created_at
+1,ISS-00001,Adoni Institute of Technology,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAERn64fEei0zj62oNIvSHdWs7GFg01QXnstEzGjYrQd4=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-2,ISS-00002,Indian Institute of Science (IISc) Bengaluru,"-----BEGIN PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+2,ISS-00002,Malegaon University,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAC6FCdwfy3OcIvzvOBJj10SgNRJcGrmciapWuodNHsx8=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-3,ISS-00003,National Institute of Technology (NIT) Trichy,"-----BEGIN PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+3,ISS-00003,New Delhi College of Engineering,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAr3pUA73qKe0Kaj48kHTf4+EZvOy2WYkPKTMLryGoMiQ=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-4,ISS-00004,Birla Institute of Technology and Science (BITS) Pilani,"-----BEGIN PUBLIC KEY-----
+",RETIRED,2025-10-22T12:00:00+00:00,11,2022-09-13T12:00:00+00:00
+4,ISS-00004,Noida Academy,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEA/YR48qol2Qr2X5+Blfm4xNk/4MnUkR79nug4QGT5mlg=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-5,ISS-00005,International Institute of Information Technology (IIIT) Hyderabad,"-----BEGIN PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+5,ISS-00005,Bongaigaon Institute of Technology,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEACsvKIinh8kS3yBl07/2r6x1w9FuzO1jt+IviOW39cYY=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-6,ISS-00006,Delhi Technological University (DTU),"-----BEGIN PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+6,ISS-00006,Allahabad University,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAMcEr9oyqxJguRWSckg4Sfm07sAD5ImjbaXGW4hKePeU=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
-7,ISS-00007,Anna University College of Engineering,"-----BEGIN PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+7,ISS-00007,Jammu College of Engineering,"-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAQOtqOJr1DK7V4b4vP518hlxQa7waeE6gnRyujhXmo2U=
 -----END PUBLIC KEY-----
-",ACTIVE,2024-10-22T12:00:00+00:00
+",RETIRED,2025-10-22T12:00:00+00:00,12,2022-09-13T12:00:00+00:00
+8,ISS-00008,Aligarh Academy,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEASEfth4+hk97z+ajjuSixh/VcpXP0vaWmKuaYd/Uud5k=
+-----END PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+9,ISS-00009,Jalgaon Institute of Technology,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAITJ2C6lM/7+6QfG/hES8v5pgpFeCZKmGcMPR3N5reTc=
+-----END PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+10,ISS-00010,Thrissur University,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAGzBeIrjDGEzkyKw596nxMpcyIymeTMWOkZqiJPkNNaQ=
+-----END PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+11,ISS-00011,Kolkata College of Engineering,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAvLvhFqBHDBZgo0L+yqG0Dz5v2p4/06lR4y1bfMOiy7Q=
+-----END PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00
+12,ISS-00012,Arrah Academy,"-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAGeezvrapwzcDKU2/DbhT3Axx9XW2AeG6aG5IFTAki/g=
+-----END PUBLIC KEY-----
+",ACTIVE,,,2022-09-13T12:00:00+00:00

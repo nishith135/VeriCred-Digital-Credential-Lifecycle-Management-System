@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     APP_ENV: Literal["development", "testing", "production"] = "development"
     DEBUG: bool = True
     SECRET_KEY: str = "dev_secret_key_change_in_production_min_32_bytes_long_12345"
+    SESSION_SECRET: str = "dev_session_secret_hmac_key_change_in_prod_32_bytes_98765"
+    REGISTRAR_API_KEY: str = "dev-registrar-api-key-2026"
+    AUDITOR_API_KEY: str = "dev-auditor-api-key-2026"
+    VERIFY_RATE_LIMIT_PER_MINUTE: int = 30
 
     # Database URLs
     # Async connection for FastAPI application layer

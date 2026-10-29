@@ -1,0 +1,81 @@
+anomaly_id,issue_type,entity_public_id,expected_outcome,rule_reference
+ANM-0001,PREMATURE_ISSUANCE,CRD-2026-003357,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0002,PREMATURE_ISSUANCE,CRD-2026-001743,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0003,PREMATURE_ISSUANCE,CRD-2026-007925,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0004,PREMATURE_ISSUANCE,CRD-2026-009698,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0005,PREMATURE_ISSUANCE,CRD-2026-009145,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0006,PREMATURE_ISSUANCE,CRD-2026-002734,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0007,PREMATURE_ISSUANCE,CRD-2026-005521,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0008,PREMATURE_ISSUANCE,CRD-2026-001383,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0009,PREMATURE_ISSUANCE,CRD-2026-000142,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0010,PREMATURE_ISSUANCE,CRD-2026-001971,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0011,PREMATURE_ISSUANCE,CRD-2026-004297,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0012,PREMATURE_ISSUANCE,CRD-2026-007392,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0013,PREMATURE_ISSUANCE,CRD-2026-009029,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0014,PREMATURE_ISSUANCE,CRD-2026-005026,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0015,PREMATURE_ISSUANCE,CRD-2026-002722,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0016,PREMATURE_ISSUANCE,CRD-2026-000106,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0017,PREMATURE_ISSUANCE,CRD-2026-002302,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0018,PREMATURE_ISSUANCE,CRD-2026-000566,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0019,PREMATURE_ISSUANCE,CRD-2026-008775,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0020,PREMATURE_ISSUANCE,CRD-2026-000307,INVALID_ISSUANCE,MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp
+ANM-0021,DUPLICATE_CREDENTIAL_ID,CRD-2026-008745,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0022,DUPLICATE_CREDENTIAL_ID,CRD-2026-007537,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0023,DUPLICATE_CREDENTIAL_ID,CRD-2026-004596,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0024,DUPLICATE_CREDENTIAL_ID,CRD-2026-009490,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0025,DUPLICATE_CREDENTIAL_ID,CRD-2026-006045,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0026,DUPLICATE_CREDENTIAL_ID,CRD-2026-000459,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0027,DUPLICATE_CREDENTIAL_ID,CRD-2026-009048,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0028,DUPLICATE_CREDENTIAL_ID,CRD-2026-008748,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0029,DUPLICATE_CREDENTIAL_ID,CRD-2026-009639,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0030,DUPLICATE_CREDENTIAL_ID,CRD-2026-001422,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0031,DUPLICATE_CREDENTIAL_ID,CRD-2026-008006,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0032,DUPLICATE_CREDENTIAL_ID,CRD-2026-003861,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0033,DUPLICATE_CREDENTIAL_ID,CRD-2026-007155,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0034,DUPLICATE_CREDENTIAL_ID,CRD-2026-001857,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0035,DUPLICATE_CREDENTIAL_ID,CRD-2026-006162,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0036,DUPLICATE_CREDENTIAL_ID,CRD-2026-007655,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0037,DUPLICATE_CREDENTIAL_ID,CRD-2026-003724,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0038,DUPLICATE_CREDENTIAL_ID,CRD-2026-009965,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0039,DUPLICATE_CREDENTIAL_ID,CRD-2026-002046,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0040,DUPLICATE_CREDENTIAL_ID,CRD-2026-003407,REJECTED_DUPLICATE,MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import
+ANM-0041,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-004733,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0042,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-007565,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0043,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-002563,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0044,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-001356,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0045,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-009093,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0046,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-003114,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0047,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-008783,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0048,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-009574,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0049,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-008747,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0050,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-002116,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0051,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-003426,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0052,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-009860,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0053,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-005327,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0054,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-008007,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0055,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-000904,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0056,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-007649,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0057,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-008451,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0058,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-000845,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0059,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-009493,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0060,REVOKED_VERIFIES_AS_ACTIVE,CRD-2026-000721,REVOKED,MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status
+ANM-0061,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-006990,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0062,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-008058,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0063,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-000928,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0064,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-005150,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0065,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-005483,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0066,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-006105,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0067,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-003017,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0068,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-004208,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0069,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-000867,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0070,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-002293,TAMPERED,MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash
+ANM-0071,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-001400,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0072,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-001763,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0073,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-006224,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0074,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-005021,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0075,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-003575,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0076,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-005895,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0077,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-004582,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0078,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-006099,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0079,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-007736,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together
+ANM-0080,ALTERED_PAYLOAD_NOT_DETECTED,CRD-2026-001152,TAMPERED,MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together

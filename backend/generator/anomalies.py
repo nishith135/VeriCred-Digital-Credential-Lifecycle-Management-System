@@ -1,323 +1,403 @@
-"""Mandatory Anomaly Fixtures and Segregated Ground-Truth Generator.
+"""Seeded Anomaly Injection into Generated Baseline Dataset and Ground-Truth Registry.
 
 Enforces MASTER_SPEC Section 11.5:
-1. Credential issued before completion (INVALID_ISSUANCE).
-2. Duplicate credential ID in malformed import fixture.
-3. Revoked credential verifies as active in stale cache (REVOKED).
-4. Altered payload hash undetected by naive check (TAMPERED).
+1. PREMATURE_ISSUANCE: issued_at earlier than completion_timestamp, validly hashed and signed -> INVALID_ISSUANCE.
+2. DUPLICATE_CREDENTIAL_ID: staging rows in credential_import_staging.csv duplicating existing public_id -> REJECTED_DUPLICATE.
+3. REVOKED_VERIFIES_AS_ACTIVE: Revocation row exists while credentials.status remains ACTIVE -> REVOKED.
+4. ALTERED_PAYLOAD_NOT_DETECTED: half with payload_snapshot altered only, half with payload_snapshot and
+   canonical_payload_hash altered together -> TAMPERED.
 
-Ground-truth labels are strictly segregated in a dedicated dataset and are never
-consumed by operational verification logic.
-
-Fixture identifiers use the canonical formats from a reserved high range
-(CRD-2026-9000xx, LRN-9000xx, CRS-9000xx, ISS-90001) so they are well-formed
-but can never collide with the generated dataset. They are never loaded into
-the production database.
+Ground-truth labels are stored only in exports/ground_truth.csv and exports/ground_truth.json
+and are never added as columns to operational input tables or imported by issuance/verification services.
 """
 
+from copy import deepcopy
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+import random
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
+
+import pandas as pd
 
 from backend.core.security import (
     compute_payload_hash,
     generate_deterministic_ed25519_keypair,
     sign_payload_hash,
 )
-from backend.services.ids import (
-    format_completion_id,
-    format_course_id,
-    format_credential_id,
-    format_issuer_id,
-    format_learner_id,
-    format_revocation_id,
-)
+from backend.services.ids import format_audit_event_id
 from backend.services.payloads import build_credential_payload
 
-ANOMALY_ISSUER_ID = format_issuer_id(90001)
-ANOMALY_ISSUER_NAME = "Acme Cyber Academy"
+if TYPE_CHECKING:
+    from backend.generator.generator import SyntheticDataset
+
+GROUND_TRUTH_COLUMNS = [
+    "anomaly_id",
+    "issue_type",
+    "entity_public_id",
+    "expected_outcome",
+    "rule_reference",
+]
+
+STAGING_COLUMNS = [
+    "id",
+    "public_id",
+    "completion_id",
+    "issuer_id",
+    "issued_at",
+    "canonical_payload_hash",
+    "issuer_signature",
+    "payload_snapshot",
+    "status",
+    "created_at",
+]
 
 
 @dataclass
-class GroundTruthRecord:
-    case_id: str
+class GroundTruthEntry:
+    anomaly_id: str
     issue_type: str
-    target_identifier: str
+    entity_public_id: str
     expected_outcome: str
-    reason: str
-    severity: str
-    category: str
-    fixture_details: Dict[str, Any]
+    rule_reference: str
 
 
-def _anomaly_payload(
-    *,
-    credential_id: str,
-    issued_at: datetime,
-    completion_timestamp: datetime,
-    learner_number: int,
-    learner_name: str,
-    course_number: int,
-    course_title: str,
-    score: float,
-    status: str,
-) -> Dict[str, Any]:
-    """Build an anomaly payload through the single canonical payload builder."""
-    return build_credential_payload(
-        credential_id=credential_id,
-        issued_at=issued_at,
-        completion_timestamp=completion_timestamp,
-        learner_id=format_learner_id(learner_number),
-        learner_name=learner_name,
-        learner_email=f"{learner_name.lower().replace(' ', '.')}@anomaly.example",
-        course_code=format_course_id(course_number),
-        course_title=course_title,
-        assessment_score=score,
-        assessment_status=status,
-        issuer_id=ANOMALY_ISSUER_ID,
-        issuer_name=ANOMALY_ISSUER_NAME,
-    )
-
-
-def generate_anomaly_fixtures(
+def _resolve_private_keys(
+    issuers_df: pd.DataFrame,
     seed: int = 20261022,
-    base_reference_time: Optional[datetime] = None,
-) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    """Generate the four mandatory anomaly fixtures along with segregated ground-truth labels.
-    
+    explicit_keys: Optional[Dict[int, str]] = None,
+) -> Dict[int, str]:
+    """Retrieve issuer Ed25519 private keys from explicit dict, DataFrame attrs, or deterministic seed."""
+    if explicit_keys:
+        return explicit_keys
+    attrs_keys = issuers_df.attrs.get("private_keys")
+    if attrs_keys:
+        return attrs_keys
+    keys: Dict[int, str] = {}
+    for row in issuers_df.to_dict("records"):
+        idx = int(row["id"])
+        seed_material = f"issuer_{idx}_seed_{seed}".encode("utf-8")
+        priv_pem, _ = generate_deterministic_ed25519_keypair(seed_material)
+        keys[idx] = priv_pem
+    return keys
+
+
+def inject_anomalies_df(
+    credentials_df: pd.DataFrame,
+    completions_df: pd.DataFrame,
+    learners_df: pd.DataFrame,
+    courses_df: pd.DataFrame,
+    issuers_df: pd.DataFrame,
+    verifications_df: pd.DataFrame,
+    audit_events_df: pd.DataFrame,
+    rng: random.Random,
+    config: Optional[Dict[str, Any]] = None,
+) -> pd.DataFrame:
+    """Stage 10: Inject the 4 mandatory anomaly scenarios into DataFrame tables using the seeded RNG.
+
     Returns:
-        (anomaly_fixtures, ground_truth_records)
+        `pd.DataFrame` containing the ground_truth records, with updated DataFrames attached in
+        `ground_truth_df.attrs["credentials_df"]`, `ground_truth_df.attrs["audit_events_df"]`, and
+        `ground_truth_df.attrs["credential_import_staging_df"]`.
     """
-    ref_time = base_reference_time or datetime(2026, 10, 22, 12, 0, 0, tzinfo=timezone.utc)
-    
-    # Generate dedicated anomaly keypair deterministically: returns (private_pem, public_pem)
-    anomaly_priv_pem, anomaly_pub_pem = generate_deterministic_ed25519_keypair(
-        f"anomaly_seed_{seed}".encode("utf-8")
+    cfg = config or {}
+    seed = int(cfg.get("seed", issuers_df.attrs.get("seed", 20261022)))
+    private_keys = _resolve_private_keys(
+        issuers_df,
+        seed=seed,
+        explicit_keys=cfg.get("issuer_private_keys"),
     )
-    
-    fixtures: List[Dict[str, Any]] = []
-    ground_truth: List[GroundTruthRecord] = []
-    
-    # -------------------------------------------------------------------------
-    # Anomaly 1: Credential issued before completion / Ineligible completion
-    # -------------------------------------------------------------------------
-    t_completed = ref_time - timedelta(days=5)
-    t_premature_issued = ref_time - timedelta(days=10)  # 5 days before completion!
-    cred_1_id = format_credential_id(900001, t_premature_issued)
-    
-    claims_1 = _anomaly_payload(
-        credential_id=cred_1_id,
-        issued_at=t_premature_issued,
-        completion_timestamp=t_completed,
-        learner_number=900001,
-        learner_name="Alice Premature",
-        course_number=900001,
-        course_title="Advanced Algorithmic Integrity",
-        score=58.50,
-        status="IN_PROGRESS",  # Ineligible score and status
+
+    from backend.generator.generator import SyntheticDataset, REFERENCE_DATETIME, _records_to_df
+
+    temp_ds = SyntheticDataset(
+        seed=seed,
+        scale=float(cfg.get("scale", 1.0)),
+        reference_time=cfg.get("reference_time", REFERENCE_DATETIME),
+        issuers=issuers_df.to_dict("records"),
+        issuer_private_keys=private_keys,
+        courses=courses_df.to_dict("records"),
+        learners=learners_df.to_dict("records"),
+        completions=completions_df.to_dict("records"),
+        credentials=credentials_df.to_dict("records"),
+        verifications=verifications_df.to_dict("records"),
+        audit_events=audit_events_df.to_dict("records"),
     )
-    hash_1 = compute_payload_hash(claims_1)
-    sig_1 = sign_payload_hash(anomaly_priv_pem, hash_1)
-    
-    fixture_1 = {
-        "case_id": "CASE-ANOMALY-001",
-        "issue_type": "PREMATURE_ISSUANCE",
-        "public_id": cred_1_id,
-        "completion_public_id": format_completion_id(
-            format_learner_id(900001), format_course_id(900001)
-        ),
-        "completion_timestamp": t_completed.isoformat(),
-        "issued_at": t_premature_issued.isoformat(),
-        "assessment_score": 58.50,
-        "completion_status": "IN_PROGRESS",
-        "payload_hash": hash_1,
-        "signature": sig_1,
-        "payload_snapshot": claims_1,
-        "issuer_public_key_pem": anomaly_pub_pem,
+    inject_anomalies(temp_ds, rng)
+
+    updated_creds_df = _records_to_df(temp_ds.credentials, list(credentials_df.columns))
+    updated_audit_df = _records_to_df(temp_ds.audit_events, list(audit_events_df.columns))
+    staging_df = _records_to_df(temp_ds.credential_import_staging, STAGING_COLUMNS)
+    gt_df = _records_to_df(temp_ds.ground_truth, GROUND_TRUTH_COLUMNS)
+
+    # Update input DataFrames in place so callers holding references see the injected mutations
+    for col in updated_creds_df.columns:
+        credentials_df[col] = updated_creds_df[col].values
+    for col in updated_audit_df.columns:
+        audit_events_df[col] = updated_audit_df[col].values
+
+    gt_df.attrs["credentials_df"] = credentials_df
+    gt_df.attrs["audit_events_df"] = audit_events_df
+    gt_df.attrs["credential_import_staging_df"] = staging_df
+    return gt_df
+
+
+def inject_anomalies(
+    dataset: "SyntheticDataset",
+    rng: random.Random,
+) -> List[Dict[str, Any]]:
+    """Inject the 4 mandatory anomaly scenarios into the baseline dataset using the seeded RNG.
+
+    Formula:
+        n_per_type = max(2, round(len(dataset.credentials) * 0.002))
+        (20 per type at full scale of 10,000 credentials).
+
+    Modifies only the chosen target rows in-place and populates
+    `dataset.credential_import_staging` and `dataset.ground_truth`.
+    """
+    n_creds = len(dataset.credentials)
+    if n_creds == 0:
+        return []
+
+    n_per_type = max(2, round(n_creds * 0.002))
+
+    comp_by_id = {c["id"]: c for c in dataset.completions}
+    learner_by_id = {l["id"]: l for l in dataset.learners}
+    course_by_id = {c["id"]: c for c in dataset.courses}
+    issuer_by_id = {i["id"]: i for i in dataset.issuers}
+    verified_cred_ids = {
+        v["credential_id"] for v in dataset.verifications if v.get("credential_id") is not None
     }
-    fixtures.append(fixture_1)
-    ground_truth.append(
-        GroundTruthRecord(
-            case_id="CASE-ANOMALY-001",
-            issue_type="PREMATURE_ISSUANCE",
-            target_identifier=cred_1_id,
-            expected_outcome="INVALID_ISSUANCE",
-            reason="Issue timestamp precedes completion timestamp and assessment score (58.50%) is below 80.00% threshold.",
-            severity="CRITICAL",
-            category="ACADEMIC_INTEGRITY",
-            fixture_details={"issued_at": t_premature_issued.isoformat(), "completed_at": t_completed.isoformat()},
-        )
-    )
 
-    # -------------------------------------------------------------------------
-    # Anomaly 2: Duplicate Credential ID in Malformed Import Dataset
-    # -------------------------------------------------------------------------
-    t_issued_2a = ref_time - timedelta(days=20)
-    t_issued_2b = ref_time - timedelta(days=15)
-    dup_id = format_credential_id(900002, t_issued_2a)
-    claims_2a = _anomaly_payload(
-        credential_id=dup_id,
-        issued_at=t_issued_2a,
-        completion_timestamp=t_issued_2a - timedelta(days=1),
-        learner_number=900002,
-        learner_name="Bob Original",
-        course_number=900002,
-        course_title="Discrete Math",
-        score=92.00,
-        status="COMPLETED",
-    )
-    claims_2b = _anomaly_payload(
-        credential_id=dup_id,
-        issued_at=t_issued_2b,
-        completion_timestamp=t_issued_2b - timedelta(days=1),
-        learner_number=900003,
-        learner_name="Charlie Duplicate",
-        course_number=900002,
-        course_title="Discrete Math",
-        score=88.00,
-        status="COMPLETED",
-    )
-    
-    hash_2a = compute_payload_hash(claims_2a)
-    hash_2b = compute_payload_hash(claims_2b)
-    fixture_2 = {
-        "case_id": "CASE-ANOMALY-002",
-        "issue_type": "DUPLICATE_CREDENTIAL_ID",
-        "public_id": dup_id,
-        "record_a": {
-            "public_id": dup_id,
-            "learner_name": "Bob Original",
-            "payload_snapshot": claims_2a,
-            "payload_hash": hash_2a,
-            "signature": sign_payload_hash(anomaly_priv_pem, hash_2a),
-        },
-        "record_b": {
-            "public_id": dup_id,
-            "learner_name": "Charlie Duplicate",
-            "payload_snapshot": claims_2b,
-            "payload_hash": hash_2b,
-            "signature": sign_payload_hash(anomaly_priv_pem, hash_2b),
-        },
+    # Index CREDENTIAL_ISSUED audit events by target_entity_id for fast timestamp/hash sync
+    issued_event_by_pub_id: Dict[str, Dict[str, Any]] = {
+        ev["target_entity_id"]: ev
+        for ev in dataset.audit_events
+        if ev["event_type"] == "CREDENTIAL_ISSUED"
     }
-    fixtures.append(fixture_2)
-    ground_truth.append(
-        GroundTruthRecord(
-            case_id="CASE-ANOMALY-002",
-            issue_type="DUPLICATE_CREDENTIAL_ID",
-            target_identifier=dup_id,
-            expected_outcome="REJECTED_DUPLICATE",
-            reason="Two distinct completion records claim the identical public credential identifier in malformed batch.",
-            severity="HIGH",
-            category="DATA_INTEGRITY",
-            fixture_details={"duplicate_id": dup_id, "competing_records": 2},
+
+    # Separate baseline revoked and active credentials (keep index 0 untouched so baseline index-0 checks stay clean)
+    revoked_candidates = [
+        c for c in dataset.credentials[1:] if c["status"] == "REVOKED"
+    ]
+    if len(revoked_candidates) < n_per_type:
+        revoked_candidates = [c for c in dataset.credentials if c["status"] == "REVOKED"]
+
+    unverified_revoked = [c for c in revoked_candidates if c["id"] not in verified_cred_ids]
+    revoked_pool = unverified_revoked if len(unverified_revoked) >= n_per_type else revoked_candidates
+
+    active_candidates = [
+        c for c in dataset.credentials[1:] if c["status"] == "ACTIVE"
+    ]
+    unverified_active = [c for c in active_candidates if c["id"] not in verified_cred_ids]
+    active_pool = (
+        unverified_active if len(unverified_active) >= 3 * n_per_type else active_candidates
+    )
+
+    # Deterministically sample non-overlapping target sets using the seeded RNG
+    chosen_active = rng.sample(active_pool, 3 * n_per_type)
+    premature_targets = chosen_active[0:n_per_type]
+    duplicate_targets = chosen_active[n_per_type : 2 * n_per_type]
+    altered_targets = chosen_active[2 * n_per_type : 3 * n_per_type]
+    stale_revoked_targets = rng.sample(revoked_pool, n_per_type)
+
+    ground_truth: List[GroundTruthEntry] = []
+    staging_rows: List[Dict[str, Any]] = []
+    anomaly_seq = 1
+
+    # -------------------------------------------------------------------------
+    # 1. PREMATURE_ISSUANCE (issued_at < completion_timestamp, validly hashed & signed)
+    # -------------------------------------------------------------------------
+    for cred in premature_targets:
+        comp = comp_by_id[cred["completion_id"]]
+        learner = learner_by_id[comp["learner_id"]]
+        course = course_by_id[comp["course_id"]]
+        issuer = issuer_by_id[cred["issuer_id"]]
+        priv_pem = dataset.issuer_private_keys[cred["issuer_id"]]
+
+        premature_issued_at = comp["completion_timestamp"] - timedelta(
+            days=rng.randint(2, 9),
+            hours=rng.randint(1, 12),
         )
-    )
-
-    # -------------------------------------------------------------------------
-    # Anomaly 3: Revoked Credential Verifies as Active in Stale Cache
-    # -------------------------------------------------------------------------
-    t_issued_3 = ref_time - timedelta(days=30)
-    t_revoked = ref_time - timedelta(days=3)
-    cred_3_id = format_credential_id(900003, t_issued_3)
-    claims_3 = _anomaly_payload(
-        credential_id=cred_3_id,
-        issued_at=t_issued_3,
-        completion_timestamp=t_issued_3 - timedelta(days=1),
-        learner_number=900004,
-        learner_name="David Revoked",
-        course_number=900003,
-        course_title="Network Defense",
-        score=85.00,
-        status="COMPLETED",
-    )
-    hash_3 = compute_payload_hash(claims_3)
-    sig_3 = sign_payload_hash(anomaly_priv_pem, hash_3)
-    
-    fixture_3 = {
-        "case_id": "CASE-ANOMALY-003",
-        "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
-        "public_id": cred_3_id,
-        "revocation_record": {
-            "public_id": format_revocation_id(cred_3_id),
-            "revoked_at": t_revoked.isoformat(),
-            "reason_code": "ACADEMIC_MISCONDUCT",
-            "revoked_by": "DEAN-OFFICE",
-        },
-        "stale_cache_claim": "VALID",
-        "payload_snapshot": claims_3,
-        "payload_hash": hash_3,
-        "signature": sig_3,
-        "issuer_public_key_pem": anomaly_pub_pem,
-    }
-    fixtures.append(fixture_3)
-    ground_truth.append(
-        GroundTruthRecord(
-            case_id="CASE-ANOMALY-003",
-            issue_type="REVOKED_VERIFIES_AS_ACTIVE",
-            target_identifier=cred_3_id,
-            expected_outcome="REVOKED",
-            reason="Persistent revocation record exists. Buggy or stale client cache erroneously presents status as ACTIVE.",
-            severity="CRITICAL",
-            category="LIFECYCLE_STATE",
-            fixture_details={"stale_claim": "VALID", "actual_state": "REVOKED", "reason_code": "ACADEMIC_MISCONDUCT"},
+        claims = build_credential_payload(
+            credential_id=cred["public_id"],
+            issued_at=premature_issued_at,
+            completion_timestamp=comp["completion_timestamp"],
+            learner_id=learner["public_id"],
+            learner_name=learner["full_name"],
+            learner_email=learner["email"],
+            course_code=course["public_id"],
+            course_title=course["title"],
+            assessment_score=comp["assessment_score"],
+            assessment_status=comp["status"],
+            issuer_id=issuer["public_id"],
+            issuer_name=issuer["name"],
         )
-    )
+        new_hash = compute_payload_hash(claims)
+        new_sig = sign_payload_hash(priv_pem, new_hash)
 
-    # -------------------------------------------------------------------------
-    # Anomaly 4: Altered Payload Undetected by Naive String Comparison
-    # -------------------------------------------------------------------------
-    t_issued_4 = ref_time - timedelta(days=12)
-    cred_4_id = format_credential_id(900004, t_issued_4)
-    claims_4_original = _anomaly_payload(
-        credential_id=cred_4_id,
-        issued_at=t_issued_4,
-        completion_timestamp=t_issued_4 - timedelta(days=1),
-        learner_number=900005,
-        learner_name="Eve Tampered",
-        course_number=900004,
-        course_title="Data Engineering",
-        score=81.00,
-        status="COMPLETED",
-    )
-    hash_4_original = compute_payload_hash(claims_4_original)
-    sig_4_original = sign_payload_hash(anomaly_priv_pem, hash_4_original)
-    
-    # Tampered payload has the score elevated, but retains original hash and signature
-    claims_4_altered = dict(claims_4_original)
-    claims_4_altered["assessment"] = {**claims_4_original["assessment"], "score": 99.50}
-    
-    fixture_4 = {
-        "case_id": "CASE-ANOMALY-004",
-        "issue_type": "ALTERED_PAYLOAD_TAMPERING",
-        "public_id": cred_4_id,
-        "original_payload": claims_4_original,
-        "tampered_payload": claims_4_altered,
-        "signed_payload_hash": hash_4_original,
-        "signature": sig_4_original,
-        "issuer_public_key_pem": anomaly_pub_pem,
-    }
-    fixtures.append(fixture_4)
-    ground_truth.append(
-        GroundTruthRecord(
-            case_id="CASE-ANOMALY-004",
-            issue_type="ALTERED_PAYLOAD_TAMPERING",
-            target_identifier=cred_4_id,
-            expected_outcome="TAMPERED",
-            reason="Payload assessment score modified from 81.00 to 99.50. Naive text search matches ID, but canonical SHA-256 digest detects tampering.",
-            severity="CRITICAL",
-            category="CRYPTOGRAPHIC_INTEGRITY",
-            fixture_details={"original_score": 81.0, "altered_score": 99.5},
+        cred["issued_at"] = premature_issued_at
+        cred["created_at"] = premature_issued_at
+        cred["payload_snapshot"] = claims
+        cred["canonical_payload_hash"] = new_hash
+        cred["issuer_signature"] = new_sig
+
+        ev = issued_event_by_pub_id.get(cred["public_id"])
+        if ev is not None:
+            ev["occurred_at"] = premature_issued_at
+            details = dict(ev.get("details") or {})
+            details["completion_id"] = cred["completion_id"]
+            details["canonical_payload_hash"] = new_hash
+            ev["details"] = details
+
+        ground_truth.append(
+            GroundTruthEntry(
+                anomaly_id=f"ANM-{anomaly_seq:04d}",
+                issue_type="PREMATURE_ISSUANCE",
+                entity_public_id=cred["public_id"],
+                expected_outcome="INVALID_ISSUANCE",
+                rule_reference="MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp",
+            )
         )
-    )
-    
-    gt_dicts = [asdict(gt) for gt in ground_truth]
-    return fixtures, gt_dicts
+        anomaly_seq += 1
+
+    # -------------------------------------------------------------------------
+    # 2. DUPLICATE_CREDENTIAL_ID (staging rows duplicating existing public_id)
+    # -------------------------------------------------------------------------
+    issued_comp_ids = {c["completion_id"] for c in dataset.credentials}
+    unissued_eligible_comps = [
+        c
+        for c in dataset.completions
+        if c["id"] not in issued_comp_ids and c["status"] == "COMPLETED"
+    ]
+    if len(unissued_eligible_comps) < n_per_type:
+        unissued_eligible_comps = list(dataset.completions[:n_per_type])
+
+    for staging_idx, cred in enumerate(duplicate_targets, start=1):
+        alt_comp = unissued_eligible_comps[(staging_idx - 1) % len(unissued_eligible_comps)]
+        learner = learner_by_id[alt_comp["learner_id"]]
+        course = course_by_id[alt_comp["course_id"]]
+        issuer = issuer_by_id[cred["issuer_id"]]
+        priv_pem = dataset.issuer_private_keys[cred["issuer_id"]]
+
+        dup_issued_at = cred["issued_at"] + timedelta(hours=3)
+        dup_claims = build_credential_payload(
+            credential_id=cred["public_id"],
+            issued_at=dup_issued_at,
+            completion_timestamp=alt_comp["completion_timestamp"],
+            learner_id=learner["public_id"],
+            learner_name=learner["full_name"],
+            learner_email=learner["email"],
+            course_code=course["public_id"],
+            course_title=course["title"],
+            assessment_score=alt_comp["assessment_score"],
+            assessment_status=alt_comp["status"],
+            issuer_id=issuer["public_id"],
+            issuer_name=issuer["name"],
+        )
+        dup_hash = compute_payload_hash(dup_claims)
+        dup_sig = sign_payload_hash(priv_pem, dup_hash)
+
+        staging_rows.append(
+            {
+                "id": staging_idx,
+                "public_id": cred["public_id"],
+                "completion_id": alt_comp["id"],
+                "issuer_id": cred["issuer_id"],
+                "issued_at": dup_issued_at,
+                "canonical_payload_hash": dup_hash,
+                "issuer_signature": dup_sig,
+                "payload_snapshot": dup_claims,
+                "status": "ACTIVE",
+                "created_at": dup_issued_at,
+            }
+        )
+        ground_truth.append(
+            GroundTruthEntry(
+                anomaly_id=f"ANM-{anomaly_seq:04d}",
+                issue_type="DUPLICATE_CREDENTIAL_ID",
+                entity_public_id=cred["public_id"],
+                expected_outcome="REJECTED_DUPLICATE",
+                rule_reference="MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import",
+            )
+        )
+        anomaly_seq += 1
+
+    # -------------------------------------------------------------------------
+    # 3. REVOKED_VERIFIES_AS_ACTIVE (Revocation row exists, credentials.status is ACTIVE)
+    # -------------------------------------------------------------------------
+    for cred in stale_revoked_targets:
+        cred["status"] = "ACTIVE"
+        ground_truth.append(
+            GroundTruthEntry(
+                anomaly_id=f"ANM-{anomaly_seq:04d}",
+                issue_type="REVOKED_VERIFIES_AS_ACTIVE",
+                entity_public_id=cred["public_id"],
+                expected_outcome="REVOKED",
+                rule_reference="MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status",
+            )
+        )
+        anomaly_seq += 1
+
+    # -------------------------------------------------------------------------
+    # 4. ALTERED_PAYLOAD_NOT_DETECTED (half snapshot-only, half snapshot + hash)
+    # -------------------------------------------------------------------------
+    half = n_per_type // 2
+    for idx, cred in enumerate(altered_targets):
+        tampered_snapshot = deepcopy(cred["payload_snapshot"])
+        orig_score = float(tampered_snapshot["assessment"]["score"])
+        new_score = round(min(99.99, orig_score + 0.37) if orig_score < 99.50 else orig_score - 5.25, 2)
+        tampered_snapshot["assessment"]["score"] = new_score
+        tampered_snapshot["course"]["title"] = f"{tampered_snapshot['course']['title']} [Tampered]"
+        cred["payload_snapshot"] = tampered_snapshot
+
+        if idx < half:
+            # First half: payload_snapshot altered only (canonical_payload_hash & signature unchanged)
+            rule_ref = (
+                "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+            )
+        else:
+            # Second half: payload_snapshot AND canonical_payload_hash altered together
+            recomputed_hash = compute_payload_hash(tampered_snapshot)
+            cred["canonical_payload_hash"] = recomputed_hash
+            ev = issued_event_by_pub_id.get(cred["public_id"])
+            if ev is not None:
+                details = dict(ev.get("details") or {})
+                details["completion_id"] = cred["completion_id"]
+                details["canonical_payload_hash"] = recomputed_hash
+                ev["details"] = details
+            rule_ref = (
+                "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+            )
+
+        ground_truth.append(
+            GroundTruthEntry(
+                anomaly_id=f"ANM-{anomaly_seq:04d}",
+                issue_type="ALTERED_PAYLOAD_NOT_DETECTED",
+                entity_public_id=cred["public_id"],
+                expected_outcome="TAMPERED",
+                rule_reference=rule_ref,
+            )
+        )
+        anomaly_seq += 1
+
+    # Re-sort audit events chronologically after premature issuance timestamp adjustments
+    dataset.audit_events.sort(key=lambda e: (e["occurred_at"], e["id"]))
+    for idx, event in enumerate(dataset.audit_events, start=1):
+        event["id"] = idx
+        event["event_id"] = format_audit_event_id(idx)
+
+    gt_dicts = [asdict(entry) for entry in ground_truth]
+    dataset.credential_import_staging = staging_rows
+    dataset.ground_truth = gt_dicts
+    return gt_dicts
 
 
-def save_ground_truth_dataset(ground_truth_records: List[Dict[str, Any]], output_path: Path) -> None:
-    """Save the segregated ground truth records to a JSON file."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(ground_truth_records, f, indent=2, ensure_ascii=False)
+def load_ground_truth(exports_dir: Path = Path("./exports")) -> List[Dict[str, Any]]:
+    """Load ground-truth records from `<exports_dir>/ground_truth.json`."""
+    gt_path = exports_dir / "ground_truth.json"
+    if not gt_path.exists():
+        return []
+    with open(gt_path, "r", encoding="utf-8") as f:
+        return json.load(f)

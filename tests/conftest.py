@@ -186,11 +186,18 @@ def setup_test_database():
 @pytest.fixture(autouse=True)
 def isolate_and_truncate_tables():
     """Truncate all tables (RESTART IDENTITY CASCADE) and reset sequences before and after every test."""
+    from backend.core.rate_limit import verify_rate_limiter
+    from backend.evaluation import reset_latest_evaluation_report
+
     _assert_safe_test_db(TEST_SYNC_DATABASE_URL)
+    verify_rate_limiter.set_limit(None)
+    reset_latest_evaluation_report()
     with test_sync_engine.begin() as conn:
         conn.execute(TRUNCATE_ALL_TABLES_SQL)
         conn.execute(RESET_PUBLIC_SEQUENCES_SQL)
     yield
+    verify_rate_limiter.set_limit(None)
+    reset_latest_evaluation_report()
     with test_sync_engine.begin() as conn:
         conn.execute(TRUNCATE_ALL_TABLES_SQL)
         conn.execute(RESET_PUBLIC_SEQUENCES_SQL)

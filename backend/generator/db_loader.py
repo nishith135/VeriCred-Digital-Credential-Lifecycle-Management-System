@@ -6,11 +6,12 @@ full 20k/10k volume in seconds without memory pressure.
 """
 
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from sqlalchemy import text
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from backend.core.database import sync_engine
+from backend.core import database as db_module
 from backend.generator.generator import SyntheticDataset
 from backend.models import (
     AuditEvent,
@@ -36,9 +37,15 @@ PUBLIC_ID_SEQUENCES = [
 class DatabaseLoader:
     """Loads a SyntheticDataset into PostgreSQL using Core batch execution."""
 
-    def __init__(self, dataset: SyntheticDataset, chunk_size: int = 2000):
+    def __init__(
+        self,
+        dataset: SyntheticDataset,
+        chunk_size: int = 2000,
+        engine: Optional[Engine] = None,
+    ):
         self.dataset = dataset
         self.chunk_size = chunk_size
+        self.engine = engine
 
     def load_all(self, truncate_first: bool = False) -> Dict[str, Any]:
         """Execute the batch ingestion in topological order.
@@ -48,8 +55,9 @@ class DatabaseLoader:
         """
         start_time = time.perf_counter()
         loaded_counts = {}
+        active_engine = self.engine or db_module.sync_engine
 
-        with sync_engine.begin() as conn:
+        with active_engine.begin() as conn:
             if truncate_first:
                 conn.execute(
                     text(
@@ -114,13 +122,17 @@ class DatabaseLoader:
         }
 
     def _insert_batches(self, conn: Any, table: Any, records: List[Dict[str, Any]]) -> int:
-        """Insert records in chunks using SQLAlchemy Core."""
+        """Insert records in chunks using SQLAlchemy Core, filtering to table columns."""
         if not records:
             return 0
 
+        valid_cols = {c.name for c in table.columns}
         total = len(records)
         for i in range(0, total, self.chunk_size):
-            chunk = records[i : i + self.chunk_size]
+            chunk = [
+                {k: v for k, v in row.items() if k in valid_cols}
+                for row in records[i : i + self.chunk_size]
+            ]
             conn.execute(table.insert(), chunk)
 
         return total

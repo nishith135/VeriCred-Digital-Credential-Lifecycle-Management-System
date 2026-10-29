@@ -9,10 +9,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core import database as db_module
 from backend.core.security import compute_payload_hash
-from backend.generator.anomalies import generate_anomaly_fixtures
 from backend.generator.db_loader import DatabaseLoader
 from backend.generator.exporter import DatasetExporter
-from backend.generator.generator import DEFAULT_SEED, DataGenerator
+from backend.generator.generator import (
+    DEFAULT_SEED,
+    DataGenerator,
+    generate_audit_events_df,
+    generate_completions_df,
+    generate_courses_df,
+    generate_credential_rules_df,
+    generate_credentials_df,
+    generate_issuers_df,
+    generate_learners_df,
+    generate_revocations_df,
+    generate_verification_requests_df,
+    inject_anomalies_df,
+)
 from backend.generator.validator import DatasetValidator
 from backend.models.completion import CompletionRecord
 from backend.models.credential import Credential
@@ -67,17 +79,17 @@ def test_export_manifest_sha256_repeatability(tmp_path: Path):
     ds1 = gen1.generate()
     ds2 = gen2.generate()
     
-    fixtures1, gt1 = generate_anomaly_fixtures(seed=DEFAULT_SEED)
-    fixtures2, gt2 = generate_anomaly_fixtures(seed=DEFAULT_SEED)
-    
     exp1 = DatasetExporter(ds1, dir1)
     exp2 = DatasetExporter(ds2, dir2)
     
-    manifest1 = exp1.export_all(fixtures1, gt1)
-    manifest2 = exp2.export_all(fixtures2, gt2)
+    manifest1 = exp1.export_all(ds1.ground_truth)
+    manifest2 = exp2.export_all(ds2.ground_truth)
     
-    # Assert identical SHA-256 checksums across all exported files
+    # Assert identical SHA-256 checksums across all exported files (including ground_truth and staging)
     assert manifest1 == manifest2
+    assert "ground_truth.csv" in manifest1
+    assert "ground_truth.json" in manifest1
+    assert "credential_import_staging.csv" in manifest1
     
     # Check that manifest.sha256 content is identical
     content1 = (dir1 / "manifest.sha256").read_text(encoding="utf-8")
@@ -192,4 +204,98 @@ async def test_db_loader_setval_continuity_and_database_reconciliation(db_sessio
     assert rec["revocations_reconciled"] is True
     assert rec["verifications_reconciled"] is True
     assert rec["unresolved_audit_targets"] == 0
+
+
+def test_standalone_stage_functions_return_dataframes_and_realistic_variety():
+    """Verify each of the 10 stage functions can be called standalone and returns a pandas DataFrame."""
+    import random
+    import numpy as np
+    import pandas as pd
+    from faker import Faker
+
+    Faker.seed(DEFAULT_SEED)
+    rng = random.Random(DEFAULT_SEED)
+    np_rng = np.random.default_rng(DEFAULT_SEED)
+    fake = Faker("en_IN")
+    fake.seed_instance(DEFAULT_SEED)
+
+    issuers_df = generate_issuers_df(seed=DEFAULT_SEED, rng=rng, fake=fake)
+    courses_df = generate_courses_df(n_courses=50, rng=rng)
+    rules_df = generate_credential_rules_df(courses_df=courses_df)
+    learners_df = generate_learners_df(n_learners=100, fake=fake, rng=rng)
+    completions_df = generate_completions_df(
+        learners_df=learners_df,
+        courses_df=courses_df,
+        rules_df=rules_df,
+        n_completions=200,
+        rng=rng,
+        np_rng=np_rng,
+        config={"min_eligible_completions": 65},
+    )
+    credentials_df = generate_credentials_df(
+        completions_df=completions_df,
+        learners_df=learners_df,
+        courses_df=courses_df,
+        issuers_df=issuers_df,
+        n_credentials=50,
+        rng=rng,
+    )
+    revocations_df = generate_revocations_df(
+        credentials_df=credentials_df,
+        n_revocations=5,
+        rng=rng,
+    )
+    verifications_df = generate_verification_requests_df(
+        credentials_df=credentials_df,
+        n_verifications=25,
+        rng=rng,
+    )
+    audit_events_df = generate_audit_events_df(
+        rules_df=rules_df,
+        issuers_df=issuers_df,
+        credentials_df=credentials_df,
+        revocations_df=revocations_df,
+        verifications_df=verifications_df,
+    )
+    ground_truth_df = inject_anomalies_df(
+        credentials_df=credentials_df,
+        completions_df=completions_df,
+        learners_df=learners_df,
+        courses_df=courses_df,
+        issuers_df=issuers_df,
+        verifications_df=verifications_df,
+        audit_events_df=audit_events_df,
+        rng=rng,
+    )
+
+    for df in (
+        issuers_df,
+        courses_df,
+        rules_df,
+        learners_df,
+        completions_df,
+        credentials_df,
+        revocations_df,
+        verifications_df,
+        audit_events_df,
+        ground_truth_df,
+    ):
+        assert isinstance(df, pd.DataFrame)
+        assert not df.empty
+
+    # Course titles unique, with department and level
+    assert courses_df["title"].is_unique
+    assert "department" in courses_df.columns
+    assert "level" in courses_df.columns
+
+    # Learner emails unique, duplicate names > 0
+    assert learners_df["email"].is_unique
+    assert learners_df["full_name"].duplicated().sum() > 0
+
+    # Incomplete statuses present (IN_PROGRESS and FAILED)
+    statuses = set(completions_df["status"])
+    assert "COMPLETED" in statuses
+    assert "IN_PROGRESS" in statuses
+    assert "FAILED" in statuses
+
 

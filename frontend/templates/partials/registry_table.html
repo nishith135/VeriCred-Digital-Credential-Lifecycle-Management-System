@@ -1,5 +1,5 @@
 {% for cred in credentials %}
-<tr class="hover:bg-surface/80 transition-colors group">
+<tr class="hover:bg-surface/80 transition-colors group" data-credential-row="{{ cred.public_id }}">
   <td class="py-3.5 px-4 font-mono">
     <div class="flex items-center gap-1.5">
       <span class="font-bold text-white text-xs">{{ cred.public_id }}</span>
@@ -64,26 +64,17 @@
         Verify
       </a>
       {% if cred.status == 'ACTIVE' %}
-        {% if is_registrar %}
+        {% if current_role.id == 'registrar' %}
         <button 
           type="button"
           onclick="openRevokeModal('{{ cred.public_id }}', '{{ cred.learner_name }}', '{{ cred.course_title }}')"
           class="px-2.5 py-1 rounded-md bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-semibold border border-rose-500/30 transition-colors cursor-pointer">
           Revoke
         </button>
-        {% else %}
-        <button 
-          type="button"
-          onclick="showToast('Access Denied: Only University Registrars can revoke credentials. Switch to Registrar in the top-right persona menu to test.', true)"
-          class="px-2.5 py-1 rounded-md bg-elevated text-text-subtle hover:text-white border border-border flex items-center gap-1 font-mono text-[10px] cursor-pointer"
-          title="Protected by RBAC: Requires University Registrar role">
-          <span class="material-symbols-outlined text-[13px]">lock</span>
-          <span>Revoke</span>
-        </button>
         {% endif %}
       {% else %}
       <span class="px-2 py-0.5 rounded text-text-subtle font-mono text-[10px] bg-elevated border border-border opacity-70">
-        Tombstoned
+        Revoked
       </span>
       {% endif %}
     </div>
@@ -99,3 +90,40 @@
   </td>
 </tr>
 {% endfor %}
+<tr class="bg-surface border-t border-border">
+  <td colspan="8" class="py-3 px-4">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-text-muted" id="registryPaginationBar">
+      <div>
+        Page <strong class="text-white">{{ page or 1 }}</strong> of <strong class="text-white">{{ total_pages or 1 }}</strong>
+        <span class="text-text-subtle">• Showing {{ credentials|length }} of {{ "{:,}".format(total_count or 0) }} total credentials (page size {{ page_size or 50 }})</span>
+      </div>
+      <div class="flex items-center gap-2">
+        {% if (page or 1) > 1 %}
+        <button
+          type="button"
+          hx-get="/web/registry/table?page={{ (page or 1) - 1 }}"
+          hx-target="#credentialsTableBody"
+          hx-include="[name='search'], [name='status']"
+          class="px-3 py-1 rounded-lg bg-elevated hover:bg-card text-white border border-border transition-colors cursor-pointer">
+          &larr; Previous
+        </button>
+        {% else %}
+        <span class="px-3 py-1 rounded-lg bg-canvas text-text-subtle border border-border opacity-50 cursor-not-allowed">&larr; Previous</span>
+        {% endif %}
+
+        {% if (page or 1) < (total_pages or 1) %}
+        <button
+          type="button"
+          hx-get="/web/registry/table?page={{ (page or 1) + 1 }}"
+          hx-target="#credentialsTableBody"
+          hx-include="[name='search'], [name='status']"
+          class="px-3 py-1 rounded-lg bg-elevated hover:bg-card text-white border border-border transition-colors cursor-pointer">
+          Next &rarr;
+        </button>
+        {% else %}
+        <span class="px-3 py-1 rounded-lg bg-canvas text-text-subtle border border-border opacity-50 cursor-not-allowed">Next &rarr;</span>
+        {% endif %}
+      </div>
+    </div>
+  </td>
+</tr>

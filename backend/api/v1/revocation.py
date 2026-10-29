@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db_session
+from backend.core.rbac import require_role
 from backend.models.audit import AuditEvent
 from backend.schemas.revocation import RevocationRequest, RevocationResponse
 from backend.services.revocation import RevocationService
@@ -22,13 +23,14 @@ router = APIRouter(prefix="/api/v1/revocation", tags=["Revocation"])
 )
 async def revoke_credential(
     request: RevocationRequest,
+    actor: dict[str, str] = Depends(require_role("registrar")),
     db: AsyncSession = Depends(get_db_session),
 ) -> RevocationResponse:
     """Revoke an active credential."""
     return await RevocationService.revoke_credential(
         db=db,
         credential_public_id=request.credential_public_id,
-        actor_id=request.actor_id,
+        actor_id=actor["actor_id"],
         reason_code=request.reason_code,
         notes=request.notes,
     )
@@ -41,6 +43,7 @@ async def revoke_credential(
 )
 async def get_credential_audit_history(
     credential_public_id: str,
+    _actor: dict[str, str] = Depends(require_role("registrar", "auditor")),
     db: AsyncSession = Depends(get_db_session),
 ) -> list[dict[str, Any]]:
     """Retrieve audit events for a credential."""

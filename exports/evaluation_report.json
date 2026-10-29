@@ -1,0 +1,147 @@
+{
+  "evaluated_at": "2026-10-29T14:04:41.379551+00:00",
+  "total_elapsed_ms": 12343.78,
+  "total_credentials_evaluated": 10000,
+  "total_staging_duplicates_evaluated": 20,
+  "total_cases_evaluated": 10020,
+  "scenarios_run": 4,
+  "scenarios_passing": 4,
+  "row_count_delta": 0,
+  "table_counts_before": {
+    "issuers": 12,
+    "courses": 1000,
+    "credential_rules": 1000,
+    "learners": 20000,
+    "completion_records": 15300,
+    "credentials": 10000,
+    "revocations": 300,
+    "verification_requests": 5000,
+    "audit_events": 16302
+  },
+  "table_counts_after": {
+    "issuers": 12,
+    "courses": 1000,
+    "credential_rules": 1000,
+    "learners": 20000,
+    "completion_records": 15300,
+    "credentials": 10000,
+    "revocations": 300,
+    "verification_requests": 5000,
+    "audit_events": 16302
+  },
+  "metrics": {
+    "overall_accuracy": {
+      "numerator": 10020,
+      "denominator": 10020,
+      "rate_pct": 100.0
+    },
+    "per_anomaly_type_detection_rate": {
+      "PREMATURE_ISSUANCE": {
+        "numerator": 20,
+        "denominator": 20,
+        "rate_pct": 100.0
+      },
+      "DUPLICATE_CREDENTIAL_ID": {
+        "numerator": 20,
+        "denominator": 20,
+        "rate_pct": 100.0
+      },
+      "REVOKED_VERIFIES_AS_ACTIVE": {
+        "numerator": 20,
+        "denominator": 20,
+        "rate_pct": 100.0
+      },
+      "ALTERED_PAYLOAD_NOT_DETECTED": {
+        "numerator": 20,
+        "denominator": 20,
+        "rate_pct": 100.0
+      }
+    },
+    "false_acceptance_rate": {
+      "numerator": 0,
+      "denominator": 60,
+      "rate_pct": 0.0
+    },
+    "false_rejection_rate": {
+      "numerator": 0,
+      "denominator": 9660,
+      "rate_pct": 0.0
+    },
+    "revocation_detection_rate": {
+      "numerator": 300,
+      "denominator": 300,
+      "rate_pct": 100.0
+    },
+    "tamper_detection_rate": {
+      "numerator": 20,
+      "denominator": 20,
+      "rate_pct": 100.0
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "PREMATURE_ISSUANCE",
+      "title": "Scenario 01: Premature Issuance Chronology Check",
+      "description": "Credentials whose issued_at timestamp precedes the course completion_timestamp (even when cryptographically hashed and signed by an active issuer).",
+      "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp",
+      "example_entity_id": "CRD-2026-000106",
+      "expected_outcome": "INVALID_ISSUANCE",
+      "actual_outcome": "INVALID_ISSUANCE",
+      "reason_code": "PREMATURE_ISSUANCE_TIMESTAMP",
+      "passed": true,
+      "numerator": 20,
+      "denominator": 20,
+      "detection_rate_pct": 100.0,
+      "elapsed_ms": 24.42,
+      "trace": "entity=CRD-2026-000106 expected=INVALID_ISSUANCE actual=INVALID_ISSUANCE detected=20/20 (PREMATURE_ISSUANCE_TIMESTAMP) in 24.42 ms"
+    },
+    {
+      "scenario_id": "DUPLICATE_CREDENTIAL_ID",
+      "title": "Scenario 02: Duplicate Credential ID Staging Rejection",
+      "description": "Staging import rows in credential_import_staging.csv whose public_id duplicates an existing credential in the registry, tested inside a rolled-back savepoint.",
+      "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import",
+      "example_entity_id": "CRD-2026-008745",
+      "expected_outcome": "REJECTED_DUPLICATE",
+      "actual_outcome": "REJECTED_DUPLICATE",
+      "reason_code": "UNIQUE_CONSTRAINT_VIOLATION",
+      "passed": true,
+      "numerator": 20,
+      "denominator": 20,
+      "detection_rate_pct": 100.0,
+      "elapsed_ms": 186.86,
+      "trace": "entity=CRD-2026-008745 expected=REJECTED_DUPLICATE actual=REJECTED_DUPLICATE detected=20/20 (duplicate key value violates unique constraint \"ix_credentials_public_id\") in 186.86 ms"
+    },
+    {
+      "scenario_id": "REVOKED_VERIFIES_AS_ACTIVE",
+      "title": "Scenario 03: Stale Active Status Overridden by Revocation Table",
+      "description": "Credentials where a Revocation row exists in the revocations table while credentials.status remains ACTIVE.",
+      "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status",
+      "example_entity_id": "CRD-2026-000721",
+      "expected_outcome": "REVOKED",
+      "actual_outcome": "REVOKED",
+      "reason_code": "OTHER",
+      "passed": true,
+      "numerator": 20,
+      "denominator": 20,
+      "detection_rate_pct": 100.0,
+      "elapsed_ms": 22.64,
+      "trace": "entity=CRD-2026-000721 expected=REVOKED actual=REVOKED detected=20/20 (OTHER) in 22.64 ms"
+    },
+    {
+      "scenario_id": "ALTERED_PAYLOAD_NOT_DETECTED",
+      "title": "Scenario 04: Altered Payload Snapshot & Digest Tamper Detection",
+      "description": "Credentials where payload_snapshot was modified after issuance (half with snapshot altered only, half with payload_snapshot and canonical_payload_hash altered together).",
+      "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash",
+      "example_entity_id": "CRD-2026-000867",
+      "expected_outcome": "TAMPERED",
+      "actual_outcome": "TAMPERED",
+      "reason_code": "PAYLOAD_DIGEST_MISMATCH",
+      "passed": true,
+      "numerator": 20,
+      "denominator": 20,
+      "detection_rate_pct": 100.0,
+      "elapsed_ms": 20.87,
+      "trace": "entity=CRD-2026-000867 expected=TAMPERED actual=TAMPERED detected=20/20 (PAYLOAD_DIGEST_MISMATCH, RELATIONAL_PAYLOAD_MISMATCH) in 20.87 ms"
+    }
+  ]
+}

@@ -33,8 +33,8 @@ class IssuanceService:
     """Handles secure, tamper-evident credential issuance."""
 
     @staticmethod
-    async def generate_credential_public_id(db: AsyncSession, issued_at: datetime) -> str:
-        """Allocate the next sequential credential identifier (CRD-<issued year>-000001)."""
+    async def generate_credential_public_id(db: AsyncSession, issued_at: datetime | None = None) -> str:
+        """Allocate the next sequential credential identifier (CRD-2026-000001)."""
         number = await next_sequence_value(db, CREDENTIAL_SEQUENCE)
         return format_credential_id(number, issued_at)
 

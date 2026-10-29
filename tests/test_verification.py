@@ -59,7 +59,7 @@ async def test_verification_valid_active_credential(
     assert verif.outcome == "VALID"
     assert verif.reason_code == "VERIFICATION_SUCCESSFUL"
     assert verif.factors.record_found is True
-    assert verif.factors.payload_integrity_valid is True
+    assert verif.factors.payload_hash_matches is True
     assert verif.factors.issuer_authenticated is True
     assert verif.factors.is_revoked is False
 
@@ -116,7 +116,7 @@ async def test_verification_detects_tampered_payload(
     assert verif.outcome == "TAMPERED"
     assert verif.reason_code == "PAYLOAD_DIGEST_MISMATCH"
     assert verif.factors.record_found is True
-    assert verif.factors.payload_integrity_valid is False
+    assert verif.factors.payload_hash_matches is False
 
 
 @pytest.mark.asyncio
@@ -166,7 +166,7 @@ async def test_tampering_strictly_overrides_revocation(
 
     # Must be TAMPERED, not merely REVOKED
     assert verif.outcome == "TAMPERED"
-    assert verif.factors.payload_integrity_valid is False
+    assert verif.factors.payload_hash_matches is False
     assert verif.factors.is_revoked is True
 
 
@@ -479,4 +479,4 @@ async def test_relational_crosscheck_catches_consistent_db_payload_and_hash_tamp
     assert verif.outcome == "TAMPERED"
     assert verif.reason_code == "RELATIONAL_PAYLOAD_MISMATCH"
     assert "RELATIONAL_PAYLOAD_MISMATCH" in verif.factors.failed_subchecks
-    assert verif.factors.payload_integrity_valid is False
+    assert verif.factors.payload_hash_matches is False

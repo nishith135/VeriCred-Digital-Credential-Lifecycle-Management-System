@@ -1,55 +1,562 @@
 [
   {
-    "case_id": "CASE-ANOMALY-001",
+    "anomaly_id": "ANM-0001",
     "issue_type": "PREMATURE_ISSUANCE",
-    "target_identifier": "CRED-ANOMALY-001",
+    "entity_public_id": "CRD-2026-003357",
     "expected_outcome": "INVALID_ISSUANCE",
-    "reason": "Issue timestamp precedes completion timestamp and assessment score (58.50%) is below 80.00% threshold.",
-    "severity": "CRITICAL",
-    "category": "ACADEMIC_INTEGRITY",
-    "fixture_details": {
-      "issued_at": "2026-10-12T12:00:00+00:00",
-      "completed_at": "2026-10-17T12:00:00+00:00"
-    }
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
   },
   {
-    "case_id": "CASE-ANOMALY-002",
+    "anomaly_id": "ANM-0002",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-001743",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0003",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-007925",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0004",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-009698",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0005",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-009145",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0006",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-002734",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0007",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-005521",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0008",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-001383",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0009",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-000142",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0010",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-001971",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0011",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-004297",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0012",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-007392",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0013",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-009029",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0014",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-005026",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0015",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-002722",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0016",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-000106",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0017",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-002302",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0018",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-000566",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0019",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-008775",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0020",
+    "issue_type": "PREMATURE_ISSUANCE",
+    "entity_public_id": "CRD-2026-000307",
+    "expected_outcome": "INVALID_ISSUANCE",
+    "rule_reference": "MASTER_SPEC §6 / §11.5.1: Credential issued_at precedes completion_timestamp"
+  },
+  {
+    "anomaly_id": "ANM-0021",
     "issue_type": "DUPLICATE_CREDENTIAL_ID",
-    "target_identifier": "CRED-ANOMALY-DUP-002",
+    "entity_public_id": "CRD-2026-008745",
     "expected_outcome": "REJECTED_DUPLICATE",
-    "reason": "Two distinct completion records claim the identical public credential identifier in malformed batch.",
-    "severity": "HIGH",
-    "category": "DATA_INTEGRITY",
-    "fixture_details": {
-      "duplicate_id": "CRED-ANOMALY-DUP-002",
-      "competing_records": 2
-    }
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
   },
   {
-    "case_id": "CASE-ANOMALY-003",
+    "anomaly_id": "ANM-0022",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-007537",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0023",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-004596",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0024",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-009490",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0025",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-006045",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0026",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-000459",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0027",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-009048",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0028",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-008748",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0029",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-009639",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0030",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-001422",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0031",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-008006",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0032",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-003861",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0033",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-007155",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0034",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-001857",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0035",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-006162",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0036",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-007655",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0037",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-003724",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0038",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-009965",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0039",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-002046",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0040",
+    "issue_type": "DUPLICATE_CREDENTIAL_ID",
+    "entity_public_id": "CRD-2026-003407",
+    "expected_outcome": "REJECTED_DUPLICATE",
+    "rule_reference": "MASTER_SPEC §7 / §11.5.2: Unique constraint on credentials.public_id rejects duplicate import"
+  },
+  {
+    "anomaly_id": "ANM-0041",
     "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
-    "target_identifier": "CRED-ANOMALY-REV-003",
+    "entity_public_id": "CRD-2026-004733",
     "expected_outcome": "REVOKED",
-    "reason": "Persistent revocation record exists. Buggy or stale client cache erroneously presents status as ACTIVE.",
-    "severity": "CRITICAL",
-    "category": "LIFECYCLE_STATE",
-    "fixture_details": {
-      "stale_claim": "VALID",
-      "actual_state": "REVOKED",
-      "reason_code": "ACADEMIC_MISCONDUCT"
-    }
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
   },
   {
-    "case_id": "CASE-ANOMALY-004",
-    "issue_type": "ALTERED_PAYLOAD_TAMPERING",
-    "target_identifier": "CRED-ANOMALY-TAMPER-004",
+    "anomaly_id": "ANM-0042",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-007565",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0043",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-002563",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0044",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-001356",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0045",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-009093",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0046",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-003114",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0047",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-008783",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0048",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-009574",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0049",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-008747",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0050",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-002116",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0051",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-003426",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0052",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-009860",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0053",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-005327",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0054",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-008007",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0055",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-000904",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0056",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-007649",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0057",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-008451",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0058",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-000845",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0059",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-009493",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0060",
+    "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
+    "entity_public_id": "CRD-2026-000721",
+    "expected_outcome": "REVOKED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.3: Revocation table overrides stale ACTIVE credential status"
+  },
+  {
+    "anomaly_id": "ANM-0061",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-006990",
     "expected_outcome": "TAMPERED",
-    "reason": "Payload attributes modified from score 81.00 (B) to 99.50 (A+). Naive text search matches ID, but canonical SHA-256 digest detects tampering.",
-    "severity": "CRITICAL",
-    "category": "CRYPTOGRAPHIC_INTEGRITY",
-    "fixture_details": {
-      "original_score": 81.0,
-      "altered_score": 99.5
-    }
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0062",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-008058",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0063",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-000928",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0064",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-005150",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0065",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-005483",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0066",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-006105",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0067",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-003017",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0068",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-004208",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0069",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-000867",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0070",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-002293",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4a: Payload snapshot altered without updating canonical_payload_hash"
+  },
+  {
+    "anomaly_id": "ANM-0071",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-001400",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0072",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-001763",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0073",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-006224",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0074",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-005021",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0075",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-003575",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0076",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-005895",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0077",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-004582",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0078",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-006099",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0079",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-007736",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
+  },
+  {
+    "anomaly_id": "ANM-0080",
+    "issue_type": "ALTERED_PAYLOAD_NOT_DETECTED",
+    "entity_public_id": "CRD-2026-001152",
+    "expected_outcome": "TAMPERED",
+    "rule_reference": "MASTER_SPEC §8 / §11.5.4b: Payload snapshot and canonical_payload_hash altered together"
   }
 ]
