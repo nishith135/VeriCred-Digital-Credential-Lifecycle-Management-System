@@ -28,6 +28,7 @@ async def test_audit_event_logging_and_multi_criteria_filtering(
     rule_target_id = f"RULE-{unique_tag}"
     admin_actor = f"ADMIN-{unique_tag}"
 
+    # Deliberate anomaly setup (direct audit event insert without parent Credential/Rule rows), valid only because the DB is isolated.
     # Record 3 events
     await AuditService.log_event(
         db=db_session,

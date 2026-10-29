@@ -111,6 +111,7 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
     await db_session.flush()
 
     cred = Credential(
+        # Deliberate anomaly setup (direct ORM insert bypassing service audit logging), valid only because the DB is isolated.
         public_id=f"CRED-{tag3}-REV",
         completion_id=completion.id,
         issuer_id=issuer.id,
@@ -188,6 +189,7 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
     db_session.add(completion)
     await db_session.flush()
 
+    # Deliberate anomaly setup (direct ORM insert bypassing service audit logging), valid only because the DB is isolated.
     # Credential stored with original hash & signature
     cred = Credential(
         public_id=f"CRED-{tag4}-TAMPER",

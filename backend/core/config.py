@@ -33,6 +33,14 @@ class Settings(BaseSettings):
         "postgresql+psycopg2://postgres:postgres@localhost:5432/credential_db"
     )
 
+    # Isolated Test Database URLs (used exclusively by pytest)
+    TEST_DATABASE_URL: str = (
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/credential_test_db"
+    )
+    TEST_DATABASE_URL_SYNC: str = (
+        "postgresql+psycopg2://postgres:postgres@localhost:5432/credential_test_db"
+    )
+
     # Synthetic Data Defaults
     DEFAULT_SEED: int = 42
     SYNTHETIC_LEARNER_COUNT: int = 20000

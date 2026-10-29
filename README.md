@@ -113,8 +113,10 @@ pip install -r requirements.txt
 ### Step 2: Environment Configuration
 Create `.env` in the project root:
 ```ini
-DATABASE_URL=postgresql+asyncpg://postgres:banana%40123@localhost:5432/credential_db
-SYNC_DATABASE_URL=postgresql://postgres:banana%40123@localhost:5432/credential_db
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/credential_db
+SYNC_DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/credential_db
+TEST_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/credential_test_db
+TEST_DATABASE_URL_SYNC=postgresql+psycopg2://postgres:postgres@localhost:5432/credential_test_db
 APP_ENV=development
 SECRET_KEY=yottaflex_secure_production_secret_key_2026
 DEBUG=True
@@ -199,7 +201,12 @@ python -m backend.generator.validator --export-dir ./exports
 
 ## 7. Automated Testing Evidence
 
-Run the automated test suite across all 10 test modules:
+The test suite runs strictly against an isolated test database (`credential_test_db`) configured via `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC`:
+- **Automatic Provisioning & Migration:** On startup, `tests/conftest.py` automatically creates `credential_test_db` if it does not exist and runs `alembic upgrade head` once per test session.
+- **Per-Test Isolation:** All 9 tables in `credential_test_db` are truncated (`TRUNCATE ... RESTART IDENTITY CASCADE`) before and after every test so tests are completely independent.
+- **Live Database Safety Guard:** A startup guard in `tests/conftest.py` verifies that the resolved database name ends with `_test` (e.g., `credential_test_db`) and immediately aborts via `pytest.exit(...)` if pointed at `credential_db` or any non-test database.
+
+Run the automated test suite across all 10 test modules (37 tests):
 
 ```powershell
 pytest -v

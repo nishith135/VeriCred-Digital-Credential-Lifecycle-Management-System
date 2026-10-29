@@ -1,15 +1,31 @@
-"""Pytest configuration and test database fixtures."""
+"""Pytest configuration and isolated test database fixtures.
+
+Enforces strict database isolation:
+- Refuses to run unless the resolved database name ends with '_test' (e.g. credential_test_db).
+- Automatically creates credential_test_db if missing and runs `alembic upgrade head` once per session.
+- Truncates all 9 tables (RESTART IDENTITY CASCADE) between tests so every test is independent.
+"""
 
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+import os
+import subprocess
+import sys
 from typing import AsyncGenerator
+from uuid import uuid4
+
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
+import backend.core.database as db_module
 from backend.core.config import settings
-from backend.core.database import Base, get_db_session
+from backend.core.database import get_db_session
 from backend.core.security import generate_ed25519_keypair
 from backend.main import app
 from backend.models import (
@@ -20,11 +36,82 @@ from backend.models import (
     Learner,
 )
 
-from sqlalchemy.pool import NullPool
+TRUNCATE_ALL_TABLES_SQL = text(
+    "TRUNCATE TABLE audit_events, verification_requests, revocations, "
+    "credentials, completion_records, credential_rules, learners, "
+    "courses, issuers RESTART IDENTITY CASCADE;"
+)
 
-# Use test engine connected to credential_db with NullPool for per-test event loop isolation
+
+def _resolve_test_db_urls() -> tuple[str, str]:
+    """Resolve async and sync test database URLs, honoring explicit environment overrides."""
+    if "TEST_DATABASE_URL" in os.environ:
+        async_url = os.environ["TEST_DATABASE_URL"]
+    elif "DATABASE_URL" in os.environ:
+        async_url = os.environ["DATABASE_URL"]
+    else:
+        async_url = settings.TEST_DATABASE_URL
+
+    if "TEST_DATABASE_URL_SYNC" in os.environ:
+        sync_url = os.environ["TEST_DATABASE_URL_SYNC"]
+    elif "SYNC_DATABASE_URL" in os.environ:
+        sync_url = os.environ["SYNC_DATABASE_URL"]
+    elif "TEST_DATABASE_URL" in os.environ or "DATABASE_URL" in os.environ:
+        sync_url = async_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://").replace(
+            "postgresql://", "postgresql+psycopg2://"
+        )
+    else:
+        sync_url = settings.TEST_DATABASE_URL_SYNC
+
+    return async_url, sync_url
+
+
+def _assert_safe_test_db(url_str: str) -> str:
+    """Abort pytest immediately if the resolved database name does not end with '_test'."""
+    parsed = make_url(url_str)
+    db_name = (parsed.database or "").strip()
+    # Strip optional trailing '_db' so 'credential_test_db' resolves to 'credential_test'
+    normalized_name = db_name[:-3] if db_name.endswith("_db") else db_name
+
+    if db_name == "credential_db" or not normalized_name.endswith("_test"):
+        pytest.exit(
+            f"SAFETY GUARD ABORT: Refusing to run pytest against database '{db_name}'. "
+            "Test suite database name must end with '_test' (e.g. 'credential_test_db') and must never be 'credential_db'.",
+            returncode=1,
+        )
+    return db_name
+
+
+def _ensure_test_database_exists(sync_url_str: str) -> None:
+    """Create the isolated test database if it does not already exist."""
+    target_url = make_url(sync_url_str)
+    db_name = _assert_safe_test_db(sync_url_str)
+    admin_url = target_url.set(database="postgres")
+
+    admin_engine = create_engine(admin_url, isolation_level="AUTOCOMMIT", poolclass=NullPool)
+    try:
+        with admin_engine.connect() as conn:
+            exists = conn.execute(
+                text("SELECT 1 FROM pg_database WHERE datname = :db_name"),
+                {"db_name": db_name},
+            ).scalar()
+            if not exists:
+                conn.execute(text(f'CREATE DATABASE "{db_name}"'))
+    finally:
+        admin_engine.dispose()
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Enforce database safety guard before test collection and execution."""
+    async_url, sync_url = _resolve_test_db_urls()
+    _assert_safe_test_db(async_url)
+    _assert_safe_test_db(sync_url)
+
+
+TEST_ASYNC_DATABASE_URL, TEST_SYNC_DATABASE_URL = _resolve_test_db_urls()
+
 test_async_engine = create_async_engine(
-    settings.DATABASE_URL,
+    TEST_ASYNC_DATABASE_URL,
     poolclass=NullPool,
 )
 
@@ -35,10 +122,68 @@ test_async_session_factory = async_sessionmaker(
     class_=AsyncSession,
 )
 
+test_sync_engine = create_engine(
+    TEST_SYNC_DATABASE_URL,
+    poolclass=NullPool,
+)
+
+test_sync_session_factory = sessionmaker(
+    bind=test_sync_engine,
+    autoflush=False,
+    expire_on_commit=False,
+)
+
+# Rebind core database module engines to the isolated test database
+db_module.async_engine = test_async_engine
+db_module.async_session_factory = test_async_session_factory
+db_module.sync_engine = test_sync_engine
+db_module.sync_session_factory = test_sync_session_factory
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_database():
+    """Create credential_test_db if missing and apply Alembic migrations once per session."""
+    _assert_safe_test_db(TEST_ASYNC_DATABASE_URL)
+    _assert_safe_test_db(TEST_SYNC_DATABASE_URL)
+    _ensure_test_database_exists(TEST_SYNC_DATABASE_URL)
+
+    env = {
+        **os.environ,
+        "DATABASE_URL": TEST_ASYNC_DATABASE_URL,
+        "SYNC_DATABASE_URL": TEST_SYNC_DATABASE_URL,
+    }
+    result = subprocess.run(
+        [sys.executable, "-m", "alembic", "upgrade", "head"],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        pytest.exit(
+            f"Failed to run 'alembic upgrade head' on test database:\n{result.stderr}\n{result.stdout}",
+            returncode=1,
+        )
+
+    yield
+
+    test_sync_engine.dispose()
+
+
+@pytest.fixture(autouse=True)
+def isolate_and_truncate_tables():
+    """Truncate all tables (RESTART IDENTITY CASCADE) before and after every test."""
+    _assert_safe_test_db(TEST_SYNC_DATABASE_URL)
+    with test_sync_engine.begin() as conn:
+        conn.execute(TRUNCATE_ALL_TABLES_SQL)
+    yield
+    with test_sync_engine.begin() as conn:
+        conn.execute(TRUNCATE_ALL_TABLES_SQL)
+
 
 @pytest_asyncio.fixture
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
-    """Provide an isolated database session per test, rolling back on teardown."""
+    """Provide an isolated database session connected strictly to credential_test_db."""
     async with test_async_session_factory() as session:
         yield session
         await session.rollback()
@@ -57,8 +202,6 @@ async def api_client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, No
         yield client
     app.dependency_overrides.clear()
 
-
-from uuid import uuid4
 
 @pytest_asyncio.fixture
 async def sample_issuer(db_session: AsyncSession):

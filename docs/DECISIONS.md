@@ -113,3 +113,18 @@ This document records the foundational technical and organizational decisions ma
 - **Trade-offs & Mitigations:**
   - *Trade-off:* 43 Python import paths updated.
   - *Mitigation:* Validated with full 36/36 pytest suite and CLI data generator test.
+
+---
+
+## ADR-007: Test Suite Database Isolation (`credential_test_db`) & Live DB Safety Guard
+- **Date:** 2026-10-29
+- **Status:** Approved
+- **Context:**
+  `tests/conftest.py` previously connected to `settings.DATABASE_URL` (`credential_db`). Because domain services call `await db.commit()` directly, running `pytest` permanently inserted test records into the live database (causing row-count drift such as 514 credentials vs. 513 issuance audit events).
+- **Decision:**
+  1. Introduce `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC` in `backend/core/config.py`, `.env`, and `.env.example` pointing to `credential_test_db`.
+  2. Configure `tests/conftest.py` to automatically create `credential_test_db` if missing, run `alembic upgrade head` once per test session, and truncate all 9 tables (`RESTART IDENTITY CASCADE`) before and after every test.
+  3. Enforce a startup safety guard (`pytest.exit`) that aborts immediately if the resolved database name does not end with `_test` (normalized for `_db`) or equals `credential_db`.
+- **Trade-offs & Mitigations:**
+  - *Trade-off:* Per-test `TRUNCATE ... RESTART IDENTITY CASCADE` adds ~0.3s per test (~19.5s total suite runtime).
+  - *Mitigation:* Guarantees 100% deterministic, independent tests and zero mutation of `credential_db`.

@@ -265,6 +265,19 @@ This document maintains empirical evidence of all automated tests, manual checks
     4. **Cryptographic Anomaly Stress-Test Lab (`/anomalies`)**: Interactive test execution for the 4 mandatory failure vectors against backend cryptographic services with live streaming telemetry logs.
   - Zero placeholder buttons: every interactive control is wired to live backend services.
 
+### Verification 011: Test Suite Database Isolation & Safety Guard Verification
+- **Date & Time:** 2026-10-29T12:35:00+05:30
+- **Executed Commands:**
+  1. Pre-test row count query against `credential_db`
+  2. `.\.venv\Scripts\pytest -v` (connected to `credential_test_db`)
+  3. Post-test row count query against `credential_db`
+  4. `$env:DATABASE_URL="postgresql+asyncpg://postgres:<REDACTED>@localhost:5432/credential_db"; .\.venv\Scripts\pytest -v`
+- **Output:**
+  - `pytest -v`: **37 passed in 19.49s** against `credential_test_db` (auto-created and migrated via `alembic upgrade head`, with per-test `TRUNCATE ... RESTART IDENTITY CASCADE`).
+  - Live `credential_db` row counts before vs. after `pytest`: identical across all 9 tables (`issuers: 22`, `courses: 69`, `credential_rules: 69`, `learners: 1019`, `completion_records: 719`, `credentials: 514`, `revocations: 21`, `verification_requests: 261`, `audit_events: 585`).
+  - Safety guard abort test (Code 1):
+    `Exit: SAFETY GUARD ABORT: Refusing to run pytest against database 'credential_db'. Test suite database name must end with '_test' (e.g. 'credential_test_db') and must never be 'credential_db'.`
+
 ---
 
 ## 3. Boundary & Assumption Verification

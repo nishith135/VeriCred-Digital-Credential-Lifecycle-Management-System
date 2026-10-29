@@ -1455,6 +1455,97 @@ go ahead
 
 ---
 
+### Entry 022: Read-Only Full-Stack Codebase Audit & Context Report
+- **Entry ID:** `PROMPT-022`
+- **Date & Time:** 2026-10-29T12:09:48+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 4 Argon Medium)
+- **Purpose:** Perform a read-only audit of the repository, verify architecture, data model, generator, RBAC, verification logic, presentation layer, test suite, and 6 known issues, and wrap findings into `docs/CONTEXT_REPORT.md`.
+- **Exact Prompt:**
+```text
+ROLE
+You are a senior full-stack engineer joining an existing project mid-flight.
+Your previous conversation history is lost. Rebuild your understanding from
+the codebase itself. In this session you are READ-ONLY: do not create, edit,
+move, or delete any file, and do not run anything that mutates the database
+or regenerates data. Reading files, listing directories, and running
+read-only commands (tree, grep, git log, git status, pip list) is fine.
+...
+Follow-up: wrap everything in an md file for context
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `docs/CONTEXT_REPORT.md` (Created comprehensive codebase context and gap report)
+- **Summary of AI Output:**
+  - Confirmed all 6 reported issues with file and line references, identified root causes (including `pytest` mutating `credential_db` causing 514 credentials vs. 513 issuance audit events), and documented additional findings in `docs/CONTEXT_REPORT.md`.
+- **Output Status:** Complete and verified.
+
+---
+
+### Entry 023: Isolate Test Suite (`credential_test_db`) & Enforce Live Database Safety Guard
+- **Entry ID:** `PROMPT-023`
+- **Date & Time:** 2026-10-29T12:30:11+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 4 Argon Medium)
+- **Purpose:** Isolate `pytest` from `credential_db` by adding `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC` (`credential_test_db`), auto-creating and migrating `credential_test_db` in `tests/conftest.py`, truncating all tables between tests, adding a `pytest.exit` safety guard against non-test databases, annotating deliberate ORM anomaly setups, and updating `README.md`.
+- **Exact Prompt:**
+```text
+TASK: Isolate the test suite from the live database. Do not change any
+application behavior, do not regenerate data, and do not touch credential_db
+contents in this step.
+
+CONTEXT
+tests/conftest.py currently connects to settings.DATABASE_URL (credential_db).
+Services call db.commit() directly, so every pytest run permanently inserts
+rows into the live database (this caused 514 credentials vs 513 issuance
+events).
+
+REQUIRED CHANGES
+1. Add TEST_DATABASE_URL (asyncpg) and TEST_DATABASE_URL_SYNC (psycopg2) to
+   backend/core/config.py, .env, and .env.example, pointing at a new database
+   named credential_test_db. Keep DATABASE_URL unchanged.
+2. Rewrite tests/conftest.py so that:
+   - It creates credential_test_db if it does not exist, then runs
+     `alembic upgrade head` against it once per test session.
+   - Every test runs against the test DB only, and all tables are truncated
+     (RESTART IDENTITY CASCADE) between tests so tests are independent.
+   - A safety guard calls pytest.exit(...) if the resolved database name does
+     not end with "_test". The suite must refuse to run against credential_db.
+3. Keep the intentional direct ORM inserts in tests/test_anomalies.py and
+   tests/test_audit.py working, and add a one-line comment on each saying
+   they are deliberate anomaly setups, valid only because the DB is isolated.
+4. Update the README testing section with the new database and how it is
+   created.
+
+ACCEPTANCE CHECKS (run these and report the output)
+a. Before running tests, record row counts for all 9 tables in credential_db.
+b. Run `pytest` and show the summary (all 37 tests should pass).
+c. Record row counts for all 9 tables in credential_db again. They must be
+   identical to (a). Show both tables side by side.
+d. Show that running pytest with DATABASE_URL forced to credential_db makes
+   the guard abort.
+e. List every file you changed.
+
+Report any failing test with its traceback instead of changing its assertions.
+
+also follow all the rules i have given you for thsilocal workspace while u implement these changes
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `backend/core/config.py` (Added `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC`)
+  - `.env` (Added `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC` pointing to `credential_test_db`; password redacted in logs)
+  - `.env.example` (Added `TEST_DATABASE_URL` and `TEST_DATABASE_URL_SYNC` templates)
+  - `tests/conftest.py` (Added safety guard, auto-provisioning of `credential_test_db`, session-level `alembic upgrade head`, and per-test `TRUNCATE ... RESTART IDENTITY CASCADE`)
+  - `tests/test_anomalies.py` (Added one-line comments on deliberate anomaly ORM inserts)
+  - `tests/test_audit.py` (Added one-line comment on deliberate synthetic audit insert)
+  - `README.md` (Updated `.env` snippet and Section 7 testing documentation)
+  - `docs/TEST_EVIDENCE.md`, `docs/DECISIONS.md`, `docs/AI_PROMPT_LOG.md` (Updated compliance documentation)
+- **Summary of AI Output:**
+  - Configured isolated test database `credential_test_db` and verified 37/37 tests pass with zero mutations to `credential_db` and immediate abort when `DATABASE_URL` is forced to `credential_db`.
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - `.\.venv\Scripts\pytest -v`: 37 passed in 19.49s.
+  - Pre/Post `credential_db` row count check: 100% identical across all 9 tables.
+  - Forced `DATABASE_URL` guard check: Aborted with `Exit: SAFETY GUARD ABORT` (exit code 1).
+
+---
+
 
 
 ## C. AI Contribution Summary
