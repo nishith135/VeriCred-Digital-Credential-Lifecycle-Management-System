@@ -10,7 +10,7 @@ class VerificationQueryRequest(BaseModel):
 
     credential_public_id: str = Field(
         ...,
-        description="Public credential identifier (e.g., CRED-2026-XXXXX)",
+        description="Public credential identifier (e.g., CRD-2026-000001)",
         min_length=5,
         max_length=64,
     )
@@ -33,7 +33,7 @@ class VerificationFactorResult(BaseModel):
 class VerificationResponse(BaseModel):
     """Result of third-party multi-factor verification."""
 
-    verification_id: str = Field(..., description="Unique verification attempt audit ID (VRF-XXXXX)")
+    verification_id: str = Field(..., description="Unique verification attempt audit ID (VER-2026-000001)")
     credential_public_id: str
     outcome: str = Field(..., description="VALID | REVOKED | TAMPERED | NOT_FOUND | INVALID_ISSUANCE")
     reason_code: str

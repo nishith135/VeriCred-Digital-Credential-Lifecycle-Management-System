@@ -6,21 +6,21 @@ filtering and sequential replay of the system event ledger.
 
 from datetime import datetime, timezone
 from typing import Any, Optional, Sequence, Tuple
-from uuid import uuid4
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.models.audit import AuditEvent
+from backend.services.ids import AUDIT_EVENT_SEQUENCE, format_audit_event_id, next_sequence_value
 
 
 class AuditService:
     """Manages append-only recording and querying of lifecycle audit events."""
 
     @staticmethod
-    def generate_event_id() -> str:
-        """Generate a structured unique audit event identifier."""
-        return f"EVT-{uuid4().hex[:10].upper()}"
+    async def generate_event_id(db: AsyncSession) -> str:
+        """Allocate the next sequential audit event identifier (EVT-00000001)."""
+        return format_audit_event_id(await next_sequence_value(db, AUDIT_EVENT_SEQUENCE))
 
     @classmethod
     async def log_event(
@@ -35,7 +35,7 @@ class AuditService:
     ) -> AuditEvent:
         """Record an append-only audit event in the database."""
         event = AuditEvent(
-            event_id=cls.generate_event_id(),
+            event_id=await cls.generate_event_id(db),
             event_type=event_type,
             actor_id=actor_id,
             target_entity_type=target_entity_type,

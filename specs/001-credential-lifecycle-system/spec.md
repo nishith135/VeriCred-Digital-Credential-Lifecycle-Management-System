@@ -23,7 +23,7 @@ As an **Academic Administrator**, I want the system to automatically evaluate co
 1. **Successful Issuance**:
    - **Given** an active `CredentialRule` (e.g., minimum score 80%, completion status required) and an existing `Learner` and `Course`,
    - **When** an authorized actor records a `CompletionRecord` with score 85% and status `COMPLETED`,
-   - **Then** the system computes eligibility as `ELIGIBLE`, issues a unique `Credential` (with format `CRED-YYYY-XXXXX`), computes cryptographic integrity metadata, and appends an `AuditEvent` (`CREDENTIAL_ISSUED`) atomically in a single transaction.
+   - **Then** the system computes eligibility as `ELIGIBLE`, issues a unique `Credential` (with format `CRD-YYYY-000001`), computes cryptographic integrity metadata, and appends an `AuditEvent` (`CREDENTIAL_ISSUED`) atomically in a single transaction.
 2. **Rejection of Ineligible Issuance**:
    - **Given** an active `CredentialRule` requiring minimum score 80%,
    - **When** an issuance is attempted for a `CompletionRecord` with score 74%,
@@ -214,23 +214,23 @@ As a **Project Evaluator / Demonstration Reviewer**, I want a clean, responsive 
 ### Key Entities
 
 - **Learner**: Represents the student/recipient.
-  - *Attributes*: Internal ID (PK), Public ID (`LRN-XXXXX`, Unique), Full Name, Email (Unique), Status, Created Timestamp.
+  - *Attributes*: Internal ID (PK), Public ID (`LRN-000001`, Unique), Full Name, Email (Unique), Status, Created Timestamp.
 - **Course**: Represents the educational program or versioned course.
-  - *Attributes*: Internal ID (PK), Public ID (`CRS-XXXXX`, Unique), Title, Version, Active Status, Created Timestamp.
+  - *Attributes*: Internal ID (PK), Public ID (`CRS-000001`, Unique), Title, Version, Active Status, Created Timestamp.
 - **CredentialRule**: Defines eligibility policy for credential granting.
   - *Attributes*: Internal ID (PK), Course Reference (FK), Rule Version, Minimum Score, Required Completion Status, Effective From, Effective To, Active Status.
 - **CompletionRecord**: Evidence of a learner completing a course.
-  - *Attributes*: Internal ID (PK), Learner Reference (FK), Course Reference (FK), Assessment Score, Completion Status (`COMPLETED`, `IN_PROGRESS`, `FAILED`), Completion Timestamp.
+  - *Attributes*: Internal ID (PK), Public ID (`CMP-LRN-000001-CRS-000001`, Unique), Learner Reference (FK), Course Reference (FK), Assessment Score, Completion Status (`COMPLETED`, `IN_PROGRESS`, `FAILED`), Completion Timestamp.
 - **Credential**: The issued digital credential.
-  - *Attributes*: Internal ID (PK), Public ID (`CRED-YYYY-XXXXX`, Unique), Completion Reference (FK, Unique), Issuer Reference (FK), Rule Snapshot, Issued Timestamp, Canonical Payload Hash (SHA-256), Issuer Signature / Key ID, Current Status (`ACTIVE`, `REVOKED`).
+  - *Attributes*: Internal ID (PK), Public ID (`CRD-YYYY-000001`, Unique), Completion Reference (FK, Unique), Issuer Reference (FK), Rule Snapshot, Issued Timestamp, Canonical Payload Hash (SHA-256), Issuer Signature / Key ID, Current Status (`ACTIVE`, `REVOKED`).
 - **Issuer**: The authorizing organization or institution.
-  - *Attributes*: Internal ID (PK), Public ID (`ISS-XXXXX`, Unique), Organization Name, Public Key Metadata, Status, Created Timestamp.
+  - *Attributes*: Internal ID (PK), Public ID (`ISS-00001`, Unique), Organization Name, Public Key Metadata, Status, Created Timestamp.
 - **VerificationRequest**: Log of third-party verification queries.
-  - *Attributes*: Internal ID (PK), Public ID (`VRF-XXXXX`, Unique), Credential Reference (FK, Optional/Nullable for unknown IDs), Requested ID String, Verification Timestamp, Outcome (`VALID`, `REVOKED`, `TAMPERED`, `NOT_FOUND`, `INVALID_ISSUANCE`), Reason Code, Integrity Check Result, Requester IP / Category.
+  - *Attributes*: Internal ID (PK), Public ID (`VER-YYYY-000001`, Unique), Credential Reference (FK, Optional/Nullable for unknown IDs), Requested ID String, Verification Timestamp, Outcome (`VALID`, `REVOKED`, `TAMPERED`, `NOT_FOUND`, `INVALID_ISSUANCE`), Reason Code, Integrity Check Result, Requester IP / Category.
 - **Revocation**: Formal record of credential revocation.
-  - *Attributes*: Internal ID (PK), Credential Reference (FK, Unique), Revocation Sequence ID, Revoked By Actor ID, Reason Code, Revocation Timestamp, Effective Date.
+  - *Attributes*: Internal ID (PK), Public ID (`REV-CRD-YYYY-000001-01`, Unique), Credential Reference (FK, Unique), Revoked By Actor ID, Reason Code, Revocation Timestamp, Effective Date.
 - **AuditEvent**: Tamper-resistant append-only operational log.
-  - *Attributes*: Internal ID (PK), Event ID (`EVT-XXXXX`, Unique), Event Type (`ISSUED`, `VERIFIED`, `REVOKED`, `RULE_MODIFIED`, `EXCEPTION`), Actor Reference, Target Entity Type, Target Entity ID, Occurred Timestamp, Structured Details (JSONB).
+  - *Attributes*: Internal ID (PK), Event ID (`EVT-00000001`, Unique), Event Type (`ISSUED`, `VERIFIED`, `REVOKED`, `RULE_MODIFIED`, `EXCEPTION`), Actor Reference, Target Entity Type, Target Entity ID, Occurred Timestamp, Structured Details (JSONB).
 
 ---
 

@@ -27,6 +27,7 @@ class RevocationRequest(BaseModel):
 class RevocationResponse(BaseModel):
     """Result of an authorized revocation action."""
 
+    public_id: Optional[str] = None
     credential_public_id: str
     status: str = Field("REVOKED")
     reason_code: str

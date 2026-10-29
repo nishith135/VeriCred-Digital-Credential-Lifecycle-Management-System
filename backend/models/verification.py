@@ -32,7 +32,7 @@ class VerificationRequest(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     public_id: Mapped[str] = mapped_column(
         String(32), unique=True, index=True, nullable=False
-    )  # e.g., VRF-00001
+    )  # e.g., VER-2026-000001
     credential_id: Mapped[Optional[int]] = mapped_column(
         Integer,
         ForeignKey("credentials.id", ondelete="SET NULL"),

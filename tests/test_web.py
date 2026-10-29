@@ -23,7 +23,7 @@ async def test_web_verify_htmx_post(api_client: AsyncClient):
     """Verify that HTMX POST /web/verify returns formatted verification badge."""
     resp = await api_client.post(
         "/web/verify",
-        data={"credential_public_id": "CRED-NONEXISTENT-999"},
+        data={"credential_public_id": "CRD-2026-999999"},
     )
     assert resp.status_code == 200
     assert "NOT_FOUND" in resp.text
@@ -112,7 +112,7 @@ async def test_web_rbac_login_and_role_switching(api_client: AsyncClient):
     # 3. Verifier persona cannot revoke credentials
     resp_revoke_forbidden = await api_client.post(
         "/web/revocation/revoke",
-        data={"credential_public_id": "CRED-2026-000001"},
+        data={"credential_public_id": "CRD-2026-000001"},
         cookies={"vericred_role": "verifier"},
     )
     assert resp_revoke_forbidden.status_code == 200

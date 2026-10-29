@@ -14,6 +14,7 @@ from decimal import Decimal
 from typing import Any, Dict, List
 
 from backend.generator.generator import SyntheticDataset
+from backend.services.ids import ID_PATTERNS
 
 
 @dataclass
@@ -35,6 +36,7 @@ class DatasetValidator:
         report = ValidationReport(is_valid=True)
         
         self._validate_uniqueness(report)
+        self._validate_id_formats(report)
         self._validate_foreign_keys(report)
         self._validate_date_ordering(report)
         self._validate_eligibility_invariants(report)
@@ -68,6 +70,25 @@ class DatasetValidator:
         check_ids(self.dataset.revocations, "revocations")
         check_ids(self.dataset.verifications, "verification_requests")
         check_ids(self.dataset.audit_events, "audit_events")
+
+    def _validate_id_formats(self, report: ValidationReport) -> None:
+        """Assert every public identifier matches its canonical format (see backend/services/ids.py)."""
+        checks = [
+            (self.dataset.issuers, "public_id", "issuer"),
+            (self.dataset.courses, "public_id", "course"),
+            (self.dataset.learners, "public_id", "learner"),
+            (self.dataset.completions, "public_id", "completion"),
+            (self.dataset.credentials, "public_id", "credential"),
+            (self.dataset.verifications, "public_id", "verification"),
+            (self.dataset.revocations, "public_id", "revocation"),
+            (self.dataset.audit_events, "event_id", "audit_event"),
+        ]
+        for rows, key, entity in checks:
+            pattern = ID_PATTERNS[entity]
+            for row in rows:
+                value = row.get(key)
+                if not isinstance(value, str) or not pattern.match(value):
+                    report.errors.append(f"Invalid {entity} {key} format: {value!r}")
 
     def _validate_foreign_keys(self, report: ValidationReport) -> None:
         """Assert referential parent existence for all child references."""

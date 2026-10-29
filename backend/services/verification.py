@@ -13,7 +13,6 @@ must always be flagged as TAMPERED.
 
 from datetime import datetime, timezone
 from typing import Any, Optional
-from uuid import uuid4
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,6 +25,7 @@ from backend.schemas.verification import (
     VerificationFactorResult,
     VerificationResponse,
 )
+from backend.services.ids import VERIFICATION_SEQUENCE, format_verification_id, next_sequence_value
 
 
 class VerificationService:
@@ -41,7 +41,8 @@ class VerificationService:
     ) -> VerificationResponse:
         """Perform multi-factor verification and audit log query attempt."""
         now = datetime.now(timezone.utc)
-        verification_id = f"VRF-{uuid4().hex[:8].upper()}"
+        verification_number = await next_sequence_value(db, VERIFICATION_SEQUENCE)
+        verification_id = format_verification_id(verification_number, now)
 
         # 1. Existence Check
         stmt = (
@@ -153,6 +154,7 @@ class VerificationService:
         rev_details = None
         if credential.revocation:
             rev_details = {
+                "public_id": credential.revocation.public_id,
                 "reason_code": credential.revocation.reason_code,
                 "revoked_by_actor_id": credential.revocation.revoked_by_actor_id,
                 "revocation_timestamp": credential.revocation.revocation_timestamp.isoformat(),

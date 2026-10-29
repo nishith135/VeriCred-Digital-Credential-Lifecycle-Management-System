@@ -151,7 +151,7 @@ Open your browser to:
 All 4 demonstration interfaces are adapted from the official Google Stitch prototypes with 100% interactive backend functionality:
 
 ### Screen 1: Public Verification Portal (`/` & `/verify`)
-- **Real-Time Verification:** Enter any public credential ID (e.g. `CRED-2026-000001`) to trigger a sub-100ms multi-factor check via HTMX without full-page reload.
+- **Real-Time Verification:** Enter any public credential ID (e.g. `CRD-2026-000001`) to trigger a sub-100ms multi-factor check via HTMX without full-page reload.
 - **Quick-Fill Pills:** Click sample pills to immediately test authentic, revoked, or non-existent identifiers.
 - **Tamper Simulation Accordion:** Expand the payload JSON editor, alter a single byte (e.g., degree title or GPA), and observe the system immediately reject the credential with `TAMPERED` status and SHA-256 digest mismatch.
 

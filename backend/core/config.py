@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     )
 
     # Synthetic Data Defaults
-    DEFAULT_SEED: int = 42
+    DEFAULT_SEED: int = 20261022
     SYNTHETIC_LEARNER_COUNT: int = 20000
     SYNTHETIC_COURSE_COUNT: int = 1000
     SYNTHETIC_CREDENTIAL_COUNT: int = 10000

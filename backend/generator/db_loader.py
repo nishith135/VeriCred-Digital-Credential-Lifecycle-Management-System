@@ -23,6 +23,14 @@ from backend.models import (
     Revocation,
     VerificationRequest,
 )
+from backend.services.ids import AUDIT_EVENT_SEQUENCE, CREDENTIAL_SEQUENCE, VERIFICATION_SEQUENCE
+
+# (sequence, table, column, regex capturing the numeric part of the public ID)
+PUBLIC_ID_SEQUENCES = [
+    (CREDENTIAL_SEQUENCE, "credentials", "public_id", r"^CRD-\d{4}-(\d{6})$"),
+    (VERIFICATION_SEQUENCE, "verification_requests", "public_id", r"^VER-\d{4}-(\d{6})$"),
+    (AUDIT_EVENT_SEQUENCE, "audit_events", "event_id", r"^EVT-(\d{8})$"),
+]
 
 
 class DatabaseLoader:
@@ -86,6 +94,17 @@ class DatabaseLoader:
             ]:
                 conn.execute(
                     text(f"SELECT setval(pg_get_serial_sequence('{table_name}', 'id'), coalesce(max(id), 1)) FROM {table_name};")
+                )
+
+            # Position public ID sequences so runtime numbering continues at max+1
+            for seq_name, table_name, column, pattern in PUBLIC_ID_SEQUENCES:
+                conn.execute(
+                    text(
+                        f"SELECT setval('{seq_name}', "
+                        f"COALESCE(MAX(CAST(substring({column} FROM :pattern) AS BIGINT)), 0) + 1, false) "
+                        f"FROM {table_name};"
+                    ),
+                    {"pattern": pattern},
                 )
 
         duration = time.perf_counter() - start_time

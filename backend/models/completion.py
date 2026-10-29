@@ -38,6 +38,9 @@ class CompletionRecord(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    public_id: Mapped[str] = mapped_column(
+        String(64), unique=True, index=True, nullable=False
+    )  # e.g., CMP-LRN-000001-CRS-000001
     learner_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("learners.id", ondelete="RESTRICT"), nullable=False, index=True
     )

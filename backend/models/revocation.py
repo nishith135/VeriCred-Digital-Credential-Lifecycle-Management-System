@@ -30,6 +30,9 @@ class Revocation(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    public_id: Mapped[str] = mapped_column(
+        String(64), unique=True, index=True, nullable=False
+    )  # e.g., REV-CRD-2026-000001-01
     credential_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("credentials.id", ondelete="RESTRICT"),

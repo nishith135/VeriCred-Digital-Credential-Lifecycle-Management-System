@@ -177,7 +177,7 @@
 <div class="flex flex-col gap-space-xs xl:col-span-1">
 <label class="font-code-dense text-code-dense text-outline uppercase tracking-wider" for="filterEntityId">Target Entity ID</label>
 <div class="relative">
-<input class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-code-dense text-code-dense rounded focus:outline-none focus:bg-surface-bright" id="filterEntityId" placeholder="e.g. CRED-2026-003819" type="text" value="CRED-2026-003819"/>
+<input class="w-full h-8 px-space-sm bg-surface-container-highest text-on-surface font-code-dense text-code-dense rounded focus:outline-none focus:bg-surface-bright" id="filterEntityId" placeholder="e.g. CRD-2026-003819" type="text" value="CRD-2026-003819"/>
 <span class="material-symbols-outlined absolute right-2 top-2 text-[14px] text-outline pointer-events-none">pin</span>
 </div>
 </div>
@@ -263,7 +263,7 @@
               SEC-ADMIN-9402 <span class="text-outline">(Registrar)</span>
 </td>
 <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
-<span class="text-outline">Credential:</span> CRED-2026-003819
+<span class="text-outline">Credential:</span> CRD-2026-003819
             </td>
 <td class="py-space-md px-space-md text-on-surface max-w-md truncate">
               Revocation committed: ACADEMIC_MISCONDUCT sanction (#2026-089A)
@@ -311,7 +311,7 @@
   <span class="text-outline">"timestamp_utc":</span> <span class="text-secondary">"2026-02-18T14:22:09.104Z"</span>,
   <span class="text-outline">"target_entity":</span> {
     <span class="text-outline">"type":</span> <span class="text-secondary">"Credential"</span>,
-    <span class="text-outline">"id":</span> <span class="text-secondary">"CRED-2026-003819"</span>,
+    <span class="text-outline">"id":</span> <span class="text-secondary">"CRD-2026-003819"</span>,
     <span class="text-outline">"owner_fingerprint":</span> <span class="text-secondary">"sha256:4a02c819ff..."</span>
   },
   <span class="text-outline">"state_transition":</span> {
@@ -392,7 +392,7 @@
               SYSTEM_ACCREDITATION_DAEMON
             </td>
 <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
-<span class="text-outline">Credential:</span> CRED-2026-084920
+<span class="text-outline">Credential:</span> CRD-2026-084920
             </td>
 <td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
               New credential batch minted after automated 80% score threshold pass
@@ -424,7 +424,7 @@
               E-GATE_VERIFIER_04
             </td>
 <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
-<span class="text-outline">Credential:</span> CRED-2026-001249
+<span class="text-outline">Credential:</span> CRD-2026-001249
             </td>
 <td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
               Real-time TLS query verified authentic via MITx anchor
@@ -488,7 +488,7 @@
               E-GATE_VERIFIER_02
             </td>
 <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
-<span class="text-outline">Credential:</span> CRED-2025-099411
+<span class="text-outline">Credential:</span> CRD-2025-099411
             </td>
 <td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
               Automated E-Gate intercepted hash divergence in gradeScore claim
@@ -520,7 +520,7 @@
               SEC-ADMIN-9402
             </td>
 <td class="py-space-md px-space-md font-code-dense text-code-dense text-secondary whitespace-nowrap">
-<span class="text-outline">Credential:</span> CRED-2026-077180
+<span class="text-outline">Credential:</span> CRD-2026-077180
             </td>
 <td class="py-space-md px-space-md text-on-surface-variant max-w-md truncate">
               Cryptographic dispatch approved for Computer Science honors

@@ -26,7 +26,7 @@ class Course(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     public_id: Mapped[str] = mapped_column(
         String(32), unique=True, index=True, nullable=False
-    )  # e.g., CRS-10001
+    )  # e.g., CRS-000001
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     version: Mapped[str] = mapped_column(String(32), default="1.0", nullable=False)
     status: Mapped[str] = mapped_column(

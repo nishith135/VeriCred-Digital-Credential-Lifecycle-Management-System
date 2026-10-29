@@ -2,7 +2,7 @@
   {
     "case_id": "CASE-ANOMALY-001",
     "issue_type": "PREMATURE_ISSUANCE",
-    "target_identifier": "CRED-ANOMALY-001",
+    "target_identifier": "CRD-2026-900001",
     "expected_outcome": "INVALID_ISSUANCE",
     "reason": "Issue timestamp precedes completion timestamp and assessment score (58.50%) is below 80.00% threshold.",
     "severity": "CRITICAL",
@@ -15,20 +15,20 @@
   {
     "case_id": "CASE-ANOMALY-002",
     "issue_type": "DUPLICATE_CREDENTIAL_ID",
-    "target_identifier": "CRED-ANOMALY-DUP-002",
+    "target_identifier": "CRD-2026-900002",
     "expected_outcome": "REJECTED_DUPLICATE",
     "reason": "Two distinct completion records claim the identical public credential identifier in malformed batch.",
     "severity": "HIGH",
     "category": "DATA_INTEGRITY",
     "fixture_details": {
-      "duplicate_id": "CRED-ANOMALY-DUP-002",
+      "duplicate_id": "CRD-2026-900002",
       "competing_records": 2
     }
   },
   {
     "case_id": "CASE-ANOMALY-003",
     "issue_type": "REVOKED_VERIFIES_AS_ACTIVE",
-    "target_identifier": "CRED-ANOMALY-REV-003",
+    "target_identifier": "CRD-2026-900003",
     "expected_outcome": "REVOKED",
     "reason": "Persistent revocation record exists. Buggy or stale client cache erroneously presents status as ACTIVE.",
     "severity": "CRITICAL",
@@ -42,9 +42,9 @@
   {
     "case_id": "CASE-ANOMALY-004",
     "issue_type": "ALTERED_PAYLOAD_TAMPERING",
-    "target_identifier": "CRED-ANOMALY-TAMPER-004",
+    "target_identifier": "CRD-2026-900004",
     "expected_outcome": "TAMPERED",
-    "reason": "Payload attributes modified from score 81.00 (B) to 99.50 (A+). Naive text search matches ID, but canonical SHA-256 digest detects tampering.",
+    "reason": "Payload assessment score modified from 81.00 to 99.50. Naive text search matches ID, but canonical SHA-256 digest detects tampering.",
     "severity": "CRITICAL",
     "category": "CRYPTOGRAPHIC_INTEGRITY",
     "fixture_details": {

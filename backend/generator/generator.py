@@ -27,6 +27,17 @@ from backend.core.security import (
     generate_ed25519_keypair,
     sign_payload_hash,
 )
+from backend.services.ids import (
+    format_audit_event_id,
+    format_completion_id,
+    format_course_id,
+    format_credential_id,
+    format_issuer_id,
+    format_learner_id,
+    format_revocation_id,
+    format_verification_id,
+)
+from backend.services.payloads import build_credential_payload
 
 DEFAULT_SEED = 20261022
 REFERENCE_DATETIME = datetime(2026, 10, 22, 12, 0, 0, tzinfo=timezone.utc)
@@ -155,7 +166,7 @@ class DataGenerator:
             
             issuer = {
                 "id": idx,
-                "public_id": f"ISS-{idx:05d}",
+                "public_id": format_issuer_id(idx),
                 "name": name,
                 "public_key_pem": pub_pem,
                 "status": "ACTIVE",
@@ -175,7 +186,7 @@ class DataGenerator:
             
             course = {
                 "id": idx,
-                "public_id": f"CRS-{idx:05d}",
+                "public_id": format_course_id(idx),
                 "title": title,
                 "version": "1.0",
                 "status": "ACTIVE",
@@ -210,7 +221,7 @@ class DataGenerator:
             
             learner = {
                 "id": idx,
-                "public_id": f"LRN-{idx:06d}",
+                "public_id": format_learner_id(idx),
                 "full_name": full_name,
                 "email": email,
                 "status": "ACTIVE",
@@ -219,13 +230,23 @@ class DataGenerator:
             dataset.learners.append(learner)
 
     def _generate_completions(self, dataset: SyntheticDataset, n_completions: int) -> None:
-        """Generate completion records with realistic score distributions."""
+        """Generate completion records with realistic score distributions.
+
+        Each (learner, course) pair appears at most once because the completion
+        public_id CMP-<learner>-<course> must be unique; colliding draws are re-drawn.
+        """
         n_learners = len(dataset.learners)
         n_courses = len(dataset.courses)
+        n_completions = min(n_completions, n_learners * n_courses)
+        seen_pairs: set[tuple[int, int]] = set()
         
         for idx in range(1, n_completions + 1):
             learner_id = self.rng.randint(1, n_learners)
             course_id = self.rng.randint(1, n_courses)
+            while (learner_id, course_id) in seen_pairs:
+                learner_id = self.rng.randint(1, n_learners)
+                course_id = self.rng.randint(1, n_courses)
+            seen_pairs.add((learner_id, course_id))
             rule = dataset.rules[course_id - 1]
             
             # 75% pass rate (score >= 80.00, status COMPLETED), 25% fail / incomplete
@@ -241,6 +262,10 @@ class DataGenerator:
             
             completion = {
                 "id": idx,
+                "public_id": format_completion_id(
+                    dataset.learners[learner_id - 1]["public_id"],
+                    dataset.courses[course_id - 1]["public_id"],
+                ),
                 "learner_id": learner_id,
                 "course_id": course_id,
                 "rule_id": rule["id"],
@@ -273,30 +298,22 @@ class DataGenerator:
             issued_at = comp["completion_timestamp"] + timedelta(
                 hours=self.rng.randint(1, 48)
             )
-            public_id = f"CRED-2026-{cred_idx:06d}"
+            public_id = format_credential_id(cred_idx, issued_at)
             
-            claims = {
-                "credential_id": public_id,
-                "course": {
-                    "code": course["public_id"],
-                    "title": course["title"],
-                },
-                "learner": {
-                    "id": learner["public_id"],
-                    "name": learner["full_name"],
-                    "email": learner["email"],
-                },
-                "assessment": {
-                    "score": float(comp["assessment_score"]),
-                    "status": comp["status"],
-                },
-                "issued_at": issued_at.isoformat(),
-                "completion_timestamp": comp["completion_timestamp"].isoformat(),
-                "issuer": {
-                    "id": issuer["public_id"],
-                    "name": issuer["name"],
-                },
-            }
+            claims = build_credential_payload(
+                credential_id=public_id,
+                issued_at=issued_at,
+                completion_timestamp=comp["completion_timestamp"],
+                learner_id=learner["public_id"],
+                learner_name=learner["full_name"],
+                learner_email=learner["email"],
+                course_code=course["public_id"],
+                course_title=course["title"],
+                assessment_score=comp["assessment_score"],
+                assessment_status=comp["status"],
+                issuer_id=issuer["public_id"],
+                issuer_name=issuer["name"],
+            )
             
             payload_hash = compute_payload_hash(claims)
             signature = sign_payload_hash(priv_pem, payload_hash)
@@ -335,6 +352,7 @@ class DataGenerator:
             
             revocation = {
                 "id": rev_id_seq,
+                "public_id": format_revocation_id(cred["public_id"]),
                 "credential_id": cred["id"],
                 "revoked_by_actor_id": "DEAN-OFFICE-01",
                 "reason_code": reason,
@@ -375,11 +393,12 @@ class DataGenerator:
                 integrity = False
                 auth = False
                 cred_id = None
-                req_identifier = f"CRED-UNKNOWN-{self.rng.randint(900000, 999999)}"
+                # Well-formed but never-issued identifier (issued numbers stay far below 900000)
+                req_identifier = format_credential_id(self.rng.randint(900000, 999999), req_time)
                 
             verification = {
                 "id": idx,
-                "public_id": f"VRF-{idx:06d}",
+                "public_id": format_verification_id(idx, req_time),
                 "credential_id": cred_id,
                 "requested_identifier": req_identifier,
                 "verification_timestamp": req_time,
@@ -446,4 +465,4 @@ class DataGenerator:
         dataset.audit_events.sort(key=lambda e: (e["occurred_at"], e["id"]))
         for idx, event in enumerate(dataset.audit_events, start=1):
             event["id"] = idx
-            event["event_id"] = f"EVT-{idx:08d}"
+            event["event_id"] = format_audit_event_id(idx)

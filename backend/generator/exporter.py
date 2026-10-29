@@ -80,6 +80,78 @@ class DatasetExporter:
             
         return checksums
 
+    TABLE_COLUMNS: Dict[str, List[str]] = {
+        "issuers.csv": ["id", "public_id", "name", "public_key_pem", "status", "created_at"],
+        "courses.csv": ["id", "public_id", "title", "version", "status", "created_at"],
+        "credential_rules.csv": [
+            "id",
+            "course_id",
+            "rule_version",
+            "min_score",
+            "required_completion_status",
+            "effective_from",
+            "effective_to",
+            "active",
+            "created_at",
+        ],
+        "learners.csv": ["id", "public_id", "full_name", "email", "status", "created_at"],
+        "completion_records.csv": [
+            "id",
+            "public_id",
+            "learner_id",
+            "course_id",
+            "rule_id",
+            "assessment_score",
+            "status",
+            "completion_timestamp",
+            "created_at",
+        ],
+        "credentials.csv": [
+            "id",
+            "public_id",
+            "completion_id",
+            "issuer_id",
+            "issued_at",
+            "canonical_payload_hash",
+            "issuer_signature",
+            "payload_snapshot",
+            "status",
+            "created_at",
+        ],
+        "revocations.csv": [
+            "id",
+            "public_id",
+            "credential_id",
+            "revoked_by_actor_id",
+            "reason_code",
+            "revocation_timestamp",
+            "created_at",
+        ],
+        "verification_requests.csv": [
+            "id",
+            "public_id",
+            "credential_id",
+            "requested_identifier",
+            "verification_timestamp",
+            "outcome",
+            "reason_code",
+            "integrity_check_passed",
+            "issuer_authenticated",
+            "requester_ip",
+            "created_at",
+        ],
+        "audit_events.csv": [
+            "id",
+            "event_id",
+            "event_type",
+            "target_entity_type",
+            "target_entity_id",
+            "actor_id",
+            "details",
+            "occurred_at",
+        ],
+    }
+
     def _export_csv(self) -> List[Path]:
         """Export tabular records to individual CSV files."""
         exported = []
@@ -97,16 +169,14 @@ class DatasetExporter:
         
         for filename, rows in tables:
             path = self.output_dir / filename
-            if rows:
-                headers = list(rows[0].keys())
-                with open(path, "w", newline="", encoding="utf-8") as f:
+            headers = self.TABLE_COLUMNS.get(filename) or (list(rows[0].keys()) if rows else [])
+            sorted_rows = sorted(rows, key=lambda r: r.get("id", 0))
+            with open(path, "w", newline="", encoding="utf-8") as f:
+                if headers:
                     writer = csv.writer(f)
                     writer.writerow(headers)
-                    for r in rows:
+                    for r in sorted_rows:
                         writer.writerow([_serialize_value(r.get(h)) for h in headers])
-            else:
-                with open(path, "w", newline="", encoding="utf-8") as f:
-                    pass
             exported.append(path)
             
         return exported

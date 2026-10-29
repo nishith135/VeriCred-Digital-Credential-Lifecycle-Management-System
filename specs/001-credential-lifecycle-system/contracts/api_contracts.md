@@ -21,8 +21,8 @@
   ```json
   {
     "eligible": true,
-    "learner_id": "LRN-00123",
-    "course_id": "CRS-00045",
+    "learner_id": "LRN-000123",
+    "course_id": "CRS-000045",
     "rule_version": "1.0",
     "assessment_score": 88.50,
     "min_required_score": 80.00,
@@ -55,12 +55,12 @@
 - **Response (201 Created)**:
   ```json
   {
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "status": "ACTIVE",
     "issued_at": "2026-10-28T10:30:00Z",
     "canonical_payload_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "issuer_public_id": "ISS-00001",
-    "audit_event_id": "EVT-009821"
+    "audit_event_id": "EVT-00009821"
   }
   ```
 - **Error (409 Conflict — Duplicate)**:
@@ -81,15 +81,15 @@
 - **Request Body (Lookup by ID)**:
   ```json
   {
-    "credential_id": "CRED-2026-001042"
+    "credential_id": "CRD-2026-001042"
   }
   ```
 - **Response (200 OK — Valid)**:
   ```json
   {
-    "verification_id": "VRF-004512",
+    "verification_id": "VER-2026-004512",
     "outcome": "VALID",
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "issuer_name": "Metropolitan University",
     "learner_reference": "LRN-00123",
     "course_title": "Advanced Distributed Systems",
@@ -102,9 +102,9 @@
 - **Response (200 OK — Revoked)**:
   ```json
   {
-    "verification_id": "VRF-004513",
+    "verification_id": "VER-2026-004513",
     "outcome": "REVOKED",
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "integrity_check_passed": true,
     "issuer_authenticated": true,
     "revoked_at": "2026-10-28T11:00:00Z",
@@ -114,9 +114,9 @@
 - **Response (200 OK — Tampered)**:
   ```json
   {
-    "verification_id": "VRF-004514",
+    "verification_id": "VER-2026-004514",
     "outcome": "TAMPERED",
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "integrity_check_passed": false,
     "reason_code": "PAYLOAD_HASH_MISMATCH"
   }
@@ -124,7 +124,7 @@
 - **Response (404 Not Found)**:
   ```json
   {
-    "verification_id": "VRF-004515",
+    "verification_id": "VER-2026-004515",
     "outcome": "NOT_FOUND",
     "reason_code": "UNKNOWN_CREDENTIAL_ID"
   }
@@ -138,7 +138,7 @@
 - **Request Body**:
   ```json
   {
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "actor_id": "ADM-0004",
     "reason_code": "ACADEMIC_MISCONDUCT",
     "notes": "Verified plagiarism in capstone submission."
@@ -148,10 +148,10 @@
   ```json
   {
     "revocation_id": 42,
-    "credential_id": "CRED-2026-001042",
+    "credential_id": "CRD-2026-001042",
     "status": "REVOKED",
     "revocation_timestamp": "2026-10-28T11:00:00Z",
-    "audit_event_id": "EVT-009845"
+    "audit_event_id": "EVT-00009845"
   }
   ```
 

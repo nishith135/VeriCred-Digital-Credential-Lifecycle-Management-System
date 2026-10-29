@@ -13,7 +13,6 @@ import io
 import json
 import time
 from typing import Any, Dict, List, Optional
-from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Form, Query, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -126,8 +125,8 @@ async def verify_page(
         )
     ).scalar_one_or_none()
 
-    sample_valid_id = valid_cred or "CRED-2026-000001"
-    sample_revoked_id = revoked_cred or "CRED-2026-000002"
+    sample_valid_id = valid_cred or "CRD-2026-000001"
+    sample_revoked_id = revoked_cred or "CRD-2026-000002"
 
     return render_template(
         request=request,

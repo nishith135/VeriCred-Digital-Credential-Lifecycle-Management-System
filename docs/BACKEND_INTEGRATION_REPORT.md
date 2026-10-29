@@ -74,7 +74,7 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
   ```json
   {
     "id": 1,
-    "public_id": "CRED-2026-000001",
+    "public_id": "CRD-2026-000001",
     "completion_id": 101,
     "issuer_id": 1,
     "issued_at": "2026-10-28T12:00:00Z",
@@ -96,15 +96,15 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
 - **Request Body (`VerificationQueryRequest`):**
   ```json
   {
-    "credential_public_id": "CRED-2026-000001",
+    "credential_public_id": "CRD-2026-000001",
     "payload_to_verify": null
   }
   ```
 - **Response Body (`VerificationResponse` - 200 OK):**
   ```json
   {
-    "verification_id": "VRF-A1B2C3D4",
-    "credential_public_id": "CRED-2026-000001",
+    "verification_id": "VER-2026-000001",
+    "credential_public_id": "CRD-2026-000001",
     "outcome": "VALID",
     "reason_code": "VERIFICATION_SUCCESSFUL",
     "message": "Credential is valid, authentic, and active.",
@@ -117,7 +117,7 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
       "is_revoked": false
     },
     "credential_details": {
-      "credential_id": "CRED-2026-000001",
+      "credential_id": "CRD-2026-000001",
       "learner": { "id": "LRN-000101", "name": "Alice Smith" },
       "course": { "code": "CRS-000005", "title": "Applied Cryptography 301" },
       "assessment": { "score": 92.50, "status": "COMPLETED" },
@@ -133,7 +133,7 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
 - **Request Body (`RevocationRequest`):**
   ```json
   {
-    "credential_public_id": "CRED-2026-000001",
+    "credential_public_id": "CRD-2026-000001",
     "actor_id": "DEAN-OFFICE-01",
     "reason_code": "ACADEMIC_MISCONDUCT",
     "notes": "Unauthorized material detected during exam audit."
@@ -143,7 +143,7 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
   ```json
   {
     "revocation_id": 1,
-    "credential_public_id": "CRED-2026-000001",
+    "credential_public_id": "CRD-2026-000001",
     "previous_status": "ACTIVE",
     "current_status": "REVOKED",
     "revoked_at": "2026-10-28T16:05:00Z",
@@ -159,7 +159,7 @@ The backend currently exposes **5 operational REST endpoints** across 4 function
   - `event_type`: Optional string (e.g. `CREDENTIAL_ISSUED`, `CREDENTIAL_REVOKED`, `RULE_MODIFIED`)
   - `actor_id`: Optional string (e.g. `DEAN-OFFICE-01`)
   - `target_entity_type`: Optional string (`Credential`, `CredentialRule`, `CompletionRecord`)
-  - `target_entity_id`: Optional string (`CRED-2026-000001`)
+  - `target_entity_id`: Optional string (`CRD-2026-000001`)
   - `from_date`: Optional ISO 8601 datetime
   - `to_date`: Optional ISO 8601 datetime
   - `limit`: Integer (`1` to `1000`, default `100`)

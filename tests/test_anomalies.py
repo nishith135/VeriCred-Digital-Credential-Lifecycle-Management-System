@@ -25,6 +25,13 @@ from backend.models import (
     Learner,
     Revocation,
 )
+from backend.services.ids import (
+    format_completion_id,
+    format_course_id,
+    format_issuer_id,
+    format_learner_id,
+    format_revocation_id,
+)
 from backend.services.verification import VerificationService
 
 
@@ -72,21 +79,19 @@ def test_anomaly_2_duplicate_credential_id_detected():
 @pytest.mark.asyncio
 async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: AsyncSession):
     """Verify Anomaly 3: Revoked credential in persistent DB is properly flagged REVOKED despite stale active cache."""
-    from uuid import uuid4
-    tag3 = uuid4().hex[:6].upper()
     fixtures, ground_truth = generate_anomaly_fixtures()
     fix_3 = next(f for f in fixtures if f["issue_type"] == "REVOKED_VERIFIES_AS_ACTIVE")
     gt_3 = next(gt for gt in ground_truth if gt["issue_type"] == "REVOKED_VERIFIES_AS_ACTIVE")
     
     # Seed persistent database with this revoked credential
     issuer = Issuer(
-        public_id=f"ISS-{tag3}",
+        public_id=format_issuer_id(1),
         name="Anomaly Academy",
         public_key_pem=fix_3["issuer_public_key_pem"],
         status="ACTIVE",
     )
-    course = Course(public_id=f"CRS-{tag3}", title="Security Defense", status="ACTIVE")
-    learner = Learner(public_id=f"LRN-{tag3}", full_name="David Revoked", email=f"rev_{tag3}@test.edu")
+    course = Course(public_id=format_course_id(1), title="Security Defense", status="ACTIVE")
+    learner = Learner(public_id=format_learner_id(1), full_name="David Revoked", email="rev_1@test.edu")
     db_session.add_all([issuer, course, learner])
     await db_session.flush()
 
@@ -100,6 +105,7 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
     await db_session.flush()
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -112,7 +118,7 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
 
     cred = Credential(
         # Deliberate anomaly setup (direct ORM insert bypassing service audit logging), valid only because the DB is isolated.
-        public_id=f"CRED-{tag3}-REV",
+        public_id=fix_3["public_id"],
         completion_id=completion.id,
         issuer_id=issuer.id,
         issued_at=datetime(2026, 1, 5, tzinfo=timezone.utc),
@@ -125,6 +131,7 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
     await db_session.flush()
 
     rev = Revocation(
+        public_id=format_revocation_id(cred.public_id),
         credential_id=cred.id,
         revoked_by_actor_id="DEAN-OFFICE",
         reason_code=fix_3["revocation_record"]["reason_code"],
@@ -151,21 +158,19 @@ async def test_anomaly_3_revoked_verifies_as_active_in_stale_cache(db_session: A
 @pytest.mark.asyncio
 async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session: AsyncSession):
     """Verify Anomaly 4: Tampered claims payload is detected by SHA-256 canonical hash verification."""
-    from uuid import uuid4
-    tag4 = uuid4().hex[:6].upper()
     fixtures, ground_truth = generate_anomaly_fixtures()
     fix_4 = next(f for f in fixtures if f["issue_type"] == "ALTERED_PAYLOAD_TAMPERING")
     gt_4 = next(gt for gt in ground_truth if gt["issue_type"] == "ALTERED_PAYLOAD_TAMPERING")
 
     # Seed persistent database with credential having original claims
     issuer = Issuer(
-        public_id=f"ISS-{tag4}",
+        public_id=format_issuer_id(1),
         name="Anomaly Academy",
         public_key_pem=fix_4["issuer_public_key_pem"],
         status="ACTIVE",
     )
-    course = Course(public_id=f"CRS-{tag4}", title="Data Eng", status="ACTIVE")
-    learner = Learner(public_id=f"LRN-{tag4}", full_name="Eve Tampered", email=f"tamper_{tag4}@test.edu")
+    course = Course(public_id=format_course_id(1), title="Data Eng", status="ACTIVE")
+    learner = Learner(public_id=format_learner_id(1), full_name="Eve Tampered", email="tamper_1@test.edu")
     db_session.add_all([issuer, course, learner])
     await db_session.flush()
 
@@ -179,6 +184,7 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
     await db_session.flush()
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -192,7 +198,7 @@ async def test_anomaly_4_altered_payload_detected_by_canonical_sha256(db_session
     # Deliberate anomaly setup (direct ORM insert bypassing service audit logging), valid only because the DB is isolated.
     # Credential stored with original hash & signature
     cred = Credential(
-        public_id=f"CRED-{tag4}-TAMPER",
+        public_id=fix_4["public_id"],
         completion_id=completion.id,
         issuer_id=issuer.id,
         issued_at=datetime(2026, 1, 5, tzinfo=timezone.utc),

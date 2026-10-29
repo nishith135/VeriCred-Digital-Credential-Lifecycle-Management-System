@@ -22,7 +22,7 @@ async def query_audit_events(
     event_type: Optional[str] = Query(None, description="Filter by event type (e.g. CREDENTIAL_ISSUED, CREDENTIAL_REVOKED)"),
     actor_id: Optional[str] = Query(None, description="Filter by initiating actor identifier"),
     target_entity_type: Optional[str] = Query(None, description="Filter by entity type (Credential, CompletionRecord)"),
-    target_entity_id: Optional[str] = Query(None, description="Filter by exact entity ID (e.g., CRED-2026-XXXXX)"),
+    target_entity_id: Optional[str] = Query(None, description="Filter by exact entity ID (e.g., CRD-2026-000001)"),
     from_date: Optional[datetime] = Query(None, description="Filter events on or after this timestamp"),
     to_date: Optional[datetime] = Query(None, description="Filter events on or before this timestamp"),
     limit: int = Query(default=100, ge=1, le=1000, description="Page size limit"),

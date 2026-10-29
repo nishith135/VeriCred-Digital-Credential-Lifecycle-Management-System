@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.security import generate_ed25519_keypair, sign_payload_hash
 from backend.models import CompletionRecord, VerificationRequest
+from backend.services.ids import format_completion_id
 from backend.services.issuance import IssuanceService
 from backend.services.revocation import RevocationService
 from backend.services.verification import VerificationService
@@ -30,6 +31,7 @@ async def test_verification_valid_active_credential(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -66,7 +68,7 @@ async def test_verification_not_found_credential(db_session: AsyncSession):
     """Verify query for non-existent credential returns outcome NOT_FOUND."""
     verif = await VerificationService.verify_credential(
         db=db_session,
-        credential_public_id="CRED-NONEXISTENT-9999",
+        credential_public_id="CRD-2026-999999",
     )
 
     assert verif.outcome == "NOT_FOUND"
@@ -82,6 +84,7 @@ async def test_verification_detects_tampered_payload(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -101,7 +104,7 @@ async def test_verification_detects_tampered_payload(
 
     # Holder presents altered claims (score boosted from 82.00 to 99.00)
     tampered_claims = dict(cred.payload_snapshot)
-    tampered_claims["assessment_score"] = 99.00
+    tampered_claims["assessment"] = {**cred.payload_snapshot["assessment"], "score": 99.00}
 
     verif = await VerificationService.verify_credential(
         db=db_session,
@@ -124,6 +127,7 @@ async def test_tampering_strictly_overrides_revocation(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -151,7 +155,7 @@ async def test_tampering_strictly_overrides_revocation(
 
     # 2. Present tampered claims against revoked credential
     tampered_claims = dict(cred.payload_snapshot)
-    tampered_claims["course_title"] = "Hacked Doctorate in AI"
+    tampered_claims["course"] = {**cred.payload_snapshot["course"], "title": "Hacked Doctorate in AI"}
 
     verif = await VerificationService.verify_credential(
         db=db_session,
@@ -174,6 +178,7 @@ async def test_verification_detects_invalid_issuer_signature(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -211,6 +216,7 @@ async def test_public_verification_rest_endpoint(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,

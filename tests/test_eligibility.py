@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.models import CompletionRecord
 from backend.services.eligibility import EligibilityService
+from backend.services.ids import format_completion_id
 
 
 @pytest.mark.asyncio
@@ -18,6 +19,7 @@ async def test_eligibility_passing_boundary_80_percent(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -44,6 +46,7 @@ async def test_eligibility_failing_boundary_79_99_percent(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -69,6 +72,7 @@ async def test_eligibility_rejected_if_status_not_completed(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -94,6 +98,7 @@ async def test_eligibility_rejected_if_outside_rule_date_window(
     expired_date = rule.effective_from - timedelta(days=10)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,

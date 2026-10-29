@@ -7,7 +7,6 @@ and immutable audit event creation in a single atomic transaction.
 
 from datetime import datetime, timezone
 from typing import Optional
-from uuid import uuid4
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -23,18 +22,20 @@ from backend.models.audit import AuditEvent
 from backend.models.credential import Credential
 from backend.models.issuer import Issuer
 from backend.schemas.credential import CredentialResponse
+from backend.services.audit import AuditService
 from backend.services.eligibility import EligibilityService
+from backend.services.ids import CREDENTIAL_SEQUENCE, format_credential_id, next_sequence_value
+from backend.services.payloads import build_credential_payload
 
 
 class IssuanceService:
     """Handles secure, tamper-evident credential issuance."""
 
     @staticmethod
-    def generate_credential_public_id() -> str:
-        """Generate a structured, unique public credential identifier."""
-        year = datetime.now(timezone.utc).year
-        random_suffix = uuid4().hex[:8].upper()
-        return f"CRED-{year}-{random_suffix}"
+    async def generate_credential_public_id(db: AsyncSession, issued_at: datetime) -> str:
+        """Allocate the next sequential credential identifier (CRD-<issued year>-000001)."""
+        number = await next_sequence_value(db, CREDENTIAL_SEQUENCE)
+        return format_credential_id(number, issued_at)
 
     @classmethod
     async def issue_credential(
@@ -96,21 +97,22 @@ class IssuanceService:
 
         # 4. Construct canonical snapshot payload
         issued_at = datetime.now(timezone.utc)
-        credential_public_id = cls.generate_credential_public_id()
+        credential_public_id = await cls.generate_credential_public_id(db, issued_at)
 
-        payload_snapshot = {
-            "credential_id": credential_public_id,
-            "issuer_id": issuer.public_id,
-            "issuer_name": issuer.name,
-            "learner_id": completion.learner.public_id,
-            "learner_name": completion.learner.full_name,
-            "learner_email": completion.learner.email,
-            "course_id": completion.course.public_id,
-            "course_title": completion.course.title,
-            "assessment_score": float(completion.assessment_score),
-            "completion_date": completion.completion_timestamp.isoformat(),
-            "issued_at": issued_at.isoformat(),
-        }
+        payload_snapshot = build_credential_payload(
+            credential_id=credential_public_id,
+            issued_at=issued_at,
+            completion_timestamp=completion.completion_timestamp,
+            learner_id=completion.learner.public_id,
+            learner_name=completion.learner.full_name,
+            learner_email=completion.learner.email,
+            course_code=completion.course.public_id,
+            course_title=completion.course.title,
+            assessment_score=completion.assessment_score,
+            assessment_status=completion.status,
+            issuer_id=issuer.public_id,
+            issuer_name=issuer.name,
+        )
 
         # 5. Compute cryptographic digest and signature
         payload_hash = compute_payload_hash(payload_snapshot)
@@ -128,7 +130,7 @@ class IssuanceService:
             status="ACTIVE",
         )
 
-        event_id = f"EVT-{uuid4().hex[:10].upper()}"
+        event_id = await AuditService.generate_event_id(db)
         audit_event = AuditEvent(
             event_id=event_id,
             event_type="CREDENTIAL_ISSUED",

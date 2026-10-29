@@ -128,3 +128,18 @@ This document records the foundational technical and organizational decisions ma
 - **Trade-offs & Mitigations:**
   - *Trade-off:* Per-test `TRUNCATE ... RESTART IDENTITY CASCADE` adds ~0.3s per test (~19.5s total suite runtime).
   - *Mitigation:* Guarantees 100% deterministic, independent tests and zero mutation of `credential_db`.
+
+---
+
+## ADR-008: Canonical Public ID Standardization, Postgres Sequences & Unified Payload Builder
+- **Date:** 2026-10-29
+- **Status:** Approved
+- **Context:**
+  Public identifiers across the generator and runtime services previously diverged from the problem statement formats, `completion_records` and `revocations` lacked `public_id` columns, runtime services used random hex suffixes instead of sequential zero-padded numbers, and `IssuanceService` built a flat `payload_snapshot` while `DataGenerator` built a nested one.
+- **Decision:**
+  1. Centralize all public ID formatters and regex validators in `backend/services/ids.py` (`CRD-YYYY-000001`, `LRN-000001`, `CRS-000001`, `CMP-<learner>-<course>`, `VER-YYYY-000001`, `REV-<credential>-01`, `ISS-00001`, `EVT-00000001`).
+  2. Add Alembic migration `7c2e9a41b5d3` adding `public_id` (unique, indexed, backfilled from parent `public_id`s) to `completion_records` and `revocations`, plus Postgres sequences (`credential_public_seq`, `verification_public_seq`, `audit_event_public_seq`) synced via `setval()` in `DatabaseLoader`.
+  3. Create `backend/services/payloads.py` (`build_credential_payload`) as the single canonical nested payload builder used by `DataGenerator`, `IssuanceService`, and `anomalies.py`.
+- **Trade-offs & Mitigations:**
+  - *Trade-off:* Postgres sequences are non-transactional, so rolled-back runtime transactions can leave numeric gaps.
+  - *Mitigation:* Guarantees race-safe sequential ID allocation under concurrent API requests without table locking.

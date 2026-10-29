@@ -42,7 +42,7 @@ class Credential(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     public_id: Mapped[str] = mapped_column(
         String(64), unique=True, index=True, nullable=False
-    )  # e.g., CRED-2026-00001
+    )  # e.g., CRD-2026-000001
     completion_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("completion_records.id", ondelete="RESTRICT"),

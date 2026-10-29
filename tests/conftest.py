@@ -12,7 +12,6 @@ import os
 import subprocess
 import sys
 from typing import AsyncGenerator
-from uuid import uuid4
 
 import pytest
 import pytest_asyncio
@@ -35,11 +34,25 @@ from backend.models import (
     Issuer,
     Learner,
 )
+from backend.services.ids import (
+    AUDIT_EVENT_SEQUENCE,
+    CREDENTIAL_SEQUENCE,
+    VERIFICATION_SEQUENCE,
+    format_course_id,
+    format_issuer_id,
+    format_learner_id,
+)
 
 TRUNCATE_ALL_TABLES_SQL = text(
     "TRUNCATE TABLE audit_events, verification_requests, revocations, "
     "credentials, completion_records, credential_rules, learners, "
     "courses, issuers RESTART IDENTITY CASCADE;"
+)
+
+RESET_PUBLIC_SEQUENCES_SQL = text(
+    f"SELECT setval('{CREDENTIAL_SEQUENCE}', 1, false), "
+    f"setval('{VERIFICATION_SEQUENCE}', 1, false), "
+    f"setval('{AUDIT_EVENT_SEQUENCE}', 1, false);"
 )
 
 
@@ -172,13 +185,15 @@ def setup_test_database():
 
 @pytest.fixture(autouse=True)
 def isolate_and_truncate_tables():
-    """Truncate all tables (RESTART IDENTITY CASCADE) before and after every test."""
+    """Truncate all tables (RESTART IDENTITY CASCADE) and reset sequences before and after every test."""
     _assert_safe_test_db(TEST_SYNC_DATABASE_URL)
     with test_sync_engine.begin() as conn:
         conn.execute(TRUNCATE_ALL_TABLES_SQL)
+        conn.execute(RESET_PUBLIC_SEQUENCES_SQL)
     yield
     with test_sync_engine.begin() as conn:
         conn.execute(TRUNCATE_ALL_TABLES_SQL)
+        conn.execute(RESET_PUBLIC_SEQUENCES_SQL)
 
 
 @pytest_asyncio.fixture
@@ -207,9 +222,8 @@ async def api_client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, No
 async def sample_issuer(db_session: AsyncSession):
     """Seed a valid, active Issuer."""
     priv_pem, pub_pem = generate_ed25519_keypair()
-    uid = uuid4().hex[:8].upper()
     issuer = Issuer(
-        public_id=f"ISS-TEST-{uid}",
+        public_id=format_issuer_id(1),
         name="State Polytechnic Accreditation Authority",
         public_key_pem=pub_pem,
         status="ACTIVE",
@@ -224,17 +238,16 @@ async def sample_issuer(db_session: AsyncSession):
 async def sample_academic_setup(db_session: AsyncSession):
     """Seed Course, Learner, and CredentialRule with 80% passing threshold."""
     now = datetime.now(timezone.utc)
-    uid = uuid4().hex[:8].upper()
     course = Course(
-        public_id=f"CRS-{uid}",
+        public_id=format_course_id(1),
         title="Advanced Distributed Cryptographic Systems",
         version="1.0",
         status="ACTIVE",
     )
     learner = Learner(
-        public_id=f"LRN-{uid}",
+        public_id=format_learner_id(1),
         full_name="Alice Q. Student",
-        email=f"alice.{uid}@university.edu",
+        email="alice.0001@university.edu",
         status="ACTIVE",
     )
     db_session.add_all([course, learner])

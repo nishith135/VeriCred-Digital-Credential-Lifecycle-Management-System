@@ -87,3 +87,16 @@ def test_validator_detects_clean_generated_dataset():
     assert len(report.errors) == 0
     assert report.stats["credentials_count"] > 0
     assert report.stats["revocations_count"] > 0
+
+
+def test_validator_rejects_malformed_public_ids():
+    """Verify that DatasetValidator flags any public_id that violates the canonical regex formats."""
+    gen = DataGenerator(seed=DEFAULT_SEED, scale=0.01)
+    ds = gen.generate()
+    ds.credentials[0]["public_id"] = "LEGACY-BAD-ID"
+    ds.completions[0]["public_id"] = "CMP-LRN-000001-CRS-000001-02"
+
+    report = DatasetValidator(ds).validate_all()
+    assert report.is_valid is False
+    assert any("credential public_id" in e for e in report.errors)
+    assert any("completion public_id" in e for e in report.errors)

@@ -280,7 +280,7 @@
 </div>
 <div class="grid grid-cols-2 gap-2 text-on-surface">
 <div><span class="text-outline">Target Record:</span> <span class="text-secondary">COMP-2026-084920</span></div>
-<div><span class="text-outline">Existing ID:</span> <span class="text-on-surface-variant">CRED-2026-084920</span></div>
+<div><span class="text-outline">Existing ID:</span> <span class="text-on-surface-variant">CRD-2026-084920</span></div>
 <div class="col-span-2"><span class="text-outline">Payload Attempt:</span> <span class="text-error">Attempt duplicate commit to public registry table</span></div>
 </div>
 </div>
@@ -338,7 +338,7 @@
 <span class="text-secondary">Revocation Tombstone</span>
 </div>
 <div class="grid grid-cols-2 gap-2 text-on-surface">
-<div><span class="text-outline">Target Credential:</span> <span class="text-secondary">CRED-2026-003819</span></div>
+<div><span class="text-outline">Target Credential:</span> <span class="text-secondary">CRD-2026-003819</span></div>
 <div><span class="text-outline">Ledger Block:</span> <span class="text-on-surface">#1,849,202</span></div>
 <div class="col-span-2"><span class="text-outline">Tombstone Event:</span> <span class="text-tertiary">Revocation Committed 2026-01-16T14:22:01Z</span></div>
 </div>

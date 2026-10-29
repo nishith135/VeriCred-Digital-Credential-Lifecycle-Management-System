@@ -7,7 +7,6 @@ without mutating or deleting original issuance evidence.
 
 from datetime import datetime, timezone
 from typing import Optional
-from uuid import uuid4
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,6 +17,8 @@ from backend.models.audit import AuditEvent
 from backend.models.credential import Credential
 from backend.models.revocation import Revocation
 from backend.schemas.revocation import RevocationResponse
+from backend.services.audit import AuditService
+from backend.services.ids import format_revocation_id
 
 
 class RevocationService:
@@ -69,9 +70,10 @@ class RevocationService:
             )
 
         now = datetime.now(timezone.utc)
-        event_id = f"EVT-{uuid4().hex[:10].upper()}"
+        event_id = await AuditService.generate_event_id(db)
 
         revocation = Revocation(
+            public_id=format_revocation_id(credential_public_id),
             credential_id=credential.id,
             revoked_by_actor_id=actor_id,
             reason_code=reason_code,
@@ -100,6 +102,7 @@ class RevocationService:
         await db.commit()
 
         return RevocationResponse(
+            public_id=revocation.public_id,
             credential_public_id=credential_public_id,
             status="REVOKED",
             reason_code=reason_code,

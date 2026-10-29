@@ -16,7 +16,7 @@ class AuditEvent(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     event_id: Mapped[str] = mapped_column(
         String(32), unique=True, index=True, nullable=False
-    )  # e.g., EVT-00001
+    )  # e.g., EVT-00000001
     event_type: Mapped[str] = mapped_column(
         String(64), nullable=False, index=True
     )  # CREDENTIAL_ISSUED, CREDENTIAL_REVOKED, VERIFICATION_PERFORMED, EXCEPTION

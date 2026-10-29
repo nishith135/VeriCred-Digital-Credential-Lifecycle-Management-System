@@ -104,7 +104,7 @@ Per approved ADR-005, the frontend must be server-rendered Jinja2 templates enha
    - Verification Form:
      ```html
      <form hx-post="/verify" hx-target="#verification-result" hx-indicator="#verify-spinner">
-         <input type="text" name="credential_id" placeholder="CRED-2026-..." required />
+         <input type="text" name="credential_id" placeholder="CRD-2026-..." required />
          <button type="submit">Verify Credential</button>
      </form>
      <div id="verification-result"></div>

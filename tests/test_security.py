@@ -57,7 +57,7 @@ def test_ed25519_keypair_generation_and_verification():
     assert "BEGIN PRIVATE KEY" in priv_pem
     assert "BEGIN PUBLIC KEY" in pub_pem
 
-    payload = {"credential_id": "CRED-001", "grade": "DISTINCTION"}
+    payload = {"credential_id": "CRD-2026-000001", "grade": "DISTINCTION"}
     payload_hash = compute_payload_hash(payload)
 
     # 1. Sign payload hash
@@ -69,7 +69,7 @@ def test_ed25519_keypair_generation_and_verification():
     assert verify_signature(pub_pem, payload_hash, signature) is True
 
     # 3. Verify that tampered hash fails
-    fake_hash = compute_payload_hash({"credential_id": "CRED-001", "grade": "FAIL"})
+    fake_hash = compute_payload_hash({"credential_id": "CRD-2026-000001", "grade": "FAIL"})
     assert verify_signature(pub_pem, fake_hash, signature) is False
 
     # 4. Verify that signature with a different public key fails

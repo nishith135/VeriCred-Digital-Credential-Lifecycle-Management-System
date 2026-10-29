@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.models import CompletionRecord
 from backend.services.audit import AuditService
+from backend.services.ids import format_completion_id
 from backend.services.issuance import IssuanceService
 from backend.services.revocation import RevocationService
 
@@ -22,11 +23,9 @@ async def test_audit_event_logging_and_multi_criteria_filtering(
     t2 = now - timedelta(minutes=5)
     t3 = now
 
-    from uuid import uuid4
-    unique_tag = uuid4().hex[:6].upper()
-    cred_target_id = f"CRED-AUDIT-{unique_tag}"
-    rule_target_id = f"RULE-{unique_tag}"
-    admin_actor = f"ADMIN-{unique_tag}"
+    cred_target_id = "CRD-2026-000001"
+    rule_target_id = "1"
+    admin_actor = "ADMIN-01"
 
     # Deliberate anomaly setup (direct audit event insert without parent Credential/Rule rows), valid only because the DB is isolated.
     # Record 3 events
@@ -93,6 +92,7 @@ async def test_audit_rest_api_endpoint_pagination_and_query(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,

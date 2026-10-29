@@ -46,7 +46,7 @@ Stores academic courses or curriculum modules.
 ```sql
 CREATE TABLE courses (
     id SERIAL PRIMARY KEY,
-    public_id VARCHAR(32) NOT NULL UNIQUE, -- CRS-XXXXX
+    public_id VARCHAR(32) NOT NULL UNIQUE, -- CRS-000001
     title VARCHAR(255) NOT NULL,
     version VARCHAR(32) NOT NULL DEFAULT '1.0',
     status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
@@ -80,7 +80,7 @@ Stores recipient student master data. Names may repeat; public IDs are immutable
 ```sql
 CREATE TABLE learners (
     id SERIAL PRIMARY KEY,
-    public_id VARCHAR(32) NOT NULL UNIQUE, -- LRN-XXXXX
+    public_id VARCHAR(32) NOT NULL UNIQUE, -- LRN-000001
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE',
@@ -95,6 +95,7 @@ Stores academic completion evidence and assessment scores.
 ```sql
 CREATE TABLE completion_records (
     id SERIAL PRIMARY KEY,
+    public_id VARCHAR(64) NOT NULL UNIQUE, -- CMP-LRN-000001-CRS-000001
     learner_id INTEGER NOT NULL REFERENCES learners(id) ON DELETE RESTRICT,
     course_id INTEGER NOT NULL REFERENCES courses(id) ON DELETE RESTRICT,
     rule_id INTEGER NOT NULL REFERENCES credential_rules(id) ON DELETE RESTRICT,
@@ -114,7 +115,7 @@ Represents an issued digital credential with cryptographic integrity metadata.
 ```sql
 CREATE TABLE credentials (
     id SERIAL PRIMARY KEY,
-    public_id VARCHAR(64) NOT NULL UNIQUE, -- CRED-YYYY-XXXXX
+    public_id VARCHAR(64) NOT NULL UNIQUE, -- CRD-YYYY-000001
     completion_id INTEGER NOT NULL UNIQUE REFERENCES completion_records(id) ON DELETE RESTRICT,
     issuer_id INTEGER NOT NULL REFERENCES issuers(id) ON DELETE RESTRICT,
     issued_at TIMESTAMPTZ NOT NULL,
@@ -134,6 +135,7 @@ Stores authorized revocations. Preserves history without mutating issuance table
 ```sql
 CREATE TABLE revocations (
     id SERIAL PRIMARY KEY,
+    public_id VARCHAR(64) NOT NULL UNIQUE, -- REV-CRD-YYYY-000001-01
     credential_id INTEGER NOT NULL UNIQUE REFERENCES credentials(id) ON DELETE RESTRICT,
     revoked_by_actor_id VARCHAR(64) NOT NULL,
     reason_code VARCHAR(64) NOT NULL,            -- ACADEMIC_MISCONDUCT, ADMINISTRATIVE_ERROR, RESCINDED
@@ -150,7 +152,7 @@ Audit log of all third-party verification queries.
 ```sql
 CREATE TABLE verification_requests (
     id SERIAL PRIMARY KEY,
-    public_id VARCHAR(32) NOT NULL UNIQUE,       -- VRF-XXXXX
+    public_id VARCHAR(32) NOT NULL UNIQUE,       -- VER-YYYY-000001
     credential_id INTEGER REFERENCES credentials(id) ON DELETE SET NULL,
     requested_identifier VARCHAR(128) NOT NULL,
     verification_timestamp TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -171,7 +173,7 @@ Immutable, append-only system-wide event log.
 ```sql
 CREATE TABLE audit_events (
     id SERIAL PRIMARY KEY,
-    event_id VARCHAR(32) NOT NULL UNIQUE,        -- EVT-XXXXX
+    event_id VARCHAR(32) NOT NULL UNIQUE,        -- EVT-00000001
     event_type VARCHAR(64) NOT NULL,             -- CREDENTIAL_ISSUED, CREDENTIAL_REVOKED, VERIFICATION_PERFORMED, RULE_MODIFIED, EXCEPTION
     actor_id VARCHAR(64),
     target_entity_type VARCHAR(64) NOT NULL,     -- Credential, CompletionRecord, CredentialRule

@@ -278,6 +278,20 @@ This document maintains empirical evidence of all automated tests, manual checks
   - Safety guard abort test (Code 1):
     `Exit: SAFETY GUARD ABORT: Refusing to run pytest against database 'credential_db'. Test suite database name must end with '_test' (e.g. 'credential_test_db') and must never be 'credential_db'.`
 
+### Verification 012: Public ID Standardization, Sequence Migration & Unified Payload Builder
+- **Date & Time:** 2026-10-29T13:04:00+05:30
+- **Executed Commands:**
+  1. `alembic upgrade head`, `alembic downgrade -1`, `alembic upgrade head` against `credential_test_db` (`7c2e9a41b5d3`)
+  2. `.\.venv\Scripts\python.exe -m backend.generator.cli --seed 20261022 --scale 1.0 --output-dir ./exports_tmp` (and second run into `./exports_tmp_2`)
+  3. Regex format audit across all 9 exported CSV files, `anomaly_fixtures.json`, and `ground_truth.json`
+  4. `.\.venv\Scripts\pytest.exe -v` against `credential_test_db`
+  5. Read-only row-count verification on `credential_db`
+- **Output:**
+  - Migration `7c2e9a41b5d3` cleanly upgraded, downgraded to `3891f21a6ba9`, and upgraded back to `head` on `credential_test_db`, including verified backfill of `completion_records.public_id` and `revocations.public_id`.
+  - Scale `1.0` generation (`seed=20261022`) completed in `1.84s` (20,000 learners, 1,000 courses, 14,000 completions, 10,000 credentials, 300 revocations, 5,000 verifications, 11,300 audit events) with 100% regex format compliance across all entities and byte-identical `manifest.sha256` across two runs.
+  - `pytest -v`: **38 passed in 14.99s** on `credential_test_db`.
+  - `credential_db` remained untouched (`credentials: 514`, `verification_requests: 261`, `audit_events: 585`).
+
 ---
 
 ## 3. Boundary & Assumption Verification

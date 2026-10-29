@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.exceptions import CredentialNotFoundError, RevocationError
 from backend.models import CompletionRecord, Revocation
+from backend.services.ids import format_completion_id
 from backend.services.issuance import IssuanceService
 from backend.services.revocation import RevocationService
 from backend.services.verification import VerificationService
@@ -31,6 +32,7 @@ async def test_authorized_revocation_success_and_audit(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -78,6 +80,7 @@ async def test_double_revocation_raises_error(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -119,7 +122,7 @@ async def test_revoking_nonexistent_credential_raises_error(db_session: AsyncSes
     with pytest.raises(CredentialNotFoundError):
         await RevocationService.revoke_credential(
             db=db_session,
-            credential_public_id="CRED-FAKE-9999",
+            credential_public_id="CRD-2026-999999",
             actor_id="ADMIN",
             reason_code="OTHER",
         )
@@ -134,6 +137,7 @@ async def test_live_revocation_reflection_in_verification_api(
     course, learner, rule = sample_academic_setup
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,

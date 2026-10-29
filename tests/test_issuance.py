@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.core.exceptions import DuplicateIssuanceError, IneligibleIssuanceError
 from backend.core.security import compute_payload_hash, verify_signature
 from backend.models import AuditEvent, CompletionRecord
+from backend.services.ids import ID_PATTERNS, format_completion_id
 from backend.services.issuance import IssuanceService
 
 
@@ -23,6 +24,7 @@ async def test_atomic_issuance_success_and_cryptographic_verification(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -44,7 +46,17 @@ async def test_atomic_issuance_success_and_cryptographic_verification(
     )
 
     assert cred_resp.id is not None
-    assert cred_resp.public_id.startswith("CRED-")
+    assert cred_resp.public_id.startswith("CRD-")
+    assert ID_PATTERNS["credential"].match(cred_resp.public_id)
+    assert set(cred_resp.payload_snapshot.keys()) == {
+        "credential_id",
+        "course",
+        "learner",
+        "assessment",
+        "issued_at",
+        "completion_timestamp",
+        "issuer",
+    }
     assert cred_resp.completion_id == completion.id
     assert cred_resp.status == "ACTIVE"
 
@@ -80,6 +92,7 @@ async def test_duplicate_issuance_strictly_prevented(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -119,6 +132,7 @@ async def test_ineligible_issuance_raises_error(
     now = datetime.now(timezone.utc)
 
     failing_completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -149,6 +163,7 @@ async def test_issuance_rest_api_endpoints(
     now = datetime.now(timezone.utc)
 
     completion = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id),
         learner_id=learner.id,
         course_id=course.id,
         rule_id=rule.id,
@@ -182,7 +197,7 @@ async def test_issuance_rest_api_endpoints(
     )
     assert issue_resp.status_code == 201
     cred_data = issue_resp.json()
-    assert cred_data["public_id"].startswith("CRED-")
+    assert cred_data["public_id"].startswith("CRD-")
     assert cred_data["completion_id"] == completion.id
 
     # 3. Test POST /api/v1/issuance/issue duplicate attempt -> 409 Conflict
