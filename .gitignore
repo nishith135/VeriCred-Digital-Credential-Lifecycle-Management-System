@@ -75,3 +75,8 @@ Desktop.ini
 *.sqlite
 *.sqlite3
 *.db
+
+# Notebooks & Temporary Scratch
+.ipynb_checkpoints/
+notebooks/
+scratch/
