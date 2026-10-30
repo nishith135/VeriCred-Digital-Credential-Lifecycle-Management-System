@@ -1,6 +1,6 @@
 {% for cred in credentials %}
 <tr class="hover:bg-surface/80 transition-colors group" data-credential-row="{{ cred.public_id }}">
-  <td class="py-3.5 px-4 font-mono">
+  <td class="py-3.5 px-4 font-mono min-w-[160px] whitespace-nowrap">
     <div class="flex items-center gap-1.5">
       <span class="font-bold text-white text-xs">{{ cred.public_id }}</span>
       <button 
@@ -52,8 +52,8 @@
     </span>
   </td>
 
-  <td class="py-3.5 px-4 font-mono text-[11px] text-text-subtle">
-    {{ cred.issued_at.strftime('%Y-%m-%d %H:%M') if cred.issued_at else '—' }}
+  <td class="py-3.5 px-4 font-mono text-[11px] text-text-subtle min-w-[140px] whitespace-nowrap">
+    {{ cred.issued_at | human_datetime }}
   </td>
 
   <td class="py-3.5 px-4 text-right">

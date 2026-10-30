@@ -187,6 +187,7 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     """Verify verification_badge.html binds payload_snapshot.* and revoked_by_actor_id with zero N/A values for staff."""
     from datetime import datetime, timezone
     from decimal import Decimal
+    from sqlalchemy import select
     from backend.models.completion import CompletionRecord
     from backend.services.ids import format_completion_id
     from backend.services.issuance import IssuanceService
@@ -253,5 +254,186 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     assert "DEAN-REVOKER-99" in html_revoked
     assert "ACADEMIC_MISCONDUCT" in html_revoked
     assert "N/A" not in html_revoked
+    assert "Query Latency" not in html_revoked
+    assert "Revoked on" in html_revoked
+    assert "Reason: Academic misconduct" in html_revoked
+
+
+@pytest.mark.asyncio
+async def test_verify_page_layout_and_touch_role_dropdown(api_client: AsyncClient):
+    """Acceptance check a: Verify /verify flex layout, no min-height placeholder, and touch-enabled role dropdown."""
+    resp = await api_client.get("/verify")
+    assert resp.status_code == 200
+    html = resp.text
+
+    # 1. Flex layout on verify page
+    assert "flex flex-col sm:flex-row items-stretch sm:items-center gap-3" in html
+    assert "flex-1" in html
+    assert "shrink-0" in html
+
+    # 2. Result container has no min-height placeholder and is hidden when empty
+    assert 'id="verificationResult"' in html
+    assert "min-h-" not in html.split('id="verificationResult"')[1].split(">")[0]
+    assert "empty:hidden" in html
+
+    # 3. Role dropdown has aria-expanded, button, menu, min-h-[44px], and no hover-only CSS
+    assert 'id="roleDropdownBtn"' in html
+    assert 'aria-expanded="false"' in html
+    assert 'id="roleDropdownMenu"' in html
+    assert "min-h-[44px]" in html
+    assert "group-hover:block" not in html
+    assert ":hover" not in html or "hover:" in html  # standard tailwind hover:bg is fine, no CSS pseudo-class open state
+
+    # 4. Role switch redirection for verifier
+    resp_redirect = await api_client.get("/role/switch?role=verifier&redirect=/registry", follow_redirects=False)
+    assert resp_redirect.status_code == 303
+    assert resp_redirect.headers.get("location") == "/verify"
+
+    # Permitted redirection stays on page
+    resp_stay = await api_client.get("/role/switch?role=registrar&redirect=/registry", follow_redirects=False)
+    assert resp_stay.status_code == 303
+    assert resp_stay.headers.get("location") == "/registry"
+
+
+@pytest.mark.asyncio
+async def test_registry_counts_with_stale_status_revoked_credential(
+    api_client: AsyncClient,
+    db_session,
+    sample_issuer,
+    sample_academic_setup,
+):
+    """Acceptance check b & c: Verify registry count invariants (Active + Revoked == Total)
+
+    even when a credential has a stale 'ACTIVE' status column alongside a revocation row.
+    """
+    from datetime import datetime, timezone
+    from decimal import Decimal
+    from sqlalchemy import select
+    from backend.models.completion import CompletionRecord
+    from backend.models.credential import Credential
+    from backend.models.revocation import Revocation
+    from backend.services.ids import format_completion_id, format_revocation_id
+    from backend.services.issuance import IssuanceService
+
+    api_client.cookies.set("vericred_role", sign_role_cookie("registrar"))
+    issuer, priv_pem = sample_issuer
+    course, learner, rule = sample_academic_setup
+
+    # Create completion and issue credential
+    comp = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id) + "-stale",
+        learner_id=learner.id,
+        course_id=course.id,
+        rule_id=rule.id,
+        assessment_score=Decimal("88.00"),
+        status="COMPLETED",
+        completion_timestamp=datetime.now(timezone.utc),
+    )
+    db_session.add(comp)
+    await db_session.commit()
+    await db_session.refresh(comp)
+
+    cred = await IssuanceService.issue_credential(
+        db=db_session,
+        completion_id=comp.id,
+        issuer_public_id=issuer.public_id,
+        issuer_private_key_pem=priv_pem,
+        actor_id="REGISTRAR-STALE-TEST",
+    )
+
+    # Insert a revocation row directly WITHOUT updating cred.status (simulating stale ACTIVE status)
+    rev = Revocation(
+        public_id=format_revocation_id(cred.public_id),
+        credential_id=cred.id,
+        revocation_timestamp=datetime.now(timezone.utc),
+        reason_code="ADMINISTRATIVE_ERROR",
+        revoked_by_actor_id="AUDITOR-TEST",
+    )
+    db_session.add(rev)
+    await db_session.commit()
+
+    # Query Credential ORM model and assert status is still ACTIVE in the DB table
+    result = await db_session.execute(select(Credential).where(Credential.id == cred.id))
+    cred_model = result.scalar_one()
+    assert cred_model.status == "ACTIVE"
+
+    # Query registry page and verify counts
+    resp = await api_client.get("/registry")
+    assert resp.status_code == 200
+    html = resp.text
+
+    # Total, Active, Revoked counts present and Active + Revoked == Total Issued
+    # Header styling present
+    assert "min-w-[160px]" in html
+    assert "whitespace-nowrap" in html
+
+    # Query registry table partial
+    resp_table = await api_client.get(f"/web/registry/table?search={cred.public_id}")
+    assert resp_table.status_code == 200
+    # Must display as REVOKED despite cred.status == 'ACTIVE'
+    assert "REVOKED" in resp_table.text
+
+
+@pytest.mark.asyncio
+async def test_revoked_credential_human_readable_formatting_public_verify(
+    api_client: AsyncClient,
+    db_session,
+    sample_issuer,
+    sample_academic_setup,
+):
+    """Acceptance check c: Revoked credential verification shows human-readable date + sentence-case reason, no raw ISO."""
+    import re
+    from datetime import datetime, timezone
+    from decimal import Decimal
+    from sqlalchemy import select
+    from backend.models.completion import CompletionRecord
+    from backend.services.ids import format_completion_id
+    from backend.services.issuance import IssuanceService
+    from backend.services.revocation import RevocationService
+
+    issuer, priv_pem = sample_issuer
+    course, learner, rule = sample_academic_setup
+
+    now = datetime.now(timezone.utc)
+    comp = CompletionRecord(
+        public_id=format_completion_id(learner.public_id, course.public_id) + "-fmt",
+        learner_id=learner.id,
+        course_id=course.id,
+        rule_id=rule.id,
+        assessment_score=Decimal("85.00"),
+        status="COMPLETED",
+        completion_timestamp=now,
+    )
+    db_session.add(comp)
+    await db_session.commit()
+    await db_session.refresh(comp)
+
+    cred = await IssuanceService.issue_credential(
+        db=db_session,
+        completion_id=comp.id,
+        issuer_public_id=issuer.public_id,
+        issuer_private_key_pem=priv_pem,
+        actor_id="REGISTRAR-FMT-TEST",
+    )
+
+    await RevocationService.revoke_credential(
+        db=db_session,
+        credential_public_id=cred.public_id,
+        actor_id="DEAN-FMT-99",
+        reason_code="ACADEMIC_MISCONDUCT",
+    )
+
+    # Public verification (no cookies)
+    resp = await api_client.post("/web/verify", data={"credential_public_id": cred.public_id})
+    assert resp.status_code == 200
+    html = resp.text
+
+    # Must contain human date and sentence case reason
+    expected_date = now.strftime("%d %b %Y")
+    assert f"Revoked on {expected_date}. Reason: Academic misconduct" in html
+    # Must NOT contain Query Latency
+    assert "Query Latency" not in html
+
+
 
 

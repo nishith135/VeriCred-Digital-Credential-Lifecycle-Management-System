@@ -7,13 +7,9 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-border">
     <div>
-      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-2">
-        <span class="material-symbols-outlined text-[14px]">receipt_long</span>
-        <span>Append-Only Compliance Journal</span>
-      </div>
-      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Immutable Audit Ledger</h1>
+      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Audit Ledger</h1>
       <p class="text-text-muted text-sm mt-1 max-w-2xl">
-        Complete deterministic audit trail across credential issuances, revocations, and verification requests for forensic compliance.
+        Review the system audit log of credential issuances, revocations, and verification requests.
       </p>
     </div>
 
@@ -48,27 +44,25 @@
     <!-- Total Events -->
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Total Logged Events</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Total events</span>
         <span class="material-symbols-outlined text-text-muted text-[20px]">receipt_long</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
         <span class="text-2xl font-extrabold text-white">{{ "{:,}".format(total_events) }}</span>
-        <span class="text-[11px] font-mono text-text-muted uppercase">Entries</span>
+        <span class="text-[11px] font-mono text-text-muted uppercase">Events</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Append-only audit trail</span>
     </div>
 
     <!-- Issuance Events -->
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Issuance Events</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Issuance events</span>
         <span class="material-symbols-outlined text-emerald-400 text-[20px]">verified</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
         <span class="text-2xl font-extrabold text-emerald-400">{{ "{:,}".format(total_issuances) }}</span>
-        <span class="text-[11px] font-mono text-emerald-400 uppercase">Minted</span>
+        <span class="text-[11px] font-mono text-emerald-400 uppercase">Issued</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Cryptographically attested</span>
     </div>
 
     <!-- Revocation Events -->
@@ -81,20 +75,18 @@
         <span class="text-2xl font-extrabold text-rose-400">{{ "{:,}".format(total_revocations) }}</span>
         <span class="text-[11px] font-mono text-rose-400 uppercase">Revoked</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Irreversible governance actions</span>
     </div>
 
     <!-- Verification Checks -->
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Verification Audits</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Verification requests</span>
         <span class="material-symbols-outlined text-indigo-400 text-[20px]">query_stats</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
         <span class="text-2xl font-extrabold text-indigo-300">{{ "{:,}".format(total_verifications) }}</span>
-        <span class="text-[11px] font-mono text-indigo-300 uppercase">Evaluated</span>
+        <span class="text-[11px] font-mono text-indigo-300 uppercase">Requests</span>
       </div>
-      <span class="text-[11px] text-text-subtle">4-factor cryptographic checks</span>
     </div>
   </div>
 

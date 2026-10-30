@@ -8,6 +8,7 @@ Serves Jinja2 templates and HTMX partials for:
 """
 
 import csv
+from datetime import date, datetime
 import io
 import json
 import math
@@ -56,6 +57,49 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 DEFAULT_PAGE_SIZE = 50
 
 
+def format_datetime_human(val: Any) -> str:
+    """Format timestamps for humans: e.g. '23 Oct 2023, 05:04 UTC'."""
+    if not val:
+        return "—"
+    if isinstance(val, str):
+        try:
+            val = datetime.fromisoformat(val.replace("Z", "+00:00"))
+        except Exception:
+            return val
+    if isinstance(val, (datetime, date)):
+        return val.strftime("%d %b %Y, %H:%M UTC")
+    return str(val)
+
+
+def format_date_human(val: Any) -> str:
+    """Format dates for humans: e.g. '29 Oct 2023'."""
+    if not val:
+        return "—"
+    if isinstance(val, str):
+        try:
+            val = datetime.fromisoformat(val.replace("Z", "+00:00"))
+        except Exception:
+            return val
+    if isinstance(val, (datetime, date)):
+        return val.strftime("%d %b %Y")
+    return str(val)
+
+
+def format_reason_sentence(val: Any) -> str:
+    """Format reason codes in sentence case (ACADEMIC_MISCONDUCT -> 'Academic misconduct')."""
+    if not val:
+        return ""
+    txt = str(val).replace("_", " ").strip()
+    if not txt:
+        return ""
+    return txt[0].upper() + txt[1:].lower()
+
+
+templates.env.filters["human_datetime"] = format_datetime_human
+templates.env.filters["human_date"] = format_date_human
+templates.env.filters["sentence_case"] = format_reason_sentence
+
+
 def render_template(
     request: Request,
     name: str,
@@ -98,6 +142,13 @@ async def switch_role(
     if role not in ROLE_DEFINITIONS:
         role = Role.VERIFIER.value
     target_url = validate_relative_redirect(redirect, default="/verify")
+
+    # If the current page is not allowed for the new role, redirect to /verify
+    if role == Role.VERIFIER.value:
+        restricted_prefixes = ("/registry", "/audit", "/anomalies", "/web/registry", "/web/audit", "/web/anomalies")
+        if any(target_url == p or target_url.startswith(p + "/") or target_url.startswith(p + "?") for p in restricted_prefixes):
+            target_url = "/verify"
+
     signed_cookie = sign_role_cookie(role)
     response = RedirectResponse(url=target_url, status_code=303)
     response.set_cookie(
@@ -195,14 +246,16 @@ async def registry_page(
         await db.execute(select(func.count(Credential.id)))
     ).scalar_one() or 0
 
-    total_active = (
-        await db.execute(
-            select(func.count(Credential.id)).where(Credential.status == "ACTIVE")
-        )
+    total_revoked = (
+        await db.execute(select(func.count(distinct(Revocation.credential_id))))
     ).scalar_one() or 0
 
-    total_revoked = (
-        await db.execute(select(func.count(Revocation.id)))
+    total_active = (
+        await db.execute(
+            select(func.count(Credential.id))
+            .outerjoin(Revocation, Credential.id == Revocation.credential_id)
+            .where(Revocation.id.is_(None))
+        )
     ).scalar_one() or 0
 
     unique_learners = (
@@ -383,8 +436,11 @@ async def _query_credentials(
 ) -> Tuple[List[Dict[str, Any]], int]:
     """Query credentials and matching SQL row count with filters applied in SQL."""
     filters = []
-    if status and status.upper() in ("ACTIVE", "REVOKED"):
-        filters.append(Credential.status == status.upper())
+    has_revocation_subq = select(1).where(Revocation.credential_id == Credential.id).exists()
+    if status and status.upper() == "REVOKED":
+        filters.append(has_revocation_subq)
+    elif status and status.upper() == "ACTIVE":
+        filters.append(~has_revocation_subq)
 
     has_search = bool(search and search.strip())
     if has_search:
@@ -400,25 +456,23 @@ async def _query_credentials(
             )
         )
 
-    if has_search:
-        count_stmt = (
-            select(func.count(Credential.id))
-            .join(CompletionRecord, Credential.completion_id == CompletionRecord.id)
-            .join(Learner, CompletionRecord.learner_id == Learner.id)
-            .join(Course, CompletionRecord.course_id == Course.id)
-            .where(*filters)
-        )
-    else:
-        count_stmt = select(func.count(Credential.id)).where(*filters)
+    count_stmt = (
+        select(func.count(Credential.id))
+        .join(CompletionRecord, Credential.completion_id == CompletionRecord.id)
+        .join(Learner, CompletionRecord.learner_id == Learner.id)
+        .join(Course, CompletionRecord.course_id == Course.id)
+        .where(*filters)
+    )
 
     total_count = int((await db.execute(count_stmt)).scalar_one() or 0)
 
     stmt = (
-        select(Credential, CompletionRecord, Learner, Course, Issuer)
+        select(Credential, CompletionRecord, Learner, Course, Issuer, Revocation)
         .join(CompletionRecord, Credential.completion_id == CompletionRecord.id)
         .join(Learner, CompletionRecord.learner_id == Learner.id)
         .join(Course, CompletionRecord.course_id == Course.id)
         .join(Issuer, Credential.issuer_id == Issuer.id)
+        .outerjoin(Revocation, Credential.id == Revocation.credential_id)
         .where(*filters)
         .order_by(Credential.issued_at.desc(), Credential.id.desc())
         .limit(limit)
@@ -427,7 +481,8 @@ async def _query_credentials(
     rows = (await db.execute(stmt)).all()
 
     creds = []
-    for cred, comp, lnr, crs, iss in rows:
+    for cred, comp, lnr, crs, iss, rev in rows:
+        display_status = "REVOKED" if rev is not None or cred.status == "REVOKED" else "ACTIVE"
         creds.append({
             "id": cred.id,
             "public_id": cred.public_id,
@@ -437,7 +492,7 @@ async def _query_credentials(
             "course_title": crs.title,
             "course_public_id": crs.public_id,
             "assessment_score": float(comp.assessment_score or 0.0),
-            "status": cred.status,
+            "status": display_status,
             "issuer_name": iss.name,
             "issued_at": cred.issued_at,
         })

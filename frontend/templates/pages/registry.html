@@ -7,26 +7,11 @@
   <!-- Page Header -->
   <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-border">
     <div>
-      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-2">
-        <span class="material-symbols-outlined text-[14px]">inventory_2</span>
-        <span>Authoritative Registry Governance</span>
-      </div>
       <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Credential Registry</h1>
       <p class="text-text-muted text-sm mt-1 max-w-2xl">
-        Manage digital credentials in the authoritative registry, audit candidate eligibility invariants, and execute authorized revocations.
+        Search, filter, and inspect registered academic credentials and their current status.
       </p>
     </div>
-    {% if current_role.id == 'registrar' %}
-    <div class="flex items-center gap-3">
-      <button 
-        type="button" 
-        onclick="document.getElementById('eligibilityDeck').classList.toggle('hidden')"
-        class="px-4 py-2 rounded-lg bg-card hover:bg-elevated text-xs font-semibold text-white border border-border flex items-center gap-2 transition-all shadow-sm cursor-pointer">
-        <span class="material-symbols-outlined text-brand text-[16px]">rule</span>
-        <span>Eligibility Invariants</span>
-      </button>
-    </div>
-    {% endif %}
   </div>
 
   <!-- Live Metrics Row -->
@@ -39,22 +24,22 @@
       </div>
       <div class="flex items-baseline gap-2 mb-1">
         <span class="text-2xl font-extrabold text-white">{{ "{:,}".format(metrics.total_issued) }}</span>
-        <span class="text-[11px] font-mono text-text-muted uppercase">Committed</span>
+        <span class="text-[11px] font-mono text-text-muted uppercase">Credentials</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Authoritative credential ledger</span>
+      <span class="text-[11px] text-text-subtle">Total credentials issued</span>
     </div>
 
     <!-- Active Valid -->
     <div class="veri-card p-5 bg-card flex flex-col justify-between">
       <div class="flex items-center justify-between text-text-subtle mb-2">
-        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Active Valid</span>
+        <span class="text-xs font-semibold uppercase tracking-wider font-mono">Active</span>
         <span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-emerald-400">{{ "{:,}".format(metrics.active_count) }}</span>
-        <span class="text-[11px] font-mono text-emerald-400 uppercase">Valid</span>
+        <span class="text-2xl font-extrabold text-emerald-400">{{ "{:,}".format(metrics.total_active) }}</span>
+        <span class="text-[11px] font-mono text-emerald-400 uppercase">Active</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Passes all 4 verification checks</span>
+      <span class="text-[11px] text-text-subtle">Not revoked</span>
     </div>
 
     <!-- Revoked Credentials -->
@@ -64,10 +49,10 @@
         <span class="material-symbols-outlined text-rose-400 text-[20px]">gavel</span>
       </div>
       <div class="flex items-baseline gap-2 mb-1">
-        <span class="text-2xl font-extrabold text-rose-400">{{ "{:,}".format(metrics.revoked_count) }}</span>
+        <span class="text-2xl font-extrabold text-rose-400">{{ "{:,}".format(metrics.total_revoked) }}</span>
         <span class="text-[11px] font-mono text-rose-400 uppercase">Revoked</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Revoked credential records</span>
+      <span class="text-[11px] text-text-subtle">Revocation records</span>
     </div>
 
     <!-- Verification Queries -->
@@ -80,41 +65,9 @@
         <span class="text-2xl font-extrabold text-indigo-300">{{ "{:,}".format(metrics.verifications_count) }}</span>
         <span class="text-[11px] font-mono text-indigo-300 uppercase">Requests</span>
       </div>
-      <span class="text-[11px] text-text-subtle">Tamper-evident verification logs</span>
+      <span class="text-[11px] text-text-subtle">Verification request logs</span>
     </div>
   </div>
-
-  {% if current_role.id == 'registrar' %}
-  <!-- Collapsible Eligibility Invariants Deck -->
-  <div id="eligibilityDeck" class="hidden veri-card p-6 bg-surface border-border-focus transition-all">
-    <div class="flex items-center gap-3 mb-4">
-      <div class="w-9 h-9 rounded-lg bg-brand/10 text-brand flex items-center justify-center">
-        <span class="material-symbols-outlined text-[20px]">gavel</span>
-      </div>
-      <div>
-        <h3 class="text-sm font-bold text-white">Pre-Issuance Eligibility &amp; Issuance Invariants</h3>
-        <p class="text-xs text-text-muted">Enforced at transaction boundary before cryptographic signing</p>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-      <div class="p-3 rounded-lg bg-card border border-border">
-        <span class="text-text-subtle font-mono uppercase block mb-1">Assessment Criterion</span>
-        <div class="text-sm font-bold text-emerald-400">Score &ge; 80.00%</div>
-        <p class="text-[11px] text-text-muted mt-1">Learners below 80.0% are rejected from credential issuance.</p>
-      </div>
-      <div class="p-3 rounded-lg bg-card border border-border">
-        <span class="text-text-subtle font-mono uppercase block mb-1">Completion Record</span>
-        <div class="text-sm font-bold text-white">Status: COMPLETED</div>
-        <p class="text-[11px] text-text-muted mt-1">Requires verified completion timestamp and valid course ID.</p>
-      </div>
-      <div class="p-3 rounded-lg bg-card border border-border">
-        <span class="text-text-subtle font-mono uppercase block mb-1">Duplicate Prevention</span>
-        <div class="text-sm font-bold text-rose-400">Unique (Learner, Course)</div>
-        <p class="text-[11px] text-text-muted mt-1">Prevents concurrent or replay issuance for the same accreditation.</p>
-      </div>
-    </div>
-  </div>
-  {% endif %}
 
   <!-- Table Toolbar: Live Search & Status Filters -->
   <div class="veri-card p-4 bg-card shadow-md">
@@ -166,20 +119,20 @@
     </div>
   </div>
 
-  <!-- Credential Data Table -->
+  <!-- Credential Data Table (Horizontal scroll container on narrow widths, Credential ID never clipped) -->
   <div class="veri-card overflow-hidden bg-card shadow-lg">
     <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+      <table class="w-full text-left border-collapse min-w-[800px]">
         <thead>
           <tr class="bg-surface text-text-subtle font-mono text-[11px] uppercase tracking-wider border-b border-border">
-            <th class="py-3 px-4 font-semibold">Credential ID</th>
-            <th class="py-3 px-4 font-semibold">Learner Name</th>
-            <th class="py-3 px-4 font-semibold">Curriculum</th>
-            <th class="py-3 px-4 font-semibold text-center">Score</th>
-            <th class="py-3 px-4 font-semibold text-center">Status</th>
-            <th class="py-3 px-4 font-semibold">Issuer</th>
-            <th class="py-3 px-4 font-semibold">Issued (UTC)</th>
-            <th class="py-3 px-4 font-semibold text-right">Actions</th>
+            <th class="py-3 px-4 font-semibold min-w-[160px] whitespace-nowrap">Credential ID</th>
+            <th class="py-3 px-4 font-semibold min-w-[140px]">Learner Name</th>
+            <th class="py-3 px-4 font-semibold min-w-[180px]">Curriculum</th>
+            <th class="py-3 px-4 font-semibold text-center min-w-[80px]">Score</th>
+            <th class="py-3 px-4 font-semibold text-center min-w-[90px]">Status</th>
+            <th class="py-3 px-4 font-semibold min-w-[120px]">Issuer</th>
+            <th class="py-3 px-4 font-semibold min-w-[140px]">Issued (UTC)</th>
+            <th class="py-3 px-4 font-semibold text-right min-w-[100px]">Actions</th>
           </tr>
         </thead>
         <tbody id="credentialsTableBody" class="divide-y divide-border text-xs">
@@ -199,7 +152,7 @@
         <span class="material-symbols-outlined text-[24px]">gavel</span>
       </div>
       <div>
-        <h3 class="text-base font-bold text-rose-400">Authoritative Credential Revocation</h3>
+        <h3 class="text-base font-bold text-rose-400">Credential Revocation</h3>
         <p class="text-xs text-rose-200 mt-1">
           This writes an append-only revocation record to the registry and updates credential status to Revoked.
         </p>

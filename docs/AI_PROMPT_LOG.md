@@ -2025,6 +2025,120 @@ h. List every file changed.
 
 ---
 
+### Entry 031: UI Refinement, Touch-Friendly Role Dropdown, Registry Count Invariants & Clutter Removal
+- **Entry ID:** `PROMPT-031`
+- **Date & Time:** 2026-10-30T01:05:00+05:30
+- **AI Tool & Model:** Antigravity IDE (Gemini 3.8 Flash)
+- **Purpose:** Refine Web UI layout and aesthetics strictly without modifying `credential_db`, generator, or API contracts. Implement flex row input + button on /verify with zero-height initial result container; replace hover-only role menu with touch/click-toggled accessible dropdown (`aria-expanded`, `>=44px` touch targets); ensure registry count cards enforce `Active + Revoked == Total Issued` (evaluating revocation row presence rather than trusting stale status columns); format human timestamps and sentence-case reasons in UI while preserving ISO in JSON/exports; purge marketing jargon and false claims across templates.
+- **Exact Prompt:**
+```text
+TASK: UI refinement only. Fix the layout bugs, make the role dropdown work on
+touch, correct the registry counts, and remove clutter. Do NOT reload or
+regenerate credential_db and do not change data, generator or API contracts.
+Add nothing beyond this list. Do not create any notebook.
+
+1. VERIFY PAGE LAYOUT
+   - The Verify button currently renders inside the input's border and the
+     focus ring wraps both. Make the identifier row a flex container with a
+     12px gap: input (flex: 1, its own border and focus ring) and the button
+     as a separate fixed-size element. No absolute positioning, no negative
+     margins.
+   - Remove the large vertical gap between the search card and the result
+     card: delete any min-height or reserved placeholder on the HTMX target.
+     The result container is empty (zero height) until a result exists, then
+     appears with a 24px gap below the search card.
+   - On narrow widths the input and button stack cleanly.
+
+2. ROLE DROPDOWN (top right)
+   - Currently opens on hover only and closes when the pointer leaves, so it
+     cannot be used on a touchscreen. Replace with click/tap toggle: button
+     with aria-expanded, menu stays open until the user selects an item,
+     taps outside, or presses Escape. No :hover-dependent open state.
+   - Menu items at least 44px tall. Keep the existing items (University
+     Registrar, Public Verifier, Compliance Auditor, Login / Auth Page) and
+     the checkmark on the current role.
+   - After a switch, if the current page is not allowed for the new role,
+     redirect to /verify; otherwise stay on the page.
+
+3. REGISTRY COUNT CARDS (correctness)
+   - Total Issued = count of credentials.
+   - Revoked = credentials that have a revocation row (300).
+   - Active = credentials with no revocation row (9,700), label "Active",
+     subtext "Not revoked". Remove the claim "Passes all 4 verification
+     checks".
+   - Active + Revoked must equal Total Issued. Add a test asserting this on
+     a database that includes a stale-status revoked credential.
+   - Status filter and status column use the same rule: a credential with a
+     revocation row displays as Revoked even if its stored status is ACTIVE.
+   - Check the table at narrow widths: the Credential ID column header and
+     values must not disappear (it is the primary lookup key); allow
+     horizontal scroll inside the table container instead.
+   - Registry button "Eligibility Invariants": if it only shows static text,
+     remove it; if it opens something dynamic, keep it.
+
+4. PUBLIC VERIFY RESULT READABLE VALUES
+   - Format timestamps for humans: e.g. "23 Oct 2023, 05:04 UTC" (not raw
+     ISO strings like 2023-10-23T05:04:12.345678+00:00). Leave raw ISO in the
+     JSON API and exports.
+   - Revoked headline: "Revoked on 29 Oct 2023. Reason: Other" (sentence
+     case).
+   - Remove the Query Latency line (internal measurement, not for public
+     display).
+
+5. REMOVE CLUTTER (clean, plain look)
+   - Header: remove "VeriCred Authority Active" pill and the "// 4 verification
+     checks..." tagline. Remove the "TRUST" logo badge.
+   - Eyebrow pills on every page: remove them all.
+   - Stat cards: plain numbers and clear labels, remove marketing sublines.
+     Audit stat cards: Total events, Issuance events, Revocations,
+     Verification requests.
+   - Page subtitles: plain, one sentence explaining what the page does.
+   - Grep templates and web.py: ensure 0 occurrences of "Authoritative",
+     "Cryptographically attested", "Irreversible", "Tamper-evident",
+     "4-factor", "forensic".
+
+ACCEPTANCE CHECKS (run and report the output)
+a. Tests: /verify HTML input + button in flex row, no min-height placeholder;
+   role menu has aria-expanded, 0 hover-only CSS rules.
+b. Registry cards on credential_db (read-only): total, active, revoked, sum
+   check.
+c. Rendering test: revoked credential shows formatted date + sentence-case
+   reason, no raw ISO.
+d. Grep 0 for removed strings in templates and web.py.
+e. Full pytest summary, then credential_db counts (must be identical before
+   and after pytest).
+f. List every file changed.
+```
+- **Relevant Files/Artifacts Created or Modified:**
+  - `frontend/templates/base.html`
+  - `frontend/templates/pages/verify.html`
+  - `frontend/templates/pages/registry.html`
+  - `frontend/templates/pages/audit.html`
+  - `frontend/templates/pages/anomalies.html`
+  - `frontend/templates/pages/login.html`
+  - `frontend/templates/partials/registry_table.html`
+  - `frontend/templates/partials/verification_badge.html`
+  - `backend/api/views/web.py`
+  - `tests/test_web.py`
+  - `docs/TEST_EVIDENCE.md`
+  - `docs/AI_PROMPT_LOG.md`
+- **Summary of AI Output:**
+  - Verified and refactored `/verify` layout to use flex row (`flex flex-col sm:flex-row gap-3 items-stretch sm:items-center`), giving the input `flex-1` with its own border/focus ring, separate fixed button (`shrink-0`), zero-height initial `#verificationResult` container (`empty:hidden mt-6`).
+  - Implemented touch-accessible role menu toggle in `base.html` with `id="roleDropdownBtn"`, `aria-expanded="false"`, `id="roleDropdownMenu"`, min-44px targets, active role checkmark, outside click and Escape dismissal, removing all hover-only visibility CSS. Added restricted role redirection to `/verify` when switching from registrar/auditor to verifier.
+  - Corrected registry counts in `web.py`: Total = 10,000, Revoked = 300 (`select(func.count(distinct(Revocation.credential_id)))`), Active = 9,700 (`outerjoin(Revocation).where(Revocation.id.is_(None))`), with subtext "Not revoked". Ensured status filter and table column treat credentials with revocation rows as REVOKED regardless of stale `status` values. Wrapped table in horizontal scroll and pinned Credential ID column width (`min-w-[160px] whitespace-nowrap`).
+  - Added Jinja2 formatting filters: `human_datetime` (`%d %b %Y, %H:%M UTC`), `human_date` (`%d %b %Y`), and `sentence_case`. Formatted verification badge revoked headline as `Revoked on 29 Oct 2023. Reason: Other`. Removed "Query Latency".
+  - Removed "VeriCred Authority Active" pill, tagline, "TRUST" logo badge, static "Eligibility Invariants" deck, and all page eyebrow pills. Renamed Audit ledger stat cards to Total events, Issuance events, Revocations, Verification requests. Replaced verbose subtitles with plain 1-sentence explanations.
+  - Executed all acceptance checks: 0 matches for removed marketing strings; 120/120 tests passed; `credential_db` table counts confirmed identical before and after test execution.
+- **Output Status:** Complete and verified.
+- **Test Commands & Results:**
+  - Acceptance Check a: Tested flex layout, empty:hidden result container, aria-expanded, and 0 hover-only visibility CSS rules (`pytest tests/test_web.py -k test_verify_page_layout_and_touch_role_dropdown`).
+  - Acceptance Check b: Live DB query against `credential_db`: Total: 10,000, Active: 9,700, Revoked: 300, Sum: 10,000 (Active + Revoked == Total: True).
+  - Acceptance Check c: Rendered `CRD-2026-000012` output: `Revoked on 29 Oct 2023. Reason: Other`, zero raw ISO strings in headline, zero Query Latency.
+  - Acceptance Check d: Pattern grep on `frontend/templates` and `backend/api/views/web.py`: 0 matches for `authoritative`, `cryptographically attested`, `irreversible`, `tamper-evident`, `4-factor`, `forensic`.
+  - Acceptance Check e: Full pytest suite `pytest -q`: `120 passed in 57.08s`. `credential_db` table row counts identical before and after.
+
+---
+
 
 
 ## C. AI Contribution Summary

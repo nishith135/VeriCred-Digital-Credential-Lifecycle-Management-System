@@ -63,10 +63,7 @@
             <span class="material-symbols-outlined text-[20px]">verified_user</span>
           </div>
           <div class="flex flex-col">
-            <div class="flex items-center gap-1.5">
-              <span class="text-base font-bold tracking-tight text-white">VeriCred</span>
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-brand/20 text-indigo-300 border border-brand/30">Trust</span>
-            </div>
+            <span class="text-base font-bold tracking-tight text-white">VeriCred</span>
             <span class="text-xs text-text-muted">Credential Authority</span>
           </div>
         </a>
@@ -102,41 +99,44 @@
     <div class="pl-64 flex-1 flex flex-col min-w-0">
       <!-- Sticky Top Header -->
       <header class="sticky top-0 z-40 h-16 bg-canvas/90 backdrop-blur-md border-b border-border px-8 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-elevated border border-border-focus text-xs font-medium text-text-muted">
-            <span class="w-2 h-2 rounded-full bg-success"></span>
-            <span>VeriCred Authority Active</span>
-          </div>
-          <div class="hidden md:inline-flex items-center gap-1.5 text-xs text-text-subtle font-mono">
-            <span>// 4 verification checks &amp; Tamper Protection</span>
-          </div>
-        </div>
+        <div></div>
 
-        <!-- RBAC Quick Switcher & User Profile -->
+        <!-- RBAC Quick Switcher & User Profile (Click/Tap Toggle, Touch-Friendly, Accessible) -->
         <div class="flex items-center gap-3">
-          <!-- Role Switcher Dropdown -->
-          <div class="relative group">
-            <button class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card hover:bg-elevated border border-border transition-all text-xs font-medium text-white shadow-sm">
+          <div class="relative" id="roleDropdownContainer">
+            <button 
+              id="roleDropdownBtn"
+              type="button"
+              aria-expanded="false"
+              aria-haspopup="true"
+              onclick="toggleRoleDropdown(event)"
+              class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-card hover:bg-elevated border border-border transition-all text-xs font-medium text-white shadow-sm cursor-pointer select-none">
               <span class="material-symbols-outlined text-[16px] text-brand">{{ current_role.avatar_icon }}</span>
               <span>Role: <strong class="text-white">{{ current_role.name }}</strong></span>
-              <span class="material-symbols-outlined text-[16px] text-text-muted transition-transform group-hover:rotate-180">expand_more</span>
+              <span class="material-symbols-outlined text-[16px] text-text-muted transition-transform" id="roleDropdownArrow">expand_more</span>
             </button>
-            <div class="absolute right-0 top-full mt-1.5 w-64 bg-card border border-border-focus rounded-xl shadow-2xl py-1.5 hidden group-hover:block z-50">
-              <div class="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-text-subtle border-b border-border">Switch Persona</div>
+            <div 
+              id="roleDropdownMenu"
+              class="absolute right-0 top-full mt-1.5 w-64 bg-card border border-border-focus rounded-xl shadow-2xl py-1.5 hidden z-50">
+              <div class="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-text-subtle border-b border-border">Switch Persona</div>
               {% for r in roles %}
-              <a href="/role/switch?role={{ r.id }}" class="flex items-center justify-between px-3 py-2 hover:bg-elevated transition-colors text-xs {% if current_role.id == r.id %}text-brand font-semibold bg-brand/10{% else %}text-text-muted{% endif %}">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[16px]">{{ r.avatar_icon }}</span>
+              <a 
+                href="/role/switch?role={{ r.id }}&redirect={{ request.url.path if request else '/verify' }}" 
+                class="flex items-center justify-between px-3 min-h-[44px] hover:bg-elevated transition-colors text-xs {% if current_role.id == r.id %}text-brand font-semibold bg-brand/10{% else %}text-text-muted hover:text-white{% endif %}">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-[18px]">{{ r.avatar_icon }}</span>
                   <span>{{ r.name }}</span>
                 </div>
                 {% if current_role.id == r.id %}
-                <span class="material-symbols-outlined text-[16px] text-brand">check</span>
+                <span class="material-symbols-outlined text-[18px] text-brand">check</span>
                 {% endif %}
               </a>
               {% endfor %}
               <div class="border-t border-border mt-1 pt-1">
-                <a href="/login" class="flex items-center gap-2 px-3 py-2 text-xs text-text-muted hover:text-white hover:bg-elevated transition-colors">
-                  <span class="material-symbols-outlined text-[16px]">lock</span>
+                <a 
+                  href="/login" 
+                  class="flex items-center gap-2.5 px-3 min-h-[44px] text-xs text-text-muted hover:text-white hover:bg-elevated transition-colors">
+                  <span class="material-symbols-outlined text-[18px]">lock</span>
                   <span>Login / Auth Page</span>
                 </a>
               </div>
@@ -186,6 +186,48 @@
       const msg = typeof evt.detail === 'string' ? evt.detail : evt.detail.value;
       const isErr = msg && (msg.toLowerCase().includes('failed') || msg.toLowerCase().includes('denied') || msg.toLowerCase().includes('error'));
       showToast(msg, isErr);
+    });
+
+    // Accessible Touch-Friendly Role Dropdown Toggle
+    function toggleRoleDropdown(e) {
+      if (e) e.stopPropagation();
+      const btn = document.getElementById('roleDropdownBtn');
+      const menu = document.getElementById('roleDropdownMenu');
+      const arrow = document.getElementById('roleDropdownArrow');
+      if (!btn || !menu) return;
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', !isOpen);
+      if (isOpen) {
+        menu.classList.add('hidden');
+        if (arrow) arrow.classList.remove('rotate-180');
+      } else {
+        menu.classList.remove('hidden');
+        if (arrow) arrow.classList.add('rotate-180');
+      }
+    }
+
+    function closeRoleDropdown() {
+      const btn = document.getElementById('roleDropdownBtn');
+      const menu = document.getElementById('roleDropdownMenu');
+      const arrow = document.getElementById('roleDropdownArrow');
+      if (btn && menu) {
+        btn.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+        if (arrow) arrow.classList.remove('rotate-180');
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      const container = document.getElementById('roleDropdownContainer');
+      if (container && !container.contains(e.target)) {
+        closeRoleDropdown();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeRoleDropdown();
+      }
     });
   </script>
 </body>

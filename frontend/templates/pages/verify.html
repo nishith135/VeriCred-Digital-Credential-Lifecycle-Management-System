@@ -3,43 +3,39 @@
 {% block title %}Verify Credential // VeriCred{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
+<div class="space-y-6">
   <!-- Page Header -->
-  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-border">
-    <div>
-      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand/10 border border-brand/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
-        <span class="material-symbols-outlined text-[14px]">gpp_good</span>
-        <span>Public Verification Portal</span>
-      </div>
-      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Public Credential Verification</h1>
-      <p class="text-text-muted text-sm mt-1 max-w-2xl">
-        Execute 4 verification checks across cryptographic signatures, canonical payload digests, academic eligibility, and real-time revocation registers.
-      </p>
-    </div>
+  <div class="pb-2 border-b border-border">
+    <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white">Public Credential Verification</h1>
+    <p class="text-text-muted text-sm mt-1 max-w-2xl">
+      Enter a credential ID to check that it is authentic, unaltered and not revoked.
+    </p>
   </div>
 
-  <!-- Verification Search Input Card (Single Input + Single Verify Button) -->
+  <!-- Verification Search Input Card (Flex Container: Input flex:1 + Separate Fixed Button) -->
   <div class="veri-card p-6 md:p-8 bg-card shadow-xl">
     <form hx-post="/web/verify" hx-target="#verificationResult" hx-indicator="#verifySpinner" class="space-y-4">
       <div>
         <label for="credentialInput" class="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 font-mono">
           Public Credential Identifier
         </label>
-        <div class="relative flex items-center">
-          <span class="material-symbols-outlined absolute left-4 text-text-subtle text-[22px]">search</span>
-          <input 
-            type="text" 
-            name="credential_public_id" 
-            id="credentialInput" 
-            required
-            class="w-full h-13 pl-12 pr-36 rounded-xl bg-surface border border-border-focus font-mono text-sm text-white placeholder-text-subtle focus:border-brand focus:ring-1 focus:ring-brand transition-all"
-            placeholder="e.g. CRD-2026-000001" 
-            value="{{ sample_valid_id or '' }}" 
-          />
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-subtle text-[22px] pointer-events-none">search</span>
+            <input 
+              type="text" 
+              name="credential_public_id" 
+              id="credentialInput" 
+              required
+              class="w-full h-12 pl-12 pr-4 rounded-xl bg-surface border border-border-focus font-mono text-sm text-white placeholder-text-subtle focus:border-brand focus:ring-1 focus:ring-brand transition-all outline-none"
+              placeholder="e.g. CRD-2026-000001" 
+              value="{{ sample_valid_id or '' }}" 
+            />
+          </div>
           <button 
             type="submit"
-            class="absolute right-2 h-9 px-5 bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">verified</span>
+            class="h-12 px-6 bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer shrink-0">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
             <span>Verify</span>
           </button>
         </div>
@@ -48,23 +44,12 @@
   </div>
 
   <!-- HTMX Progress Spinner -->
-  <div id="verifySpinner" class="htmx-indicator flex items-center justify-center gap-3 py-8 text-brand font-mono text-xs">
+  <div id="verifySpinner" class="htmx-indicator flex items-center justify-center gap-3 py-6 text-brand font-mono text-xs">
     <span class="material-symbols-outlined animate-spin text-[22px]">progress_activity</span>
-    <span>Running 4 verification checks...</span>
+    <span>Checking credential...</span>
   </div>
 
-  <!-- Dynamic Verification Result -->
-  <div id="verificationResult" class="space-y-6">
-    <!-- Initial Instruction Placeholder -->
-    <div class="veri-card p-8 text-center bg-card/60 border-dashed border-border-focus">
-      <div class="w-12 h-12 rounded-2xl bg-elevated mx-auto flex items-center justify-center text-text-subtle mb-3">
-        <span class="material-symbols-outlined text-[28px]">search_check</span>
-      </div>
-      <h3 class="text-base font-bold text-white mb-1">Ready for Verification</h3>
-      <p class="text-xs text-text-muted max-w-md mx-auto">
-        Enter a credential identifier above and click <strong class="text-white">Verify</strong> to run all 4 verification checks.
-      </p>
-    </div>
-  </div>
+  <!-- Dynamic Verification Result (empty with 0 height until result arrives, then 24px gap below search card) -->
+  <div id="verificationResult" class="mt-6 empty:hidden"></div>
 </div>
 {% endblock %}

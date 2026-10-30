@@ -16,7 +16,7 @@
   </p>
   {% if result.verification_id %}
   <div class="text-[11px] font-mono text-text-subtle">
-    Audit ID: {{ result.verification_id }} • Latency: {{ latency_ms or "1.2" }} ms
+    Audit ID: {{ result.verification_id }}
   </div>
   {% endif %}
 </div>
@@ -60,7 +60,7 @@
         {% set rev_reason = result.revocation_details.reason_code if result.revocation_details else result.reason_code %}
         <h2 class="text-xl font-extrabold text-white tracking-tight">
           {% if result.outcome == 'VALID' %}Valid — Authentic Credential Verified
-          {% elif result.outcome == 'REVOKED' %}Revoked — {{ rev_date or 'Revoked' }} ({{ rev_reason or 'CREDENTIAL_REVOKED' }})
+          {% elif result.outcome == 'REVOKED' %}Revoked on {{ rev_date | human_date }}. Reason: {{ rev_reason | sentence_case }}
           {% elif result.outcome == 'TAMPERED' %}Tampered — Cryptographic Payload Integrity Mismatch
           {% elif result.outcome == 'INVALID_ISSUANCE' %}Invalid issuance — Eligibility or Signature Violation
           {% else %}Not found{% endif %}
@@ -72,11 +72,10 @@
     </div>
 
     <div class="flex flex-col sm:text-right font-mono text-xs text-text-subtle">
-      <span>Query Latency: <strong class="text-white">{{ latency_ms or "1.2" }} ms</strong></span>
       {% if result.timestamp %}
-      <span>Verified At: <span class="text-text-muted">{{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S UTC') }}</span></span>
+      <span>Verified At: <span class="text-text-muted">{{ result.timestamp | human_datetime }}</span></span>
       {% elif result.issued_at %}
-      <span>Issued At: <span class="text-text-muted">{{ result.issued_at }}</span></span>
+      <span>Issued At: <span class="text-text-muted">{{ result.issued_at | human_datetime }}</span></span>
       {% endif %}
     </div>
   </div>
@@ -211,7 +210,7 @@
     <div>
       <span class="text-[11px] font-mono text-text-subtle uppercase block mb-1">Issuance Timestamp</span>
       <div class="text-sm font-bold text-emerald-400 font-mono">
-        {{ result.issued_at }}
+        {{ result.issued_at | human_datetime }}
       </div>
       <div class="text-xs text-text-muted">
         Eligibility Sub-Check: {% if result.factors.eligibility_valid %}Verified{% else %}Failed{% endif %}
@@ -228,9 +227,9 @@
       <span>Official Revocation Record (Revoked)</span>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-      <div><span class="text-text-subtle">Reason Code:</span> <strong class="text-white">{{ result.revocation_details.reason_code }}</strong></div>
+      <div><span class="text-text-subtle">Reason:</span> <strong class="text-white">{{ result.revocation_details.reason_code | sentence_case }}</strong> <span class="text-[10px] text-text-subtle font-mono">({{ result.revocation_details.reason_code }})</span></div>
       <div><span class="text-text-subtle">Authorized By:</span> <strong class="text-white">{{ result.revocation_details.revoked_by_actor_id }}</strong></div>
-      <div><span class="text-text-subtle">Revoked Date:</span> <span class="text-white">{{ result.revocation_details.revocation_timestamp }}</span></div>
+      <div><span class="text-text-subtle">Revoked Date:</span> <span class="text-white">{{ result.revocation_details.revocation_timestamp | human_datetime }}</span></div>
     </div>
     {% if result.revocation_details.notes %}
     <p class="text-xs text-rose-200 mt-3 pt-3 border-t border-rose-500/20 font-sans">
@@ -245,8 +244,8 @@
       <span>Official Revocation Record (Revoked)</span>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-      <div><span class="text-text-subtle">Reason Code:</span> <strong class="text-white">{{ result.reason_code }}</strong></div>
-      <div><span class="text-text-subtle">Revoked Date:</span> <span class="text-white">{{ result.revoked_at }}</span></div>
+      <div><span class="text-text-subtle">Reason:</span> <strong class="text-white">{{ result.reason_code | sentence_case }}</strong> <span class="text-[10px] text-text-subtle font-mono">({{ result.reason_code }})</span></div>
+      <div><span class="text-text-subtle">Revoked Date:</span> <span class="text-white">{{ result.revoked_at | human_datetime }}</span></div>
     </div>
   </div>
   {% endif %}

@@ -411,6 +411,50 @@ This document maintains empirical evidence of all automated tests, manual checks
 
 ---
 
+### Verification 019: UI Refinement, Touch-Accessible Role Dropdown, Registry Count Invariants & Clutter Removal
+- **Date:** 2026-10-30T01:05:00+05:30
+- **Summary:** Verified UI layout refinements, touch role menu interactions, registry card count invariants with stale status simulation, human timestamp formatting, and removal of marketing claims across all Jinja2 templates and `web.py`.
+- **Output:**
+  - **Check `a` (`/verify` layout & role menu):** Flex container `flex flex-col sm:flex-row items-stretch sm:items-center gap-3`, input `flex-1`, separate button `shrink-0`, zero-height initial `#verificationResult` container (`empty:hidden mt-6`). Role dropdown toggle with `id="roleDropdownBtn"`, `aria-expanded="false"`, `id="roleDropdownMenu"`, `min-h-[44px]` touch targets, and 0 hover-only visibility CSS rules (`test_verify_page_layout_and_touch_role_dropdown` PASSED).
+  - **Check `b` (Registry cards on live `credential_db`):**
+    - `Total Issued`: 10,000
+    - `Active (Not revoked)`: 9,700
+    - `Revoked`: 300
+    - `Sum (Active + Revoked)`: 10,000
+    - `Active + Revoked == Total Issued`: `True`
+  - **Check `c` (Revoked Credential Human Formatting):** Verified `CRD-2026-000012` rendered via HTMX `POST /web/verify`:
+    - Headline: `Revoked on 29 Oct 2023. Reason: Other`
+    - Callout: `Official Revocation Record (Revoked)` with `Reason: Other (OTHER)`
+    - Raw ISO date format absent from headline; `Query Latency` absent.
+  - **Check `d` (Removed Marketing Strings Grep):** Pattern search for `["authoritative", "cryptographically attested", "irreversible", "tamper-evident", "4-factor", "forensic"]` across `frontend/templates/*.html` and `backend/api/views/web.py`: **0 matches found**.
+  - **Check `e` (Pytest & `credential_db` Isolation):**
+    - `.venv/Scripts/pytest -q`: **120 passed in 57.08s** against `credential_test_db`.
+    - Live `credential_db` table counts before and after pytest verified identical:
+      - `issuers`: 12
+      - `courses`: 1,000
+      - `credential_rules`: 1,000
+      - `learners`: 20,000
+      - `completion_records`: 15,300
+      - `credentials`: 10,000
+      - `revocations`: 300
+      - `verification_requests`: 5,009
+      - `audit_events`: 16,311
+  - **Check `f` (Files Changed):**
+    - `frontend/templates/base.html`
+    - `frontend/templates/pages/verify.html`
+    - `frontend/templates/pages/registry.html`
+    - `frontend/templates/pages/audit.html`
+    - `frontend/templates/pages/anomalies.html`
+    - `frontend/templates/pages/login.html`
+    - `frontend/templates/partials/registry_table.html`
+    - `frontend/templates/partials/verification_badge.html`
+    - `backend/api/views/web.py`
+    - `tests/test_web.py`
+    - `docs/TEST_EVIDENCE.md`
+    - `docs/AI_PROMPT_LOG.md`
+
+---
+
 ## 3. Boundary & Assumption Verification
 - **Tamper Precedence Invariant**: Formally validated in `test_tampering_strictly_overrides_revocation` and `test_web_anomalies_lab` — payload digest mismatch strictly overrides revocation and returns `TAMPERED`.
 - **Idempotent Revocation**: Confirmed in `test_double_revocation_raises_error` and `POST /web/revocation/revoke`.
