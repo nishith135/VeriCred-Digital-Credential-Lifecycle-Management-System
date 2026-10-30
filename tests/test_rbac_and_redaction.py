@@ -460,7 +460,7 @@ async def test_public_verifier_redaction_vs_registrar_full_response(
     assert resp_badge_revoked.status_code == 200
     badge_revoked_html = resp_badge_revoked.text
     assert "A**** Q**** S****" in badge_revoked_html
-    assert "ACADEMIC_MISCONDUCT" in badge_revoked_html
+    assert "Academic misconduct" in badge_revoked_html
     assert "Internal confidential disciplinary note" not in badge_revoked_html
     for forbidden in forbidden_substrings:
         assert forbidden not in badge_revoked_html, f"Forbidden value '{forbidden}' leaked in revoked verifier HTML badge!"

@@ -140,3 +140,51 @@ async def test_audit_rest_api_endpoint_pagination_and_query(
     assert first_event["actor_id"] == "ISSUER-AGENT"
     assert second_event["event_type"] == "CREDENTIAL_REVOKED"
     assert second_event["actor_id"] == "REVOCATION-AGENT"
+
+
+@pytest.mark.asyncio
+async def test_audit_events_database_immutability_trigger(db_session: AsyncSession):
+    """Verify that the database BEFORE UPDATE OR DELETE trigger blocks UPDATE and DELETE, but allows INSERT."""
+    from sqlalchemy import select, text
+    from sqlalchemy.exc import DBAPIError
+    from backend.models.audit import AuditEvent
+
+    # 1. INSERT works cleanly
+    event = await AuditService.log_event(
+        db=db_session,
+        event_type="CREDENTIAL_ISSUED",
+        target_entity_type="Credential",
+        target_entity_id="CRD-2026-TEST01",
+        actor_id="REGISTRAR-TEST",
+        details={"note": "immutability trigger test"},
+    )
+    eid = event.event_id
+    assert eid is not None
+
+    # 2. UPDATE fails and raises 'audit_events is append-only'
+    with pytest.raises(DBAPIError) as exc_update:
+        await db_session.execute(
+            text("UPDATE audit_events SET actor_id = 'TAMPERED' WHERE event_id = :eid"),
+            {"eid": eid},
+        )
+    assert "audit_events is append-only" in str(exc_update.value)
+
+    # Rollback after failed statement inside transaction
+    await db_session.rollback()
+
+    # Verify event is still intact
+    res = await db_session.execute(select(AuditEvent).where(AuditEvent.event_id == eid))
+    event_check = res.scalar_one_or_none()
+    assert event_check is not None
+    assert event_check.actor_id == "REGISTRAR-TEST"
+
+    # 3. DELETE fails and raises 'audit_events is append-only'
+    with pytest.raises(DBAPIError) as exc_delete:
+        await db_session.execute(
+            text("DELETE FROM audit_events WHERE event_id = :eid"),
+            {"eid": eid},
+        )
+    assert "audit_events is append-only" in str(exc_delete.value)
+
+    await db_session.rollback()
+

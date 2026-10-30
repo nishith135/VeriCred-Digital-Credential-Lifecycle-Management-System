@@ -123,7 +123,11 @@ The synthetic data generator relies on a single constant seed (`20261022`) used 
 
 ## 4. Entity Model & Relationship Cardinality
 
-Comprehensive field specifications, data types, allowed values, validation rules, and lifecycle transitions are documented in [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md).
+Comprehensive field specifications, data types, allowed values, validation rules, and lifecycle transitions are documented in [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md). An issuer with status RETIRED ceases issuing new credentials while historical credentials remain verifiable using its recorded public key. The effective date and successor issuer are recorded in the ISSUER_RETIRED audit event. The `audit_events` table is protected at the database level by a PostgreSQL `BEFORE UPDATE OR DELETE` row-level trigger that enforces an append-only ledger by raising an exception on any attempted update or deletion.
+
+### Database Entity-Relationship Diagram
+
+![VeriCred Database ER Diagram](docs/architecture/database_er_diagram.png)
 
 ```
 +-----------+          +--------------------+          +-------------+

@@ -455,6 +455,90 @@ This document maintains empirical evidence of all automated tests, manual checks
 
 ---
 
+
+### Verification 020: Database-Level Audit Immutability Trigger, Persona Cards Alignment, and Issuer Retirement Documentation
+- **Date:** 2026-10-30T12:00:00+05:30
+- **Summary:** Verified PostgreSQL row-level BEFORE UPDATE OR DELETE trigger raising 'audit_events is append-only', applied migration to `credential_db` and `credential_test_db`, tested UPDATE/DELETE failures and INSERT success, aligned /login persona cards, and documented issuer retirement details and the audit trigger in README and DATA_DICTIONARY.
+- **Output:**
+  - **Check `a` (UPDATE/DELETE Error Messages & INSERT Success):**
+    - `UPDATE`: `(sqlalchemy.dialects.postgresql.asyncpg.Error) audit_events is append-only`
+    - `DELETE`: `(sqlalchemy.dialects.postgresql.asyncpg.Error) audit_events is append-only`
+    - `INSERT`: Succeeded (`id=1, event_id=EVT-99999999`)
+    - `TRUNCATE`: Succeeded (table-level operation not blocked by row-level trigger)
+  - **Check `b` (Triggers on `credential_db`):**
+    - `information_schema.triggers` on `audit_events`:
+      - `trigger_name=trg_audit_events_immutable, event_manipulation=DELETE`
+      - `trigger_name=trg_audit_events_immutable, event_manipulation=UPDATE`
+  - **Check `c` (Details of `ISSUER_RETIRED` Events in `credential_db`):**
+    - `EVT-00007987`: Actor `GOVERNANCE-REGISTRY-01`, Target `Issuer ISS-00003`, Occurred `2025-10-22 12:00:00+00:00`
+      - Details: `{"retired_issuer_id": "ISS-00003", "successor_issuer_id": "ISS-00011", "effective_at": "2025-10-22T12:00:00+00:00"}`
+    - `EVT-00007988`: Actor `GOVERNANCE-REGISTRY-01`, Target `Issuer ISS-00007`, Occurred `2025-10-22 12:00:00+00:00`
+      - Details: `{"retired_issuer_id": "ISS-00007", "successor_issuer_id": "ISS-00012", "effective_at": "2025-10-22T12:00:00+00:00"}`
+  - **Check `d` (Persona Card Bullet Changes):**
+    - On `/login`, University Registrar bullet 3 changed from `Trigger pre-issuance eligibility` to `Run anomaly evaluation suite` (reflecting actual `/anomalies` route). All other bullets matched existing UI/routes.
+  - **Check `e` (Pytest & `credential_db` Counts Before/After):**
+    - `.venv/Scripts/pytest -q`: **121 passed in 76.20s** against `credential_test_db`.
+    - Live `credential_db` table counts before and after pytest verified identical:
+      - `issuers`: 12
+      - `courses`: 1,000
+      - `credential_rules`: 1,000
+      - `learners`: 20,000
+      - `completion_records`: 15,300
+      - `credentials`: 10,000
+      - `revocations`: 300
+      - `verification_requests`: 5,014
+      - `audit_events`: 16,316
+  - **Check `f` (Files Changed):**
+    - `alembic/versions/20261030_0625_a4b1c2d3e4f5_audit_events_immutable_trigger.py`
+    - `tests/test_audit.py`
+    - `frontend/templates/pages/login.html`
+    - `docs/DATA_DICTIONARY.md`
+    - `README.md`
+    - `docs/TEST_EVIDENCE.md`
+    - `docs/AI_PROMPT_LOG.md`
+
+---
+### Verification 021: Presentation Layer & UI Cleanup Verification
+- **Date:** 2026-10-30T12:35:00+05:30
+- **Summary:** Centralized user-facing outcome labels and plain-language sentences into `backend/api/presenters.py`, measured vertical DOM distance between `#credentialSearchCard` bottom and `#verificationResultCard` top to exactly 24px (+/- 2px), verified autocomplete="off" and dark autofill styling, removed technical jargon and cryptographic internals from public view, overhauled Anomaly Lab cards with stacked full-width layout, and verified credential registry status filter (`ACTIVE` / `REVOKED`).
+- **Output:**
+  - **Check a (Measured Vertical Distances via Headless Chrome DOM):**
+    - `CRD-2026-000001` (Valid): Search Bottom = 371px, Result Top = 395px, **Distance = 24px** (+/- 0px error).
+    - `CRD-2026-000012` (Revoked): Search Bottom = 371px, Result Top = 395px, **Distance = 24px** (+/- 0px error).
+    - `CRD-2026-999999` (Not Found): Search Bottom = 371px, Result Top = 395px, **Distance = 24px** (+/- 0px error).
+    - Empty initial state: Result Container Height = 0px, zero extra vertical space.
+    - Cause of previous gap: `#verifySpinner` took physical block space outside the card, `.htmx-indicator` used opacity instead of `display: none !important`, and competing `mt-6` margins overlapped with container spacing. Fixed by placing the spinner inside `#credentialSearchCard` and using clean CSS grid/flex spacing.
+  - **Check b (Public Verify Plain Language Checks & Redaction):**
+    - 4 plain-language checks rendered:
+      1. Record found ("This credential exists in the registry.")
+      2. Content unchanged ("The credential details match what was issued.")
+      3. Issued by <Issuer Name> ("The issuer's signature is valid.")
+      4. Not revoked ("This credential has not been revoked.") or Revoked on <date>. Reason: <reason>.
+      5. Completion requirements met ("All academic completion criteria and dates were satisfied.")
+    - Reference format: `Reference: VER-2026-NNNNNN`
+    - Hashes, signatures, and cryptographic internals hidden in public view; collapsed `<details>` "Technical details" block rendered exclusively for authenticated staff roles (`registrar`, `auditor`).
+  - **Check c (Anomaly Lab Full-Width Cards & Plain Texts):**
+    - 4 scenario titles on own line, full width with no badges:
+      - "Credential issued before course completion"
+      - "Duplicate credential ID"
+      - "Revoked credential still marked active"
+      - "Credential altered after issuance"
+    - Formatted stacked lines: `Example credential: <id>` and `Detected: X of Y`.
+    - Expected & Actual outcome boxes render human presenter labels (`Invalid issuance`, `Rejected as duplicate`, `Revoked`, `Altered`).
+    - Action button renamed to "View details" (rendered conditionally when trace present).
+  - **Check d (Jargon Sweep):**
+    - Zero occurrences in user-facing UI text across templates and presenter outside staff-only collapsed technical block.
+  - **Check e (Registry Status Filter):**
+    - `GET /web/registry/table?status=REVOKED`: 300 rows returned.
+    - `GET /web/registry/table?status=ACTIVE`: 9,700 rows returned.
+    - Combined total equals 10,000 issued credentials.
+  - **Check f (Full Pytest & Live DB Counts):**
+    - Pytest: **121 passed in 80.39s**.
+    - Live `credential_db` table counts: `issuers: 12`, `courses: 1,000`, `credential_rules: 1,000`, `learners: 20,000`, `completion_records: 15,300`, `credentials: 10,000`, `revocations: 300`. Zero data modifications or reload.
+
+---
+
+
 ## 3. Boundary & Assumption Verification
 - **Tamper Precedence Invariant**: Formally validated in `test_tampering_strictly_overrides_revocation` and `test_web_anomalies_lab` — payload digest mismatch strictly overrides revocation and returns `TAMPERED`.
 - **Idempotent Revocation**: Confirmed in `test_double_revocation_raises_error` and `POST /web/revocation/revoke`.

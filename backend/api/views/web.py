@@ -38,6 +38,13 @@ from backend.evaluation import (
     EvaluationRunner,
     get_latest_evaluation_report,
 )
+from backend.api.presenters import (
+    AnomalyPresenter,
+    VerificationPresenter,
+    format_human_date,
+    format_human_datetime,
+    to_sentence_case,
+)
 from backend.models import (
     AuditEvent,
     CompletionRecord,
@@ -213,6 +220,7 @@ async def perform_verification_htmx(
         actor_id=actor["actor_id"],
     )
     role_resp = VerificationService.select_response_for_role(staff_resp, actor["role"])
+    presented = VerificationPresenter.present(role_resp, actor_role=actor["role"])
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -220,6 +228,7 @@ async def perform_verification_htmx(
         request=request,
         name="partials/verification_badge.html",
         context={
+            "p": presented,
             "result": role_resp,
             "is_public_view": actor["role"] == Role.VERIFIER.value,
             "latency_ms": f"{elapsed_ms:.1f}",
@@ -436,11 +445,10 @@ async def _query_credentials(
 ) -> Tuple[List[Dict[str, Any]], int]:
     """Query credentials and matching SQL row count with filters applied in SQL."""
     filters = []
-    has_revocation_subq = select(1).where(Revocation.credential_id == Credential.id).exists()
     if status and status.upper() == "REVOKED":
-        filters.append(has_revocation_subq)
+        filters.append(Revocation.id.is_not(None))
     elif status and status.upper() == "ACTIVE":
-        filters.append(~has_revocation_subq)
+        filters.append(Revocation.id.is_(None))
 
     has_search = bool(search and search.strip())
     if has_search:
@@ -461,6 +469,7 @@ async def _query_credentials(
         .join(CompletionRecord, Credential.completion_id == CompletionRecord.id)
         .join(Learner, CompletionRecord.learner_id == Learner.id)
         .join(Course, CompletionRecord.course_id == Course.id)
+        .outerjoin(Revocation, Credential.id == Revocation.credential_id)
         .where(*filters)
     )
 
@@ -759,7 +768,8 @@ async def anomalies_page(
     sample_revoked = (await db.execute(rev_stmt)).scalar_one_or_none() or "CRD-2026-000002"
 
     report = get_latest_evaluation_report()
-    results = report["scenarios"] if report is not None else _initial_unrun_scenarios()
+    raw_results = report["scenarios"] if report is not None else _initial_unrun_scenarios()
+    results = [AnomalyPresenter.present_card(s) for s in raw_results]
     return render_template(
         request=request,
         name="pages/anomalies.html",
@@ -783,11 +793,12 @@ async def run_single_anomaly_htmx(
 ):
     """HTMX endpoint to execute real evaluation for a single anomaly scenario."""
     single = await EvaluationRunner.run_single_scenario(db=db, scenario_id=scenario_id)
+    presented_card = AnomalyPresenter.present_card(single["scenario"])
     return render_template(
         request=request,
         name="partials/anomaly_result.html",
         context={
-            "results": [single["scenario"]],
+            "results": [presented_card],
             "report": single["report"],
             "include_kpi_oob": True,
         },
@@ -803,11 +814,12 @@ async def run_all_anomalies_htmx(
 ):
     """HTMX endpoint to execute real evaluation across all 4 anomaly scenarios."""
     report = await EvaluationRunner.run_evaluation(db=db)
+    presented_cards = [AnomalyPresenter.present_card(s) for s in report["scenarios"]]
     return render_template(
         request=request,
         name="partials/anomaly_result.html",
         context={
-            "results": report["scenarios"],
+            "results": presented_cards,
             "report": report,
             "include_kpi_oob": True,
         },

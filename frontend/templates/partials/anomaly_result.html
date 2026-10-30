@@ -9,7 +9,7 @@
       <span class="text-2xl font-extrabold text-white">{{ report.scenarios_run }}</span>
       <span class="text-[11px] font-mono text-text-muted uppercase">{{ report.total_cases_evaluated }} cases</span>
     </div>
-    <span class="text-[11px] text-text-subtle">Evaluated against database &amp; staging</span>
+    <span class="text-[11px] text-text-subtle">Evaluated against test cases</span>
   </div>
 
   <div class="veri-card p-5 bg-card flex flex-col justify-between">
@@ -50,20 +50,11 @@
 {% endif %}
 
 {% for res in results %}
-<div class="veri-card flex flex-col justify-between shadow-md" id="card-{{ res.scenario_id }}">
-  <div class="p-6 flex flex-col gap-4">
-    <!-- Card Top Header -->
-    <div class="flex items-start justify-between gap-3 pb-3 border-b border-border">
-      <div class="flex items-center gap-3">
-        <span class="w-3 h-3 rounded-full {% if res.passed is sameas true %}bg-emerald-400 veri-pulse{% elif res.passed is sameas false %}bg-rose-400{% else %}bg-slate-500{% endif %}"></span>
-        <div>
-          <h3 class="text-base font-bold text-white tracking-tight">{{ res.title }}</h3>
-          <span class="text-xs text-text-subtle font-mono">{{ res.rule_reference }}</span>
-        </div>
-      </div>
-      <span class="px-2.5 py-0.5 rounded-full bg-elevated text-brand font-mono text-[11px] font-bold border border-border">
-        {{ res.scenario_id }}
-      </span>
+<div class="veri-card flex flex-col justify-between shadow-md h-full" id="card-{{ res.scenario_id }}">
+  <div class="p-6 flex flex-col gap-4 flex-1">
+    <!-- Title on its own line, full width, no badge beside it -->
+    <div class="pb-3 border-b border-border">
+      <h3 class="text-base font-bold text-white tracking-tight leading-snug">{{ res.title }}</h3>
     </div>
 
     <!-- Description -->
@@ -71,62 +62,46 @@
       {{ res.description }}
     </p>
 
-    <!-- Real Example & Detection Count -->
-    <div class="p-3.5 rounded-xl bg-surface border border-border font-mono text-xs">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div class="text-[11px] truncate">
-          <span class="text-text-subtle">Example Entity ID:</span>
-          <span class="text-white font-medium">{{ res.example_entity_id }}</span>
-        </div>
-        <div class="text-[11px] truncate">
-          <span class="text-text-subtle">Detection Rate (n/N):</span>
-          {% if res.passed is not none %}
-            <span class="text-white font-medium">{{ res.numerator }}/{{ res.denominator }} ({{ res.detection_rate_pct }}%)</span>
-          {% else %}
-            <span class="text-text-muted">Not run yet</span>
-          {% endif %}
-        </div>
+    <!-- Stacked, labelled lines that wrap and never truncate -->
+    <div class="p-3.5 rounded-xl bg-surface border border-border font-mono text-xs space-y-2">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
+        <span class="text-text-subtle font-medium">Example credential:</span>
+        <span class="text-white font-medium break-all select-all">{{ res.example_credential }}</span>
+      </div>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]">
+        <span class="text-text-subtle font-medium">Detected:</span>
+        <span class="text-white font-medium">{{ res.detected_display }}</span>
       </div>
     </div>
 
     <!-- Expected vs Actual Outcome -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs mt-auto">
       <div class="p-3 rounded-xl bg-surface border border-border flex flex-col gap-1">
         <span class="text-[10px] text-text-subtle uppercase tracking-wider">Expected Outcome</span>
-        <span class="text-sm font-bold text-indigo-300">{{ res.expected_outcome }}</span>
+        <span class="text-sm font-bold text-indigo-300">{{ res.expected_outcome_label }}</span>
       </div>
       <div class="p-3 rounded-xl bg-surface border border-border flex flex-col gap-1">
         <span class="text-[10px] text-text-subtle uppercase tracking-wider">Actual Outcome</span>
-        <span class="text-sm font-bold {% if res.passed is sameas true %}text-emerald-400{% elif res.passed is sameas false %}text-rose-400{% else %}text-text-muted{% endif %}">
-          {{ res.actual_outcome }}
+        <span class="text-sm font-bold {{ res.status_classes.text }}">
+          {{ res.actual_outcome_label }}
         </span>
-        {% if res.elapsed_ms is not none %}
-          <span class="text-[11px] text-text-muted">Elapsed: {{ res.elapsed_ms }} ms</span>
-        {% endif %}
       </div>
     </div>
   </div>
 
   <!-- Action & Status Bottom Strip -->
   <div class="px-6 py-3 bg-surface flex items-center justify-between gap-4 border-t border-border">
-    {% if res.passed is sameas true %}
-      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-        <span class="material-symbols-outlined text-[16px]">check_circle</span>
-        <span class="font-mono text-[11px] font-bold uppercase tracking-wider">PASS</span>
-      </div>
-    {% elif res.passed is sameas false %}
-      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30">
-        <span class="material-symbols-outlined text-[16px]">cancel</span>
-        <span class="font-mono text-[11px] font-bold uppercase tracking-wider">FAIL</span>
-      </div>
-    {% else %}
-      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-elevated text-text-muted border border-border">
-        <span class="material-symbols-outlined text-[16px]">hourglass_empty</span>
-        <span class="font-mono text-[11px] font-bold uppercase tracking-wider">Not run yet</span>
-      </div>
-    {% endif %}
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full {{ res.status_classes.badge }}">
+      <span class="material-symbols-outlined text-[16px]">
+        {% if res.passed is sameas true %}check_circle
+        {% elif res.passed is sameas false %}cancel
+        {% else %}hourglass_empty{% endif %}
+      </span>
+      <span class="font-mono text-[11px] font-bold uppercase tracking-wider">{{ res.status_text }}</span>
+    </div>
 
     <div class="flex items-center gap-2">
+      {% if res.trace and res.trace != "Not run yet" and res.trace != "—" %}
       <button 
         type="button"
         data-case="{{ res.scenario_id }}"
@@ -135,14 +110,15 @@
         data-trace="{{ res.trace }}"
         onclick="appendConsoleLog(this.dataset.case, this.dataset.title, this.dataset.ms, this.dataset.trace);"
         class="px-3 py-1 rounded-lg bg-elevated hover:bg-elevated/80 text-text-muted hover:text-white font-mono text-xs transition-colors cursor-pointer border border-border">
-        View Trace
+        View details
       </button>
+      {% endif %}
       <button 
         hx-post="/web/anomalies/run/{{ res.scenario_id }}" 
         hx-target="#card-{{ res.scenario_id }}" 
         hx-swap="outerHTML"
         class="h-7 w-7 rounded-lg bg-elevated hover:bg-elevated/80 text-brand flex items-center justify-center border border-border transition-colors cursor-pointer" 
-        title="Run Scenario {{ res.scenario_id }}">
+        title="Run scenario">
         <span class="material-symbols-outlined text-[16px]">sync</span>
       </button>
     </div>

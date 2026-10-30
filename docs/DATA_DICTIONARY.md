@@ -19,6 +19,8 @@ Authorized academic institutions permitted to issue and cryptographically sign c
 | `created_at` | `TIMESTAMPTZ` | Required | Valid UTC timestamp | ISO-8601 UTC (`timestamptz`) | Non-unique | Non-null timezone-aware UTC timestamp |
 
 > **CSV / DataFrame Extension Columns (`issuers.csv`):** `retired_at` (`TIMESTAMPTZ`, Optional, UTC cutoff timestamp when `status = 'RETIRED'`) and `successor_issuer_id` (`INTEGER`, Optional, FK reference to successor `issuers.id`).
+>
+> **Issuer Retirement:** An issuer with status RETIRED ceases issuing new credentials while historical credentials remain verifiable using its recorded public key. The effective date and successor issuer are recorded in the ISSUER_RETIRED audit event.
 
 ---
 
@@ -140,7 +142,7 @@ Immutable log of every credential verification request and its outcome.
 ---
 
 ### 1.9 `audit_events` ([`AuditEvent`](file:///c:/Projects/digital_credential_lifecycle_management_system/backend/models/audit.py))
-Append-only system audit ledger recording all lifecycle actions, rule changes, issuer retirements, eligibility rejections, and verifications.
+Append-only system audit ledger recording all lifecycle actions, rule changes, issuer retirements, eligibility rejections, and verifications. The `audit_events` table is protected at the database level by a PostgreSQL `BEFORE UPDATE OR DELETE` row-level trigger that enforces an append-only ledger by raising an exception on any attempted update or deletion.
 
 | Field | Type | Required / Optional | Allowed Values | Units | Uniqueness | Validation Rule |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

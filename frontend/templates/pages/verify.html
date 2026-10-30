@@ -12,8 +12,8 @@
     </p>
   </div>
 
-  <!-- Verification Search Input Card (Flex Container: Input flex:1 + Separate Fixed Button) -->
-  <div class="veri-card p-6 md:p-8 bg-card shadow-xl">
+  <!-- Verification Search Input Card -->
+  <div class="veri-card p-6 md:p-8 bg-card shadow-xl" id="credentialSearchCard">
     <form hx-post="/web/verify" hx-target="#verificationResult" hx-indicator="#verifySpinner" class="space-y-4">
       <div>
         <label for="credentialInput" class="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-2 font-mono">
@@ -27,6 +27,7 @@
               name="credential_public_id" 
               id="credentialInput" 
               required
+              autocomplete="off"
               class="w-full h-12 pl-12 pr-4 rounded-xl bg-surface border border-border-focus font-mono text-sm text-white placeholder-text-subtle focus:border-brand focus:ring-1 focus:ring-brand transition-all outline-none"
               placeholder="e.g. CRD-2026-000001" 
               value="{{ sample_valid_id or '' }}" 
@@ -40,16 +41,17 @@
           </button>
         </div>
       </div>
+
+      <!-- HTMX Progress Spinner: inside card, displayed only during request -->
+      <div id="verifySpinner" class="htmx-indicator items-center justify-center gap-2 pt-2 text-brand font-mono text-xs">
+        <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+        <span>Checking credential...</span>
+      </div>
     </form>
   </div>
 
-  <!-- HTMX Progress Spinner -->
-  <div id="verifySpinner" class="htmx-indicator flex items-center justify-center gap-3 py-6 text-brand font-mono text-xs">
-    <span class="material-symbols-outlined animate-spin text-[22px]">progress_activity</span>
-    <span>Checking credential...</span>
-  </div>
-
-  <!-- Dynamic Verification Result (empty with 0 height until result arrives, then 24px gap below search card) -->
-  <div id="verificationResult" class="mt-6 empty:hidden"></div>
+  <!-- Dynamic Verification Result: exactly 24px below search card when populated, 0 height when empty -->
+  <div id="verificationResult" class="empty:hidden"></div>
 </div>
 {% endblock %}
+

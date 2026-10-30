@@ -102,9 +102,9 @@
   <div class="veri-card p-6 md:p-8 bg-card shadow-xl space-y-5">
     <div class="flex items-center justify-between border-b border-border pb-3">
       <div>
-        <h2 class="text-lg font-bold text-white">Interactive Credential &amp; Payload-Tamper Inspector</h2>
+        <h2 class="text-lg font-bold text-white">Interactive Credential Inspector</h2>
         <p class="text-xs text-text-muted">
-          Test individual credentials with Quick Sample chips or modify JSON claims to inspect 4 verification checks and tamper rejection.
+          Test individual credentials with Quick Sample chips or modify claims to test tamper rejection.
         </p>
       </div>
     </div>
@@ -151,26 +151,26 @@
           onclick="setLabTamperPayload('{{ sample_valid_id or 'CRD-2026-000001' }}')"
           class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-colors flex items-center gap-1.5 cursor-pointer">
           <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-          <span>Simulate Tampered Payload</span>
+          <span>Simulate Altered Record</span>
         </button>
       </div>
 
-      <!-- Payload-Tamper JSON Editor -->
+      <!-- Modified Claims Editor -->
       <details class="rounded-xl bg-surface border border-border p-4 text-xs" id="labTamperDetails">
         <summary class="font-semibold text-text-muted hover:text-white cursor-pointer select-none flex items-center gap-2">
           <span class="material-symbols-outlined text-brand text-[18px]">edit_note</span>
-          <span>Payload-Tamper JSON Editor</span>
+          <span>Modified Claims Editor</span>
         </summary>
         <div class="pt-3 space-y-2">
           <p class="text-text-subtle font-mono text-[11px]">
-            Provide modified JSON claims below to test canonical SHA-256 digest verification against the stored credential.
+            Provide modified JSON claims below to verify integrity mismatch detection against the stored credential.
           </p>
           <textarea 
             name="tamper_payload" 
             id="labTamperJson" 
             rows="5"
             class="w-full p-3 rounded-lg bg-card font-mono text-xs text-indigo-300 border border-border focus:border-brand focus:outline-none"
-            placeholder='Optional modified JSON payload to test cryptographic tamper detection'></textarea>
+            placeholder='Optional modified JSON input to test tamper detection'></textarea>
         </div>
       </details>
     </form>

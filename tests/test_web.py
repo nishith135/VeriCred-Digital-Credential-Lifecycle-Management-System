@@ -119,11 +119,10 @@ async def test_web_anomalies_lab(api_client: AsyncClient):
     resp = await api_client.get("/anomalies")
     assert resp.status_code == 200
     assert "Not run yet" in resp.text
-    assert "PREMATURE_ISSUANCE" in resp.text
-    assert "DUPLICATE_CREDENTIAL_ID" in resp.text
-    assert "REVOKED_VERIFIES_AS_ACTIVE" in resp.text
-    assert "ALTERED_PAYLOAD_NOT_DETECTED" in resp.text
-    assert "Payload-Tamper JSON Editor" in resp.text
+    assert "Credential issued before course completion" in resp.text
+    assert "Duplicate credential ID" in resp.text
+    assert "Revoked credential still marked active" in resp.text
+    assert "Credential altered after issuance" in resp.text
     assert "Quick Samples:" in resp.text
     for s in forbidden_strings:
         assert s not in resp.text
@@ -131,20 +130,20 @@ async def test_web_anomalies_lab(api_client: AsyncClient):
     # POST /web/anomalies/run-all -> renders real evaluation outcomes and row count delta 0
     resp_run = await api_client.post("/web/anomalies/run-all")
     assert resp_run.status_code == 200
-    assert "PASS" in resp_run.text
+    assert "Passed" in resp_run.text
     assert "Read-only: row counts before/after delta 0" in resp_run.text
-    assert "INVALID_ISSUANCE" in resp_run.text
-    assert "REJECTED_DUPLICATE" in resp_run.text
-    assert "REVOKED" in resp_run.text
-    assert "TAMPERED" in resp_run.text
+    assert "Invalid issuance" in resp_run.text
+    assert "Rejected as duplicate" in resp_run.text
+    assert "Revoked" in resp_run.text
+    assert "Altered" in resp_run.text
     for s in forbidden_strings:
         assert s not in resp_run.text
 
     # POST /web/anomalies/run/ALTERED_PAYLOAD_NOT_DETECTED
     resp_single = await api_client.post("/web/anomalies/run/ALTERED_PAYLOAD_NOT_DETECTED")
     assert resp_single.status_code == 200
-    assert "Scenario 04: Altered Payload Snapshot" in resp_single.text
-    assert "TAMPERED" in resp_single.text
+    assert "Credential altered after issuance" in resp_single.text
+    assert "Altered" in resp_single.text
     for s in forbidden_strings:
         assert s not in resp_single.text
 
@@ -247,12 +246,12 @@ async def test_web_verify_badge_renders_real_holder_program_score_and_revoker(
     )
     assert resp_revoked.status_code == 200
     html_revoked = resp_revoked.text
-    assert "REVOKED" in html_revoked
+    assert "Revoked" in html_revoked
     assert "Alice Q. Student" in html_revoked
     assert "Advanced Distributed Cryptographic Systems" in html_revoked
     assert "92.5%" in html_revoked
     assert "DEAN-REVOKER-99" in html_revoked
-    assert "ACADEMIC_MISCONDUCT" in html_revoked
+    assert "Academic misconduct" in html_revoked
     assert "N/A" not in html_revoked
     assert "Query Latency" not in html_revoked
     assert "Revoked on" in html_revoked

@@ -80,3 +80,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .veri-pulse {
   animation: veri-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* Browser autofill reset: keep dark background and light text in all states */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #111827 inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #f8fafc !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* HTMX indicator visibility: zero height and display:none when inactive */
+.htmx-indicator {
+  display: none !important;
+}
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  display: flex !important;
+}
+
